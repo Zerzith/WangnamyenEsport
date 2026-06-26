@@ -214,7 +214,7 @@ export default function Home() {
               className="text-5xl md:text-7xl font-display font-bold text-white mb-6 tracking-tight"
             >
               ยกระดับการแข่งขัน <br />
-              <span className="text-primary">ESPORTS</span> ในโรงเรียน
+              <span className="text-primary">ESPORTS</span> ในวิทยาลัยเทคนิควังน้ำเย็น
             </motion.h1>
             <motion.p
               initial={{ opacity: 0, y: 20 }}
@@ -222,7 +222,7 @@ export default function Home() {
               transition={{ delay: 0.2 }}
               className="text-xl text-muted-foreground mb-8 leading-relaxed"
             >
-              แพลตฟอร์มจัดการแข่งขันอีสปอร์ตสำหรับนักเรียนโรงเรียนวังน้ำเย็นวิทยาคม 
+              แพลตฟอร์มจัดการแข่งขันอีสปอร์ตสำหรับนักเรียน/นักศึกษา วิทยาลัยเทคนิควังน้ำเย็น
               ติดตามสายการแข่งขัน ผลการแข่ง และทำเนียบแชมป์เปี้ยนได้ที่นี่
             </motion.p>
             <motion.div
