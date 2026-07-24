@@ -51,7 +51,7 @@ export function AvatarCustom({ src, name, size = "md", className = "", isTeam = 
 
   if (src && src.trim() !== "") {
     return (
-      <div className={`${sizeClasses[size]} rounded-full overflow-hidden border border-white/10 flex-shrink-0 ${className}`}>
+      <div className={`${sizeClasses[size]} rounded-full overflow-hidden border border-white/15 bg-zinc-900 ring-1 ring-primary/10 shadow-[0_0_18px_-10px_rgb(34_211_238_/_0.8)] flex-shrink-0 ${className}`}>
         <img 
           src={src} 
           alt={name} 
@@ -71,7 +71,7 @@ export function AvatarCustom({ src, name, size = "md", className = "", isTeam = 
 
   // Default anonymous icon for teams or users without logo
   return (
-    <div className={`${sizeClasses[size]} rounded-full flex items-center justify-center border border-white/10 flex-shrink-0 bg-slate-700 ${className}`}>
+    <div className={`${sizeClasses[size]} rounded-full flex items-center justify-center border border-white/15 bg-zinc-800/90 text-white ring-1 ring-primary/10 shadow-[0_0_18px_-10px_rgb(34_211_238_/_0.55)] flex-shrink-0 ${className}`}>
       {isTeam ? (
         <User size={iconSizes[size]} className="text-slate-400" />
       ) : (

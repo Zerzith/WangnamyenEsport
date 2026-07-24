@@ -30,40 +30,40 @@ export function Navigation() {
 
   return (
     <>
-      <nav className="sticky top-0 z-50 w-full border-b border-white/10 bg-background/80 backdrop-blur-xl">
-        <div className="container mx-auto px-2 sm:px-4 h-16 flex items-center justify-between gap-2">
+      <nav className="sticky top-0 z-50 w-full border-b border-white/[0.08] bg-zinc-950/75 shadow-[0_12px_36px_-24px_rgb(0_0_0_/_0.9)] backdrop-blur-2xl">
+        <div className="container mx-auto flex min-h-[4.5rem] items-center justify-between gap-2 px-3 sm:px-5">
           {/* Logo Section */}
           <Link href="/">
-            <div className="flex items-center gap-2 cursor-pointer group flex-shrink-0">
-              <div className="relative w-8 h-8 flex items-center justify-center bg-primary rounded-lg overflow-hidden group-hover:ring-2 ring-accent transition-all">
-                <span className="font-display font-bold text-lg text-white">E</span>
-                <div className="absolute inset-0 bg-gradient-to-tr from-black/20 to-transparent" />
+            <div className="group flex flex-shrink-0 cursor-pointer items-center gap-2.5">
+              <div className="relative flex h-9 w-9 items-center justify-center overflow-hidden rounded-xl border border-primary/35 bg-gradient-to-br from-primary via-sky-400 to-accent shadow-[0_0_24px_-8px_rgb(34_211_238_/_0.95)] transition duration-300 group-hover:-translate-y-0.5 group-hover:shadow-glow">
+                <span className="relative z-10 font-display text-xl font-bold text-zinc-950">E</span>
+                <div className="absolute inset-0 bg-gradient-to-tr from-zinc-950/20 via-transparent to-white/30" />
               </div>
-              <span className="font-display font-bold text-lg sm:text-xl tracking-tight hidden xs:block group-hover:text-accent transition-colors whitespace-nowrap">
+              <span className="hidden whitespace-nowrap font-display text-lg font-bold uppercase tracking-tight text-white transition-colors group-hover:text-primary xs:block sm:text-xl">
                 WangNamYen<span className="text-primary">Esports</span>
               </span>
             </div>
           </Link>
 
           {/* Navigation Items */}
-          <div className="flex-1 flex items-center justify-center overflow-x-auto scrollbar-hide px-2">
-            <div className="flex items-center gap-1 sm:gap-2">
+          <div className="scrollbar-hide flex flex-1 items-center justify-center overflow-x-auto px-1 sm:px-3">
+            <div className="flex items-center gap-1 rounded-xl border border-white/[0.055] bg-white/[0.018] p-1">
               {navItems.map((item) => {
                 const isActive = location === item.href;
                 return (
                   <Link key={item.href} href={item.href}>
                     <div 
                       className={`
-                        relative px-2 sm:px-4 py-2 rounded-md flex flex-col sm:flex-row items-center gap-1 sm:gap-2 text-[10px] sm:text-sm font-medium transition-all cursor-pointer whitespace-nowrap
-                        ${isActive ? 'text-white' : 'text-muted-foreground hover:text-white hover:bg-white/5'}
+                        relative isolate flex cursor-pointer flex-col items-center gap-1 rounded-lg px-2 py-1.5 text-[10px] font-semibold transition-all sm:flex-row sm:gap-2 sm:px-3 sm:py-2 sm:text-sm whitespace-nowrap
+                        ${isActive ? 'text-primary' : 'text-muted-foreground hover:bg-white/[0.06] hover:text-white'}
                       `}
                     >
-                      <item.icon className="w-3 h-3 sm:w-4 sm:h-4" />
-                      <span>{item.label}</span>
+                      <item.icon className="relative z-10 h-3 w-3 sm:h-4 sm:w-4" />
+                      <span className="relative z-10">{item.label}</span>
                       {isActive && (
                         <motion.div
                           layoutId="nav-pill"
-                          className="absolute inset-0 bg-primary/20 border-b-2 border-primary rounded-sm"
+                          className="absolute inset-0 z-0 rounded-lg border border-primary/20 bg-primary/10 shadow-[inset_0_0_18px_rgb(34_211_238_/_0.07),0_0_18px_-10px_rgb(34_211_238_/_0.75)]"
                           initial={false}
                           transition={{ type: "spring", stiffness: 300, damping: 30 }}
                         />
@@ -77,16 +77,16 @@ export function Navigation() {
                 <Link href={adminItem.href}>
                   <div 
                     className={`
-                      relative px-2 sm:px-4 py-2 rounded-md flex flex-col sm:flex-row items-center gap-1 sm:gap-2 text-[10px] sm:text-sm font-medium transition-all cursor-pointer whitespace-nowrap
-                      ${location === adminItem.href ? 'text-white' : 'text-accent hover:text-white hover:bg-white/5'}
+                      relative isolate flex cursor-pointer flex-col items-center gap-1 rounded-lg px-2 py-1.5 text-[10px] font-semibold transition-all sm:flex-row sm:gap-2 sm:px-3 sm:py-2 sm:text-sm whitespace-nowrap
+                      ${location === adminItem.href ? 'text-accent' : 'text-accent/85 hover:bg-accent/10 hover:text-white'}
                     `}
                   >
-                    <adminItem.icon className="w-3 h-3 sm:w-4 sm:h-4" />
-                    <span>{adminItem.label}</span>
+                    <adminItem.icon className="relative z-10 h-3 w-3 sm:h-4 sm:w-4" />
+                    <span className="relative z-10">{adminItem.label}</span>
                     {location === adminItem.href && (
                       <motion.div
                         layoutId="nav-pill"
-                        className="absolute inset-0 bg-accent/20 border-b-2 border-accent rounded-sm"
+                        className="absolute inset-0 z-0 rounded-lg border border-accent/25 bg-accent/10 shadow-[inset_0_0_18px_rgb(139_92_246_/_0.08),0_0_18px_-10px_rgb(139_92_246_/_0.75)]"
                         initial={false}
                         transition={{ type: "spring", stiffness: 300, damping: 30 }}
                       />
@@ -99,15 +99,15 @@ export function Navigation() {
           </div>
 
           {/* User Actions Section */}
-          <div className="flex items-center gap-1 sm:gap-3 flex-shrink-0">
+          <div className="flex flex-shrink-0 items-center gap-1.5 sm:gap-3">
             {user ? (
-              <div className="flex items-center gap-1 sm:gap-3">
-                <div className="hidden lg:flex flex-col items-end">
-                  <span className="text-sm font-bold text-white leading-none whitespace-nowrap">{user.displayName || 'Gamer'}</span>
-                  <span className="text-[10px] text-accent uppercase font-bold">Online</span>
+              <div className="flex items-center gap-1.5 sm:gap-3">
+                <div className="hidden flex-col items-end lg:flex">
+                  <span className="whitespace-nowrap text-sm font-bold leading-none text-white">{user.displayName || 'Gamer'}</span>
+                  <span className="mt-1 text-[10px] font-bold uppercase tracking-[0.14em] text-primary">Online</span>
                 </div>
                 <Link href="/profile">
-                  <div className="cursor-pointer hover:scale-105 transition-transform">
+                  <div className="cursor-pointer transition-transform duration-200 hover:scale-105">
                     <AvatarCustom 
                       src={user.photoURL} 
                       name={user.displayName || "Gamer"} 
@@ -120,15 +120,15 @@ export function Navigation() {
                   variant="ghost" 
                   size="icon" 
                   onClick={signOut}
-                  className="w-8 h-8 sm:w-10 sm:h-10 text-muted-foreground hover:text-destructive hover:bg-destructive/10"
+                  className="h-9 w-9 text-muted-foreground hover:bg-destructive/10 hover:text-destructive sm:h-10 sm:w-10"
                 >
-                  <LogOut className="w-4 h-4 sm:w-5 sm:h-5" />
+                  <LogOut className="h-4 w-4 sm:h-5 sm:w-5" />
                 </Button>
               </div>
             ) : (
               <Link href="/login">
-                <Button size="sm" className="h-8 sm:h-10 px-2 sm:px-4 bg-primary hover:bg-primary/90 text-white text-xs sm:text-sm font-medium shadow-lg shadow-primary/20 whitespace-nowrap">
-                  <LogIn className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
+                <Button size="sm" className="h-9 border-primary/45 bg-primary px-3 text-xs font-bold text-primary-foreground shadow-[0_10px_24px_-12px_rgb(34_211_238_/_0.9)] hover:bg-primary sm:h-10 sm:px-4 sm:text-sm whitespace-nowrap">
+                  <LogIn className="mr-1 h-3 w-3 sm:mr-2 sm:h-4 sm:w-4" />
                   เข้าสู่ระบบ
                 </Button>
               </Link>

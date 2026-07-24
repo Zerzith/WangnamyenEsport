@@ -114,8 +114,8 @@ export default function Home() {
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         transition={{ delay: index * 0.1 }}
-        className={`group relative h-96 rounded-3xl overflow-hidden border bg-background transition-all ${
-          !isOpen || isFull ? "border-red-500/50 opacity-90 shadow-lg shadow-red-500/10" : "border-white/10 hover:border-primary/50 hover:shadow-2xl hover:shadow-primary/20"
+        className={`group relative h-[25rem] overflow-hidden rounded-2xl border bg-zinc-950/60 shadow-panel transition-all duration-500 ${
+          !isOpen || isFull ? "border-red-500/35 opacity-90 shadow-[0_20px_50px_-30px_rgb(239_68_68_/_0.45)]" : "border-white/[0.1] hover:-translate-y-1.5 hover:border-primary/50 hover:shadow-panel-hover"
         }`}
       >
         <Link href={`/event/${event.id}`}>
@@ -123,34 +123,34 @@ export default function Home() {
             <img 
               src={event.bannerUrl || HERO_BG}
               alt={event.title}
-              className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 opacity-60"
+              className="absolute inset-0 h-full w-full object-cover opacity-70 saturate-[0.88] transition-transform duration-700 group-hover:scale-110 group-hover:saturate-100"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/65 to-zinc-950/5" />
           </div>
         </Link>
         
         <div className="absolute top-4 right-4 z-10 flex gap-2">
           {!isOpen ? (
-            <div className="px-3 py-1.5 rounded-full bg-red-500/80 text-white text-[10px] font-black uppercase tracking-widest flex items-center gap-1.5 shadow-lg">
+            <div className="flex items-center gap-1.5 rounded-full border border-red-400/25 bg-red-500/15 px-3 py-1.5 text-[10px] font-black uppercase tracking-widest text-red-200 shadow-[0_0_18px_-9px_rgb(239_68_68_/_0.8)] backdrop-blur-md">
               <AlertCircle className="w-3 h-3" />
               ปิดรับสมัคร
             </div>
           ) : isFull ? (
-            <div className="px-3 py-1.5 rounded-full bg-red-500 text-white text-[10px] font-black uppercase tracking-widest flex items-center gap-1.5 shadow-lg">
+            <div className="flex items-center gap-1.5 rounded-full border border-red-400/25 bg-red-500/15 px-3 py-1.5 text-[10px] font-black uppercase tracking-widest text-red-200 shadow-[0_0_18px_-9px_rgb(239_68_68_/_0.8)] backdrop-blur-md">
               <AlertCircle className="w-3 h-3" />
               เต็มแล้ว
             </div>
           ) : (
-            <div className="px-3 py-1.5 rounded-full bg-green-500 text-white text-[10px] font-black uppercase tracking-widest flex items-center gap-1.5 shadow-lg">
+            <div className="flex items-center gap-1.5 rounded-full border border-emerald-400/25 bg-emerald-400/15 px-3 py-1.5 text-[10px] font-black uppercase tracking-widest text-emerald-200 shadow-[0_0_18px_-9px_rgb(52_211_153_/_0.8)] backdrop-blur-md">
               <div className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
               เปิดรับสมัคร
             </div>
           )}
         </div>
         
-        <div className="absolute bottom-0 left-0 p-8 w-full pointer-events-none">
+        <div className="pointer-events-none absolute bottom-0 left-0 w-full p-6 sm:p-7">
           <div className="flex items-center gap-2 mb-3 flex-wrap">
-            <span className="px-3 py-1 rounded-full bg-primary text-white text-[10px] font-bold uppercase tracking-wider">
+            <span className="rounded-full border border-primary/25 bg-primary/15 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.14em] text-primary backdrop-blur-md">
               {event.game}
             </span>
             <span className="flex items-center gap-1 text-[10px] text-white/80 font-bold uppercase tracking-wider">
@@ -158,12 +158,12 @@ export default function Home() {
             </span>
           </div>
           
-          <h3 className="text-2xl font-display font-bold text-white mb-3 group-hover:text-primary transition-colors pointer-events-auto">
+          <h3 className="pointer-events-auto mb-3 font-display text-2xl font-bold text-white transition-colors group-hover:text-primary">
             <Link href={`/event/${event.id}`}>{event.title}</Link>
           </h3>
           
           <div className="flex items-center justify-between mt-4">
-            <div className="flex items-center gap-2 text-sm bg-black/40 backdrop-blur-md px-3 py-1.5 rounded-xl border border-white/10">
+            <div className="flex items-center gap-2 rounded-xl border border-white/10 bg-zinc-950/55 px-3 py-1.5 text-sm backdrop-blur-md">
               <Users className="w-4 h-4 text-primary" />
               <span className={isFull ? "text-red-400 font-bold" : "text-white font-bold"}>
                 {registeredCount}/{event.maxTeams || 16} ทีม
@@ -171,14 +171,14 @@ export default function Home() {
             </div>
             {isOpen && !isFull && (
               <Link href={user ? `/event/${event.id}` : "/login"}>
-                <Button size="sm" className="rounded-xl bg-primary hover:bg-primary/80 text-white font-bold px-4 pointer-events-auto shadow-lg shadow-primary/20">
+                <Button size="sm" className="pointer-events-auto rounded-xl border-primary/45 bg-primary px-4 font-bold text-primary-foreground shadow-[0_12px_24px_-12px_rgb(34_211_238_/_0.9)] hover:bg-primary">
                   สมัครเลย
                 </Button>
               </Link>
             )}
             {(!isOpen || isFull) && (
               <Link href={`/event/${event.id}`}>
-                <Button size="sm" variant="outline" className="rounded-xl border-white/20 hover:bg-white/5 text-white/60 font-bold px-4 pointer-events-auto">
+                <Button size="sm" variant="outline" className="pointer-events-auto rounded-xl border-white/15 bg-white/[0.035] px-4 font-bold text-white/80 hover:border-primary/35 hover:bg-primary/10 hover:text-primary">
                   ดูรายละเอียด
                 </Button>
               </Link>
@@ -190,19 +190,19 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0a0e17]">
+    <div className="min-h-screen bg-transparent">
       {/* Hero Section */}
-      <section className="relative py-20 overflow-hidden min-h-[80vh] flex items-center bg-gradient-to-br from-[#0a0e17] via-[#1a1f2e] to-[#0a0e17]">
+      <section className="esports-grid relative isolate flex min-h-[calc(100vh-4.5rem)] items-center overflow-hidden border-b border-white/[0.06] py-20">
         <div className="absolute inset-0 z-0 bg-gradient-to-b from-primary/5 via-transparent to-primary/10 opacity-50"></div>
         <div className="absolute inset-0 z-0" style={{
           backgroundImage: `radial-gradient(circle at 20% 50%, rgba(59, 130, 246, 0.1) 0%, transparent 50%), radial-gradient(circle at 80% 80%, rgba(139, 92, 246, 0.1) 0%, transparent 50%)`
         }}></div>
-        <div className="container mx-auto px-4 relative z-10">
-          <div className="max-w-3xl">
+        <div className="container relative z-10 mx-auto px-4 sm:px-6">
+          <div className="max-w-4xl">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-primary text-sm font-bold mb-6"
+              className="mb-7 inline-flex items-center gap-2 rounded-full border border-primary/25 bg-primary/[0.09] px-4 py-2 text-xs font-bold tracking-[0.13em] text-primary shadow-[0_0_28px_-12px_rgb(34_211_238_/_0.75)] backdrop-blur-md"
             >
               <Gamepad2 className="w-4 h-4" />
               WANGNAMYEN ESPORTS LEAGUE
@@ -211,16 +211,16 @@ export default function Home() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 }}
-              className="text-5xl md:text-7xl font-display font-bold text-white mb-6 tracking-tight"
+              className="mb-7 max-w-4xl font-display text-5xl font-bold leading-[0.92] tracking-[-0.045em] text-white sm:text-6xl md:text-7xl lg:text-8xl"
             >
               ยกระดับการแข่งขัน <br />
-              <span className="text-primary">ESPORTS</span> ในวิทยาลัยเทคนิควังน้ำเย็น
+              <span className="text-gradient text-glow">ESPORTS</span> ในวิทยาลัยเทคนิควังน้ำเย็น
             </motion.h1>
             <motion.p
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
-              className="text-xl text-muted-foreground mb-8 leading-relaxed"
+              className="mb-9 max-w-2xl text-lg leading-relaxed text-slate-300 sm:text-xl"
             >
               แพลตฟอร์มจัดการแข่งขันอีสปอร์ตสำหรับนักเรียน/นักศึกษา วิทยาลัยเทคนิควังน้ำเย็น
               ติดตามสายการแข่งขัน ผลการแข่ง และทำเนียบแชมป์เปี้ยนได้ที่นี่
@@ -229,15 +229,15 @@ export default function Home() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3 }}
-              className="flex flex-wrap gap-4"
+              className="flex flex-wrap gap-3 sm:gap-4"
             >
               <Link href="/bracket">
-                <Button size="lg" className="bg-primary hover:bg-primary/90 text-white px-8 h-14 rounded-2xl text-lg font-bold">
+                <Button size="lg" className="h-14 rounded-xl border-primary/45 bg-primary px-8 text-lg font-bold text-primary-foreground shadow-[0_16px_34px_-14px_rgb(34_211_238_/_0.95)] hover:bg-primary">
                   ดูสายการแข่งขัน
                 </Button>
               </Link>
               <Link href="/rules">
-                <Button size="lg" variant="outline" className="border-white/10 hover:bg-white/5 px-8 h-14 rounded-2xl text-lg font-bold">
+                <Button size="lg" variant="outline" className="h-14 rounded-xl border-white/15 bg-white/[0.035] px-8 text-lg font-bold text-white hover:border-primary/40 hover:bg-primary/10 hover:text-primary">
                   กฎการแข่งขัน
                 </Button>
               </Link>
@@ -248,7 +248,7 @@ export default function Home() {
 
       {/* Champions Section */}
       {champions.length > 0 && (
-        <section className="py-20 bg-white/5">
+        <section className="border-y border-white/[0.06] bg-white/[0.018] py-20">
           <div className="container mx-auto px-4">
             <div className="flex items-center gap-3 mb-12">
               <Trophy className="w-8 h-8 text-yellow-500" />
@@ -263,7 +263,7 @@ export default function Home() {
                   transition={{ delay: index * 0.1 }}
                 >
                   <Link href={`/event/${event.id}`}>
-                    <Card className="bg-gradient-to-br from-yellow-500/20 via-yellow-500/5 to-transparent border-yellow-500/30 p-8 rounded-3xl text-center cursor-pointer hover:scale-[1.02] transition-all group">
+                    <Card className="group cursor-pointer rounded-2xl border-yellow-400/25 bg-gradient-to-br from-yellow-400/15 via-yellow-500/[0.045] to-transparent p-8 text-center shadow-[0_20px_50px_-30px_rgb(234_179_8_/_0.45)] transition-all duration-300 hover:-translate-y-1 hover:border-yellow-300/45 hover:shadow-[0_26px_56px_-32px_rgb(234_179_8_/_0.7)]">
                       <Trophy className="w-12 h-12 text-yellow-500 mx-auto mb-4 group-hover:animate-bounce" />
                       <h3 className="text-xl font-bold text-white mb-2">{event.title}</h3>
                       <p className="text-yellow-500 font-black text-2xl uppercase tracking-tighter">CHAMPION</p>
@@ -280,17 +280,17 @@ export default function Home() {
       )}
 
       {/* Events Section */}
-      <section className="py-24 relative overflow-hidden">
+      <section className="relative overflow-hidden py-24">
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[600px] bg-primary/5 rounded-full blur-[120px] -z-10" />
         
         <div className="container mx-auto px-4">
           <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-4">
             <div>
               <div className="flex items-center gap-2 mb-2">
-                <div className="w-8 h-[2px] bg-primary" />
-                <span className="text-primary font-bold uppercase tracking-widest text-xs">Tournaments</span>
+                <div className="h-px w-9 bg-primary shadow-[0_0_12px_rgb(34_211_238_/_0.8)]" />
+                <span className="font-display text-xs font-bold uppercase tracking-[0.2em] text-primary">Tournaments</span>
               </div>
-              <h2 className="text-4xl md:text-5xl font-display font-bold text-white">การแข่งขันอีสปอร์ต</h2>
+              <h2 className="font-display text-4xl font-bold uppercase tracking-tight text-white md:text-5xl">การแข่งขันอีสปอร์ต</h2>
               <p className="text-muted-foreground mt-3 text-lg">รายการแข่งขันทั้งหมดของวิทยาลัยเทคนิควังน้ำเย็น</p>
             </div>
           </div>
@@ -301,7 +301,7 @@ export default function Home() {
               <p className="text-muted-foreground animate-pulse">กำลังโหลดข้อมูลการแข่งขัน...</p>
             </div>
           ) : events.length === 0 ? (
-            <div className="text-center py-24 bg-card/20 rounded-[3rem] border border-dashed border-white/10">
+            <div className="esports-panel mx-auto max-w-3xl border-dashed border-white/15 bg-zinc-900/35 py-24 text-center">
               <Trophy className="w-20 h-20 mx-auto text-white/5 mb-6" />
               <h3 className="text-2xl font-bold text-white/40">ยังไม่มีการแข่งขันในขณะนี้</h3>
               <p className="text-muted-foreground mt-2">โปรดติดตามข่าวสารประกาศเร็วๆ นี้</p>
@@ -318,11 +318,11 @@ export default function Home() {
 
       {/* News Section */}
       {news.length > 0 && (
-        <section className="py-24 bg-white/5 backdrop-blur-sm border-y border-white/5">
+        <section className="border-y border-white/[0.06] bg-white/[0.018] py-24 backdrop-blur-sm">
           <div className="container mx-auto px-4">
             <div className="flex items-center justify-between mb-12">
               <div className="flex items-center gap-3">
-                <div className="p-3 rounded-2xl bg-primary/20 text-primary">
+                <div className="rounded-xl border border-primary/20 bg-primary/10 p-3 text-primary shadow-[0_0_20px_-12px_rgb(34_211_238_/_0.85)]">
                   <Megaphone className="w-6 h-6" />
                 </div>
                 <h2 className="text-3xl font-display font-bold text-white">ข่าวสารล่าสุด</h2>
@@ -331,16 +331,16 @@ export default function Home() {
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               {news.map((item) => (
-                <Card key={item.id} className="bg-card/40 border-white/10 p-6 rounded-3xl hover:border-primary/30 transition-all group">
-                  <div className="flex items-center gap-2 text-primary text-xs font-bold uppercase tracking-widest mb-4">
+                <Card key={item.id} className="group esports-panel esports-panel-interactive rounded-2xl border-white/[0.09] bg-zinc-900/55 p-6">
+                  <div className="mb-4 flex items-center gap-2 text-xs font-bold uppercase tracking-[0.16em] text-primary">
                     <Clock className="w-3 h-3" />
                     {item.createdAt?.toDate ? formatDate(item.createdAt.toDate().toISOString()) : "เมื่อเร็วๆ นี้"}
                   </div>
-                  <h3 className="text-xl font-bold text-white mb-3 group-hover:text-primary transition-colors line-clamp-2">{item.title}</h3>
+                  <h3 className="mb-3 line-clamp-2 font-display text-xl font-bold text-white transition-colors group-hover:text-primary">{item.title}</h3>
                   <p className="text-muted-foreground text-sm line-clamp-3 mb-6">{item.content}</p>
-                  <div className="flex items-center justify-between pt-4 border-t border-white/5">
+                  <div className="flex items-center justify-between border-t border-white/[0.07] pt-4">
                     <span className="text-xs text-white/40">โดย {item.author || "Admin"}</span>
-                    <Button variant="ghost" size="sm" className="text-primary hover:text-primary/80 hover:bg-primary/10 p-0 h-auto font-bold">
+                    <Button variant="ghost" size="sm" className="h-auto p-0 font-bold text-primary hover:bg-transparent hover:text-cyan-200">
                       อ่านต่อ <ArrowRight className="w-4 h-4 ml-1" />
                     </Button>
                   </div>

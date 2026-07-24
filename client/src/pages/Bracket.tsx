@@ -157,35 +157,35 @@ export default function Bracket() {
   }
 
   return (
-    <div className="min-h-screen bg-background">
-      <div className="container mx-auto px-4 py-12">
-        <div className="text-center mb-12">
+    <div className="min-h-screen bg-transparent">
+      <div className="container mx-auto px-4 py-14 sm:px-6">
+        <div className="mb-12 text-center">
           <motion.div
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-primary text-sm font-bold mb-4"
+            className="mb-5 inline-flex items-center gap-2 rounded-full border border-primary/25 bg-primary/[0.09] px-4 py-2 text-xs font-bold tracking-[0.14em] text-primary shadow-[0_0_28px_-13px_rgb(34_211_238_/_0.8)] backdrop-blur-md"
           >
             <Swords className="w-4 h-4" />
             REAL-TIME TOURNAMENT BRACKET
           </motion.div>
-          <h1 className="text-4xl md:text-6xl font-display font-bold text-white mb-4 tracking-tight">
+          <h1 className="mb-4 font-display text-4xl font-bold uppercase tracking-tight text-white md:text-6xl">
             สายการแข่งขัน
           </h1>
-          <p className="text-muted-foreground max-w-2xl mx-auto">
+          <p className="mx-auto max-w-2xl text-base leading-relaxed text-muted-foreground">
             ติดตามผลการแข่งขันแบบสดๆ โดยไม่ต้องรีเฟรชหน้าจอ
           </p>
         </div>
 
         {/* Tournament Selector */}
-        <div className="flex flex-wrap justify-center gap-3 mb-12">
+        <div className="mb-12 flex flex-wrap justify-center gap-2.5">
           {tournaments.map((tournament) => (
             <button
               key={tournament.id}
               onClick={() => setSelectedTournament(tournament)}
-              className={`px-6 py-2.5 rounded-xl font-bold transition-all duration-300 border ${
+              className={`rounded-xl border px-5 py-2.5 font-display text-sm font-bold tracking-wide transition-all duration-300 ${
                 selectedTournament?.id === tournament.id
-                  ? "bg-primary text-white border-primary shadow-lg shadow-primary/20 scale-105"
-                  : "bg-card/50 text-white/60 border-white/5 hover:border-white/20 hover:text-white"
+                  ? "border-primary/45 bg-primary text-primary-foreground shadow-[0_14px_28px_-14px_rgb(34_211_238_/_0.95)] scale-[1.03]"
+                  : "border-white/[0.1] bg-zinc-900/50 text-white/60 hover:border-primary/35 hover:bg-primary/[0.08] hover:text-white"
               }`}
             >
               {tournament.title}
@@ -194,16 +194,16 @@ export default function Bracket() {
         </div>
 
         {tournaments.length === 0 ? (
-          <div className="text-center py-24 bg-card/20 rounded-[2rem] border border-dashed border-white/10">
+          <div className="esports-panel mx-auto max-w-3xl border-dashed border-white/[0.15] bg-zinc-900/35 py-24 text-center">
             <Trophy className="w-16 h-16 mx-auto text-white/10 mb-4" />
             <p className="text-muted-foreground text-lg">ยังไม่มีข้อมูลการแข่งขันในขณะนี้</p>
           </div>
         ) : (
           <Tabs defaultValue="All" className="w-full">
             <div className="flex justify-center mb-8">
-              <TabsList className="bg-white/5 border border-white/10 p-1">
+              <TabsList className="border-white/[0.1] bg-zinc-950/55 p-1">
                 {groups.map(group => (
-                  <TabsTrigger key={group} value={group} className="data-[state=active]:bg-primary data-[state=active]:text-white px-6">
+                  <TabsTrigger key={group} value={group} className="px-5 data-[state=active]:border-primary/30 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
                     {group === "All" ? "ทั้งหมด" : `กลุ่ม ${group}`}
                   </TabsTrigger>
                 ))}
@@ -229,17 +229,17 @@ export default function Bracket() {
               return (
                 <TabsContent key={group} value={group} className="mt-0">
                   {filteredMatches.length === 0 ? (
-                    <div className="text-center py-24 bg-card/20 rounded-[2rem] border border-dashed border-white/10">
+                    <div className="esports-panel mx-auto max-w-3xl border-dashed border-white/[0.15] bg-zinc-900/35 py-24 text-center">
                       <LayoutGrid className="w-16 h-16 mx-auto text-white/10 mb-4" />
                       <p className="text-muted-foreground text-lg">ยังไม่มีข้อมูลการแข่งขันในกลุ่มนี้</p>
                     </div>
                   ) : (
-                    <div className="overflow-x-auto pb-12 scrollbar-hide">
-                      <div className="min-w-max flex justify-center gap-12 md:gap-20 py-8 px-4">
+                    <div className="scrollbar-hide overflow-x-auto rounded-2xl border border-white/[0.07] bg-zinc-950/20 pb-12">
+                      <div className="flex min-w-max justify-center gap-12 px-5 py-10 md:gap-20">
                         {rounds.map((round, roundIndex) => (
                           <div key={round} className="flex flex-col justify-around gap-8">
                             <div className="text-center mb-4">
-                              <div className="inline-block px-4 py-1 rounded-lg bg-white/5 border border-white/10">
+                              <div className="inline-block rounded-lg border border-primary/20 bg-primary/[0.08] px-4 py-1.5 shadow-[0_0_16px_-11px_rgb(34_211_238_/_0.85)]">
                                 <p className="text-xs font-black text-primary uppercase tracking-[0.2em]">
                                   {round}
                                 </p>
@@ -352,31 +352,31 @@ function BracketMatch({ match, tournamentGame, registrations = [], onTeamClick }
       className="relative"
     >
       <Card
-        className={`w-64 md:w-72 bg-card/80 backdrop-blur-md border-white/10 transition-all duration-500 hover:border-primary/50 group ${
-          isOngoing ? "ring-2 ring-red-500/50 border-red-500/50" : ""
-        } ${isCompleted ? "shadow-2xl shadow-black/50" : ""}`}
+        className={`group w-64 border-white/[0.1] bg-zinc-900/80 backdrop-blur-xl transition-all duration-500 hover:-translate-y-1 hover:border-primary/50 hover:shadow-panel-hover md:w-72 ${
+          isOngoing ? "border-red-500/45 ring-1 ring-red-500/45 shadow-[0_0_28px_-14px_rgb(239_68_68_/_0.8)]" : ""
+        } ${isCompleted ? "shadow-[0_18px_45px_-30px_rgb(0_0_0_/_0.9)]" : ""}`}
       >
         {/* Match Status Badge - Positioned to not overlap scores */}
         <div className="absolute -top-3 left-1/2 -translate-x-1/2 z-10">
-          <div className={`px-3 py-1 rounded-full ${statusBadge.bgColor} ${statusBadge.textColor} text-[9px] font-black uppercase tracking-[0.1em] border border-white/10 shadow-lg backdrop-blur-md ${statusBadge.animate}`}>
+          <div className={`rounded-full border border-white/15 ${statusBadge.bgColor} ${statusBadge.textColor} px-3 py-1 text-[9px] font-black uppercase tracking-[0.12em] shadow-lg backdrop-blur-md ${statusBadge.animate}`}>
             {statusBadge.text}
           </div>
         </div>
 
         {/* Team A */}
         <div
-          className={`flex justify-between items-center p-4 border-b border-white/5 transition-colors ${
-            winnerA ? "bg-primary/20 border-b-primary/50" : ""
-          } ${winnerA ? "ring-1 ring-primary/30" : ""}`}
+          className={`flex items-center justify-between border-b border-white/[0.07] p-4 transition-colors ${
+            winnerA ? "border-b-primary/35 bg-primary/[0.12]" : ""
+          } ${winnerA ? "ring-1 ring-primary/20" : ""}`}
         >
           <button
             onClick={() => {
               const teamA = registrations.find(r => r.id === match.teamA);
               if (teamA) onTeamClick?.(teamA);
             }}
-            className="flex items-center gap-3 overflow-hidden hover:opacity-80 transition-opacity cursor-pointer"
+            className="flex cursor-pointer items-center gap-3 overflow-hidden transition-opacity hover:opacity-80"
           >
-            <div className={`w-8 h-8 rounded-lg flex items-center justify-center font-bold text-xs overflow-hidden ${winnerA ? 'bg-primary text-white' : 'bg-white/5 text-white/40'}`}>
+            <div className={`flex h-8 w-8 items-center justify-center overflow-hidden rounded-lg border border-white/[0.08] text-xs font-bold ${winnerA ? 'bg-primary text-primary-foreground shadow-[0_0_18px_-10px_rgb(34_211_238_/_0.9)]' : 'bg-white/[0.06] text-white/40'}`}>
               {match.logoUrlA ? (
                 <img src={match.logoUrlA} alt={match.teamA} className="w-full h-full object-cover" />
               ) : (
@@ -419,18 +419,18 @@ function BracketMatch({ match, tournamentGame, registrations = [], onTeamClick }
 
         {/* Team B */}
         <div
-          className={`flex justify-between items-center p-4 transition-colors ${
-            winnerB ? "bg-primary/20 border-t-primary/50" : ""
-          } ${winnerB ? "ring-1 ring-primary/30" : ""}`}
+          className={`flex items-center justify-between p-4 transition-colors ${
+            winnerB ? "border-t-primary/35 bg-primary/[0.12]" : ""
+          } ${winnerB ? "ring-1 ring-primary/20" : ""}`}
         >
           <button
             onClick={() => {
               const teamB = registrations.find(r => r.id === match.teamB);
               if (teamB) onTeamClick?.(teamB);
             }}
-            className="flex items-center gap-3 overflow-hidden hover:opacity-80 transition-opacity cursor-pointer"
+            className="flex cursor-pointer items-center gap-3 overflow-hidden transition-opacity hover:opacity-80"
           >
-            <div className={`w-8 h-8 rounded-lg flex items-center justify-center font-bold text-xs overflow-hidden ${winnerB ? 'bg-primary text-white' : 'bg-white/5 text-white/40'}`}>
+            <div className={`flex h-8 w-8 items-center justify-center overflow-hidden rounded-lg border border-white/[0.08] text-xs font-bold ${winnerB ? 'bg-primary text-primary-foreground shadow-[0_0_18px_-10px_rgb(34_211_238_/_0.9)]' : 'bg-white/[0.06] text-white/40'}`}>
               {match.logoUrlB ? (
                 <img src={match.logoUrlB} alt={match.teamB} className="w-full h-full object-cover" />
               ) : (

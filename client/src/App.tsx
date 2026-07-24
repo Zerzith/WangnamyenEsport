@@ -56,9 +56,9 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
         <TooltipProvider>
-          <div className="min-h-screen flex flex-col bg-background text-foreground font-sans">
+          <div className="app-shell min-h-screen flex flex-col bg-background text-foreground font-sans">
             <Navigation />
-            <main className="flex-grow">
+            <main className="page-frame flex-grow">
               <Router />
             </main>
             <Footer />

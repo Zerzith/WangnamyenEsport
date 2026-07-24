@@ -1,75 +1,306 @@
-@import url('https://fonts.googleapis.com/css2?family=Kanit:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Rajdhani:wght@500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700;800&family=Rajdhani:wght@500;600;700&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
-  /* Esports Theme - Blue/Dark Aesthetic */
-  --font-sans: 'Kanit', sans-serif; /* Thai-friendly font */
-  --font-display: 'Rajdhani', sans-serif; /* Gaming/Tech look */
+  color-scheme: dark;
 
-  --background: 222 47% 11%;     /* #0f172a - Slate 900 */
-  --foreground: 210 40% 98%;     /* #f8fafc - Slate 50 */
+  --font-sans: 'Kanit', sans-serif;
+  --font-display: 'Rajdhani', 'Kanit', sans-serif;
+  --font-serif: 'Kanit', sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
 
-  --card: 217 33% 17%;           /* #1e293b - Slate 800 */
+  --background: 240 10% 4%;
+  --foreground: 210 40% 98%;
+
+  --card: 240 6% 10%;
   --card-foreground: 210 40% 98%;
+  --card-border: hsl(240 6% 23% / 0.72);
 
-  --popover: 222 47% 11%;
+  --popover: 240 7% 8%;
   --popover-foreground: 210 40% 98%;
+  --popover-border: hsl(240 6% 24% / 0.8);
 
-  --primary: 211 100% 25%;       /* #004080 - Deep Blue */
-  --primary-foreground: 210 40% 98%;
+  --primary: 188 86% 53%;
+  --primary-foreground: 222 47% 8%;
+  --primary-border: hsl(188 86% 60% / 0.7);
 
-  --secondary: 217 19% 27%;      /* #334155 - Slate 700 */
-  --secondary-foreground: 210 40% 98%;
+  --secondary: 240 5% 16%;
+  --secondary-foreground: 210 40% 96%;
+  --secondary-border: hsl(240 6% 28% / 0.8);
 
-  --muted: 217 19% 27%;
-  --muted-foreground: 215 20% 65%; /* #94a3b8 - Slate 400 */
+  --muted: 240 5% 16%;
+  --muted-foreground: 215 16% 67%;
+  --muted-border: hsl(240 6% 25% / 0.72);
 
-  --accent: 199 89% 48%;         /* #0ea5e9 - Sky 500 (Electric Blue) */
-  --accent-foreground: 210 40% 98%;
+  --accent: 262 83% 67%;
+  --accent-foreground: 255 100% 98%;
+  --accent-border: hsl(262 83% 72% / 0.7);
 
-  --destructive: 0 62% 30%;
-  --destructive-foreground: 210 40% 98%;
+  --destructive: 0 72% 51%;
+  --destructive-foreground: 0 0% 100%;
+  --destructive-border: hsl(0 84% 60% / 0.7);
 
-  --border: 217 33% 17%;
-  --input: 217 33% 17%;
-  --ring: 211 100% 50%;          /* Brighter blue for focus rings */
+  --border: 240 6% 21%;
+  --input: 240 6% 14%;
+  --ring: 188 86% 53%;
+  --button-outline: hsl(240 6% 34% / 0.82);
 
-  --radius: 0.5rem;
+  --chart-1: 188 86% 53%;
+  --chart-2: 262 83% 67%;
+  --chart-3: 142 71% 45%;
+  --chart-4: 38 92% 50%;
+  --chart-5: 0 84% 60%;
+
+  --sidebar: 240 7% 8%;
+  --sidebar-foreground: 210 40% 96%;
+  --sidebar-border: hsl(240 6% 23% / 0.8);
+  --sidebar-primary: 188 86% 53%;
+  --sidebar-primary-foreground: 222 47% 8%;
+  --sidebar-primary-border: hsl(188 86% 60% / 0.7);
+  --sidebar-accent: 240 5% 16%;
+  --sidebar-accent-foreground: 210 40% 96%;
+  --sidebar-accent-border: hsl(240 6% 28% / 0.8);
+  --sidebar-ring: 188 86% 53%;
+
+  --radius: 0.875rem;
 }
 
 @layer base {
+  * {
+    @apply border-border;
+  }
+
+  html {
+    @apply min-h-full bg-background;
+    scroll-behavior: smooth;
+  }
+
   body {
-    @apply bg-background text-foreground antialiased selection:bg-primary selection:text-white;
+    @apply min-h-screen bg-background text-foreground antialiased;
     font-family: var(--font-sans);
-    background-image: 
-      radial-gradient(circle at 50% 0%, rgba(14, 165, 233, 0.15) 0%, transparent 50%),
-      radial-gradient(circle at 100% 100%, rgba(0, 64, 128, 0.2) 0%, transparent 50%);
+    background-image:
+      radial-gradient(circle at 12% 0%, rgb(34 211 238 / 0.11), transparent 27rem),
+      radial-gradient(circle at 88% 10%, rgb(139 92 246 / 0.11), transparent 26rem),
+      radial-gradient(circle at 50% 100%, rgb(8 47 73 / 0.38), transparent 42rem),
+      linear-gradient(180deg, #09090b 0%, #0b0b10 48%, #09090b 100%);
     background-attachment: fixed;
   }
 
-  h1, h2, h3, h4, h5, h6 {
+  body::before {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    content: '';
+    opacity: 0.26;
+    background-image:
+      linear-gradient(rgb(255 255 255 / 0.022) 1px, transparent 1px),
+      linear-gradient(90deg, rgb(255 255 255 / 0.022) 1px, transparent 1px);
+    background-size: 48px 48px;
+    mask-image: linear-gradient(to bottom, black, transparent 82%);
+  }
+
+  ::selection {
+    color: hsl(var(--primary-foreground));
+    background: hsl(var(--primary));
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
     font-family: var(--font-display);
-    @apply font-bold tracking-tight uppercase text-white drop-shadow-sm;
+    @apply font-bold tracking-tight text-white;
+  }
+
+  h1,
+  h2 {
+    letter-spacing: -0.035em;
+  }
+
+  a,
+  button,
+  input,
+  textarea,
+  select,
+  [role="button"] {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: rgb(9 9 11 / 0.7);
+  }
+
+  ::-webkit-scrollbar-thumb {
+    border: 3px solid transparent;
+    border-radius: 999px;
+    background: linear-gradient(180deg, rgb(34 211 238 / 0.72), rgb(139 92 246 / 0.72));
+    background-clip: padding-box;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, rgb(103 232 249 / 0.95), rgb(167 139 250 / 0.95));
+    background-clip: padding-box;
+  }
+}
+
+@layer components {
+  .app-shell {
+    @apply relative isolate min-h-screen overflow-x-clip;
+  }
+
+  .page-frame {
+    @apply relative min-h-full;
+  }
+
+  .page-frame::before {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    content: '';
+    background:
+      radial-gradient(circle at 70% 8%, rgb(34 211 238 / 0.055), transparent 19rem),
+      radial-gradient(circle at 8% 30%, rgb(139 92 246 / 0.045), transparent 25rem);
+  }
+
+  .esports-panel {
+    @apply relative overflow-hidden rounded-2xl border border-white/[0.08] bg-zinc-900/70 backdrop-blur-xl;
+    box-shadow:
+      inset 0 1px 0 rgb(255 255 255 / 0.045),
+      0 20px 50px -28px rgb(0 0 0 / 0.9);
+  }
+
+  .esports-panel::before {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    content: '';
+    opacity: 0.54;
+    background: linear-gradient(135deg, rgb(255 255 255 / 0.045), transparent 34%, transparent 72%, rgb(34 211 238 / 0.035));
+  }
+
+  .esports-panel-interactive {
+    @apply transition duration-300 ease-out;
+  }
+
+  .esports-panel-interactive:hover {
+    border-color: rgb(34 211 238 / 0.32);
+    transform: translateY(-4px);
+    box-shadow:
+      inset 0 1px 0 rgb(255 255 255 / 0.07),
+      0 26px 56px -32px rgb(0 0 0 / 0.95),
+      0 0 0 1px rgb(34 211 238 / 0.06),
+      0 0 32px -14px rgb(34 211 238 / 0.38);
+  }
+
+  .esports-kicker {
+    @apply inline-flex items-center gap-2 font-display text-xs font-bold uppercase tracking-[0.2em] text-primary;
+  }
+
+  .esports-kicker::before {
+    display: block;
+    width: 1.75rem;
+    height: 1px;
+    content: '';
+    background: currentColor;
+    box-shadow: 0 0 12px currentColor;
+  }
+
+  .section-heading {
+    @apply font-display text-3xl font-bold uppercase leading-none text-white sm:text-4xl md:text-5xl;
+  }
+
+  .glow-border {
+    box-shadow:
+      inset 0 1px 0 rgb(255 255 255 / 0.04),
+      0 0 0 1px rgb(34 211 238 / 0.04),
+      0 12px 36px -24px rgb(34 211 238 / 0.45);
+  }
+
+  .status-live {
+    @apply inline-flex items-center gap-2 rounded-full border border-emerald-400/25 bg-emerald-400/10 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.14em] text-emerald-300;
+  }
+
+  .status-live::before {
+    width: 0.45rem;
+    height: 0.45rem;
+    border-radius: 999px;
+    content: '';
+    background: rgb(52 211 153);
+    box-shadow: 0 0 0 4px rgb(52 211 153 / 0.12), 0 0 14px rgb(52 211 153 / 0.85);
+    animation: status-pulse 1.7s ease-in-out infinite;
   }
 }
 
 @layer utilities {
   .text-glow {
-    text-shadow: 0 0 20px rgba(14, 165, 233, 0.5);
+    text-shadow: 0 0 24px rgb(34 211 238 / 0.48);
   }
-  
+
+  .text-gradient {
+    background: linear-gradient(100deg, #e2e8f0 8%, #67e8f9 46%, #a78bfa 94%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
   .glass-panel {
-    @apply bg-card/60 backdrop-blur-md border border-white/10 shadow-xl;
+    @apply border border-white/[0.08] bg-zinc-900/65 backdrop-blur-xl;
+    box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.045), 0 18px 48px -30px rgb(0 0 0 / 0.85);
   }
 
   .esports-gradient {
-    @apply bg-gradient-to-r from-[#004080] to-[#0ea5e9];
+    background: linear-gradient(115deg, #22d3ee 0%, #38bdf8 45%, #8b5cf6 100%);
+  }
+
+  .esports-grid {
+    background-image:
+      linear-gradient(rgb(148 163 184 / 0.055) 1px, transparent 1px),
+      linear-gradient(90deg, rgb(148 163 184 / 0.055) 1px, transparent 1px);
+    background-size: 30px 30px;
   }
 
   .scrollbar-hide::-webkit-scrollbar {
     display: none;
+  }
+
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+}
+
+@keyframes status-pulse {
+  0%,
+  100% {
+    opacity: 0.72;
+    transform: scale(0.86);
+  }
+
+  50% {
+    opacity: 1;
+    transform: scale(1.08);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
   }
 }

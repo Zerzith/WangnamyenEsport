@@ -90,18 +90,18 @@ export default function Login() {
   };
 
   return (
-    <div className="container mx-auto px-4 py-20 flex justify-center">
-      <Card className="w-full max-w-md bg-card border-white/10 shadow-2xl">
-        <CardHeader className="text-center">
-          <CardTitle className="text-2xl font-display text-white">
+    <div className="container mx-auto flex min-h-[calc(100vh-11rem)] items-center justify-center px-4 py-16 sm:px-6">
+      <Card className="esports-panel w-full max-w-md border-white/[0.12] bg-zinc-900/75 shadow-[0_30px_80px_-36px_rgb(0_0_0_/_0.95),0_0_44px_-26px_rgb(34_211_238_/_0.32)]">
+        <CardHeader className="space-y-2 pb-4 text-center">
+          <CardTitle className="font-display text-3xl font-bold uppercase tracking-tight text-white">
             {isRegister ? "สมัครสมาชิก" : "เข้าสู่ระบบ"}
           </CardTitle>
           <CardDescription>
             {isRegister ? "สร้างบัญชีใหม่เพื่อเข้าใช้งานระบบ" : "กรอกข้อมูลเพื่อเข้าสู่บัญชีของคุณ"}
           </CardDescription>
         </CardHeader>
-        <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-4">
+        <CardContent className="pt-2">
+          <form onSubmit={handleSubmit} className="space-y-5">
             {isRegister && (
               <>
                 <div className="space-y-2">
@@ -144,7 +144,7 @@ export default function Login() {
                 required 
               />
             </div>
-            <Button type="submit" className="w-full bg-primary" disabled={isLoading || isGoogleLoading}>
+            <Button type="submit" className="h-11 w-full border-primary/45 bg-primary text-primary-foreground shadow-[0_14px_30px_-14px_rgb(34_211_238_/_0.9)] hover:bg-primary" disabled={isLoading || isGoogleLoading}>
               {isLoading && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
               {isRegister ? (
                 <><UserPlus className="w-4 h-4 mr-2" /> สมัครสมาชิก</>
@@ -158,17 +158,17 @@ export default function Login() {
             <>
               <div className="relative my-6">
                 <div className="absolute inset-0 flex items-center">
-                  <div className="w-full border-t border-white/10"></div>
+                  <div className="w-full border-t border-white/[0.09]"></div>
                 </div>
                 <div className="relative flex justify-center text-sm">
-                  <span className="px-2 bg-card text-muted-foreground">หรือ</span>
+                  <span className="rounded-full border border-white/[0.08] bg-zinc-900 px-3 py-0.5 text-xs text-muted-foreground">หรือ</span>
                 </div>
               </div>
               
               <Button 
                 type="button" 
                 variant="outline" 
-                className="w-full border-white/10 hover:bg-white/5" 
+                className="h-11 w-full border-white/15 bg-white/[0.025] hover:border-primary/35 hover:bg-primary/10"
                 onClick={handleGoogleSignIn}
                 disabled={isLoading || isGoogleLoading}
               >
@@ -182,10 +182,10 @@ export default function Login() {
             </>
           )}
         </CardContent>
-        <CardFooter className="flex justify-center border-t border-white/5 pt-6">
+        <CardFooter className="flex justify-center border-t border-white/[0.07] pt-6">
           <Button 
             variant="ghost" 
-            className="text-muted-foreground hover:text-primary"
+            className="text-muted-foreground hover:bg-primary/10 hover:text-primary"
             onClick={() => setIsRegister(!isRegister)}
             disabled={isLoading || isGoogleLoading}
           >
