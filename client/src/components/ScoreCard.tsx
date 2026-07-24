@@ -84,17 +84,16 @@ export function ScoreCard({ match }: ScoreCardProps) {
       className="relative overflow-hidden rounded-2xl border border-white/10 bg-card/50 hover:border-primary/50 transition-all group backdrop-blur-sm"
       style={match.bannerUrl ? { backgroundImage: `url(${match.bannerUrl})`, backgroundSize: 'cover', backgroundPosition: 'center', backgroundRepeat: 'no-repeat' } : {}}
     >
-      {/* Status Badge */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 z-10">
-        <span className={`
-          px-4 py-1 rounded-b-xl text-[10px] font-bold uppercase tracking-widest
-          ${getStatusColor(match.status)}
-        `}>
-          {getStatusText(match.status)}
-        </span>
-      </div>
-
-      <div className="relative z-10 p-6 pt-10">
+      <div className="relative z-10 p-6">
+        {/* Status Badge */}
+        <div className="mb-4 flex justify-center">
+          <span className={`
+            px-4 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest border
+            ${getStatusColor(match.status)}
+          `}>
+            {getStatusText(match.status)}
+          </span>
+        </div>
         <div className="flex items-center justify-between gap-4 md:gap-8">
           {/* Team A */}
           <div className="flex-1 text-center flex flex-col items-center gap-3">

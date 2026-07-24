@@ -356,8 +356,8 @@ function BracketMatch({ match, tournamentGame, registrations = [], onTeamClick }
           isOngoing ? "border-red-500/45 ring-1 ring-red-500/45 shadow-[0_0_28px_-14px_rgb(239_68_68_/_0.8)]" : ""
         } ${isCompleted ? "shadow-[0_18px_45px_-30px_rgb(0_0_0_/_0.9)]" : ""}`}
       >
-        {/* Match Status Badge - Positioned to not overlap scores */}
-        <div className="absolute -top-3 left-1/2 -translate-x-1/2 z-10">
+        {/* Match Status Badge - Inline at top of card */}
+        <div className="flex justify-center pt-3 pb-1">
           <div className={`rounded-full border border-white/15 ${statusBadge.bgColor} ${statusBadge.textColor} px-3 py-1 text-[9px] font-black uppercase tracking-[0.12em] shadow-lg backdrop-blur-md ${statusBadge.animate}`}>
             {statusBadge.text}
           </div>
