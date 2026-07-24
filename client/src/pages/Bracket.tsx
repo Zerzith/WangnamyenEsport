@@ -297,26 +297,24 @@ function BracketMatch({ match, tournamentGame, registrations = [], onTeamClick }
   const isOngoing = match.status === "ongoing";
   const isPending = match.status === "pending";
   
-  // Check if this is a RoV match - use tournament game name as primary source
-  const gameNameToCheck = tournamentGame || match.game || '';
-  const isRoV = gameNameToCheck.toLowerCase().includes('rov') || gameNameToCheck.toLowerCase().includes('realm');
-  const hasRoVData = match.winsA !== undefined && match.winsB !== undefined;
+  // Check if this match has W-D-L data (works for any game: ROV, Free Fire, Valorant, etc.)
+  const hasWLDData = match.winsA !== undefined && match.winsB !== undefined;
   
   // Debug logging
   if (match.status === 'completed') {
-    console.log(`Match ${match.id}: game='${gameNameToCheck}', isRoV=${isRoV}, hasRoVData=${hasRoVData}, winsA=${match.winsA}, winsB=${match.winsB}`);
+    console.log(`Match ${match.id}: game='${tournamentGame || match.game || ''}', hasWLDData=${hasWLDData}, winsA=${match.winsA}, winsB=${match.winsB}`);
   }
   
-  // For RoV: determine winner based on wins
-  const rovWinnerA = isCompleted && hasRoVData && (match.winsA || 0) > (match.winsB || 0);
-  const rovWinnerB = isCompleted && hasRoVData && (match.winsB || 0) > (match.winsA || 0);
+  // Determine winner: if W-D-L data exists, use wins; otherwise use score
+  const wldWinnerA = isCompleted && hasWLDData && (match.winsA || 0) > (match.winsB || 0);
+  const wldWinnerB = isCompleted && hasWLDData && (match.winsB || 0) > (match.winsA || 0);
   
-  // For regular games: determine winner based on score
-  const regularWinnerA = isCompleted && !hasRoVData && match.scoreA > match.scoreB;
-  const regularWinnerB = isCompleted && !hasRoVData && match.scoreB > match.scoreA;
+  // For games without W-D-L data: determine winner based on score
+  const regularWinnerA = isCompleted && !hasWLDData && match.scoreA > match.scoreB;
+  const regularWinnerB = isCompleted && !hasWLDData && match.scoreB > match.scoreA;
   
-  const winnerA = hasRoVData ? rovWinnerA : regularWinnerA;
-  const winnerB = hasRoVData ? rovWinnerB : regularWinnerB;
+  const winnerA = hasWLDData ? wldWinnerA : regularWinnerA;
+  const winnerB = hasWLDData ? wldWinnerB : regularWinnerB;
   
   const getStatusBadge = () => {
     if (isOngoing) {
@@ -388,7 +386,7 @@ function BracketMatch({ match, tournamentGame, registrations = [], onTeamClick }
             </span>
           </button>
           <div className="flex items-center gap-2">
-            {isRoV ? (
+            {hasWLDData ? (
               <div className="flex items-center gap-2 text-xs font-bold">
                 {match.winsA === 1 && match.drawsA === 0 && match.lossesA === 0 ? (
                   <span className="text-green-400 px-2 py-1 bg-green-400/10 rounded border border-green-400/30">ชนะ</span>
@@ -442,7 +440,7 @@ function BracketMatch({ match, tournamentGame, registrations = [], onTeamClick }
             </span>
           </button>
           <div className="flex items-center gap-2">
-            {isRoV ? (
+            {hasWLDData ? (
               <div className="flex items-center gap-2 text-xs font-bold">
                 {match.winsB === 1 && match.drawsB === 0 && match.lossesB === 0 ? (
                   <span className="text-green-400 px-2 py-1 bg-green-400/10 rounded border border-green-400/30">ชนะ</span>

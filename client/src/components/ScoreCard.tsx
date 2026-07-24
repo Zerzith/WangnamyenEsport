@@ -30,9 +30,8 @@ export function ScoreCard({ match }: ScoreCardProps) {
   const isCompleted = match.status === 'finished' || match.status === 'completed';
   const isPending = match.status === 'pending' || match.status === 'upcoming';
   
-  // Check if this is a RoV match
-  const isRoV = match.game?.toLowerCase().includes('rov') || match.game?.toLowerCase().includes('realm');
-  const hasRoVData = match.winsA !== undefined && match.winsB !== undefined;
+  // Check if this match has W-D-L data (works for any game: ROV, Free Fire, Valorant, etc.)
+  const hasWLDData = match.winsA !== undefined && match.winsB !== undefined;
   
   const getStatusText = (status: string) => {
     switch(status) {
@@ -66,16 +65,16 @@ export function ScoreCard({ match }: ScoreCardProps) {
     }
   };
   
-  // For RoV: determine winner based on wins
-  const rovWinnerA = isCompleted && hasRoVData && (match.winsA || 0) > (match.winsB || 0);
-  const rovWinnerB = isCompleted && hasRoVData && (match.winsB || 0) > (match.winsA || 0);
+  // Determine winner: if W-D-L data exists, use wins; otherwise use score
+  const wldWinnerA = isCompleted && hasWLDData && (match.winsA || 0) > (match.winsB || 0);
+  const wldWinnerB = isCompleted && hasWLDData && (match.winsB || 0) > (match.winsA || 0);
   
-  // For regular games: determine winner based on score
-  const regularWinnerA = isCompleted && !hasRoVData && match.scoreA > match.scoreB;
-  const regularWinnerB = isCompleted && !hasRoVData && match.scoreB > match.scoreA;
+  // For games without W-D-L data: determine winner based on score
+  const regularWinnerA = isCompleted && !hasWLDData && match.scoreA > match.scoreB;
+  const regularWinnerB = isCompleted && !hasWLDData && match.scoreB > match.scoreA;
   
-  const winnerA = hasRoVData ? rovWinnerA : regularWinnerA;
-  const winnerB = hasRoVData ? rovWinnerB : regularWinnerB;
+  const winnerA = hasWLDData ? wldWinnerA : regularWinnerA;
+  const winnerB = hasWLDData ? wldWinnerB : regularWinnerB;
 
   return (
     <motion.div 
@@ -119,8 +118,8 @@ export function ScoreCard({ match }: ScoreCardProps) {
 
           {/* Score Center */}
           <div className="flex flex-col items-center gap-2">
-            {/* RoV Score Display */}
-            {hasRoVData && isRoV ? (
+            {/* W-D-L Score Display */}
+            {hasWLDData ? (
               <div className="flex flex-col items-center gap-2">
                 {/* W-D-L Format */}
                 <div className="flex items-center gap-2 md:gap-4 font-display font-bold text-lg md:text-2xl bg-black/60 px-4 py-2 rounded-xl border border-white/5 shadow-2xl">
