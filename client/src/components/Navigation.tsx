@@ -31,7 +31,7 @@ export function Navigation() {
   return (
     <>
       <nav className="sticky top-0 z-50 w-full border-b border-white/[0.08] bg-zinc-950/75 shadow-[0_12px_36px_-24px_rgb(0_0_0_/_0.9)] backdrop-blur-2xl">
-        <div className="container mx-auto flex min-h-[4.5rem] items-center justify-between gap-2 px-3 sm:px-5">
+        <div className="container mx-auto flex min-h-[4rem] sm:min-h-[4.5rem] items-center justify-between gap-1.5 px-2 sm:px-5">
           {/* Logo Section */}
           <Link href="/">
             <div className="group flex flex-shrink-0 cursor-pointer items-center gap-2.5">
@@ -39,22 +39,22 @@ export function Navigation() {
                 <span className="relative z-10 font-display text-xl font-bold text-zinc-950">E</span>
                 <div className="absolute inset-0 bg-gradient-to-tr from-zinc-950/20 via-transparent to-white/30" />
               </div>
-              <span className="hidden whitespace-nowrap font-display text-lg font-bold uppercase tracking-tight text-white transition-colors group-hover:text-primary xs:block sm:text-xl">
+              <span className="hidden whitespace-nowrap font-display text-sm font-bold uppercase tracking-tight text-white transition-colors group-hover:text-primary md:block sm:text-xl">
                 WangNamYen<span className="text-primary">Esports</span>
               </span>
             </div>
           </Link>
 
           {/* Navigation Items */}
-          <div className="scrollbar-hide flex flex-1 items-center justify-center overflow-x-auto px-1 sm:px-3">
-            <div className="flex items-center gap-1 rounded-xl border border-white/[0.055] bg-white/[0.018] p-1">
+          <div className="scrollbar-hide flex flex-1 items-center justify-center overflow-x-auto px-0.5 sm:px-3">
+            <div className="flex items-center gap-0.5 sm:gap-1 rounded-xl border border-white/[0.055] bg-white/[0.018] p-0.5 sm:p-1">
               {navItems.map((item) => {
                 const isActive = location === item.href;
                 return (
                   <Link key={item.href} href={item.href}>
                     <div 
                       className={`
-                        relative isolate flex cursor-pointer flex-col items-center gap-1 rounded-lg px-2 py-1.5 text-[10px] font-semibold transition-all sm:flex-row sm:gap-2 sm:px-3 sm:py-2 sm:text-sm whitespace-nowrap
+                        relative isolate flex cursor-pointer flex-col items-center gap-0.5 rounded-lg px-1.5 py-1 text-[9px] font-semibold transition-all sm:flex-row sm:gap-2 sm:px-3 sm:py-2 sm:text-sm whitespace-nowrap
                         ${isActive ? 'text-primary' : 'text-muted-foreground hover:bg-white/[0.06] hover:text-white'}
                       `}
                     >
@@ -77,7 +77,7 @@ export function Navigation() {
                 <Link href={adminItem.href}>
                   <div 
                     className={`
-                      relative isolate flex cursor-pointer flex-col items-center gap-1 rounded-lg px-2 py-1.5 text-[10px] font-semibold transition-all sm:flex-row sm:gap-2 sm:px-3 sm:py-2 sm:text-sm whitespace-nowrap
+                      relative isolate flex cursor-pointer flex-col items-center gap-0.5 rounded-lg px-1.5 py-1 text-[9px] font-semibold transition-all sm:flex-row sm:gap-2 sm:px-3 sm:py-2 sm:text-sm whitespace-nowrap
                       ${location === adminItem.href ? 'text-accent' : 'text-accent/85 hover:bg-accent/10 hover:text-white'}
                     `}
                   >
@@ -99,9 +99,9 @@ export function Navigation() {
           </div>
 
           {/* User Actions Section */}
-          <div className="flex flex-shrink-0 items-center gap-1.5 sm:gap-3">
+          <div className="flex flex-shrink-0 items-center gap-1 sm:gap-3">
             {user ? (
-              <div className="flex items-center gap-1.5 sm:gap-3">
+                <div className="flex items-center gap-1 sm:gap-3">
                 <div className="hidden flex-col items-end lg:flex">
                   <span className="whitespace-nowrap text-sm font-bold leading-none text-white">{user.displayName || 'Gamer'}</span>
                   <span className="mt-1 text-[10px] font-bold uppercase tracking-[0.14em] text-primary">Online</span>
@@ -112,7 +112,7 @@ export function Navigation() {
                       src={user.photoURL} 
                       name={user.displayName || "Gamer"} 
                       size="sm" 
-                      className="ring-2 ring-primary/20"
+                      className="h-8 w-8 ring-2 ring-primary/20"
                     />
                   </div>
                 </Link>
@@ -120,7 +120,7 @@ export function Navigation() {
                   variant="ghost" 
                   size="icon" 
                   onClick={signOut}
-                  className="h-9 w-9 text-muted-foreground hover:bg-destructive/10 hover:text-destructive sm:h-10 sm:w-10"
+                  className="h-8 w-8 text-muted-foreground hover:bg-destructive/10 hover:text-destructive sm:h-10 sm:w-10"
                 >
                   <LogOut className="h-4 w-4 sm:h-5 sm:w-5" />
                 </Button>
