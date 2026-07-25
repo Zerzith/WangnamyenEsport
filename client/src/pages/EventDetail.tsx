@@ -763,7 +763,7 @@ export default function EventDetail() {
                                   newMembers[index] = { ...newMembers[index], studentId: e.target.value };
                                   setFormData({ ...formData, members: newMembers });
                                 }}
-                                placeholder="รหัส 10 หลัก"
+                                placeholder="รหัสบัตรนักเรียน/นักศึกษา"
                                 className="bg-white/5 border-white/10 h-11 rounded-xl focus:ring-primary"
                                 required={index < 3}
                               />
@@ -779,7 +779,7 @@ export default function EventDetail() {
                                   newMembers[index] = { ...newMembers[index], department: e.target.value };
                                   setFormData({ ...formData, members: newMembers });
                                 }}
-                                placeholder="เช่น คอมพิวเตอร์"
+                                placeholder="เช่น เทคโนโลยีสารสนเทศ"
                                 className="bg-white/5 border-white/10 h-11 rounded-xl focus:ring-primary"
                                 required={index < 3}
                               />
@@ -795,7 +795,7 @@ export default function EventDetail() {
                                   newMembers[index] = { ...newMembers[index], grade: e.target.value };
                                   setFormData({ ...formData, members: newMembers });
                                 }}
-                                placeholder="เช่น ปวช. 1"
+                                placeholder="เช่น ปวช. 1 / ปวส. 1 / ปวส. 1 ทวิ"
                                 className="bg-white/5 border-white/10 h-11 rounded-xl focus:ring-primary"
                                 required={index < 3}
                               />
