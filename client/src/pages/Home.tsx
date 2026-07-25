@@ -205,7 +205,7 @@ export default function Home() {
               className="mb-7 inline-flex items-center gap-2 rounded-full border border-primary/25 bg-primary/[0.09] px-4 py-2 text-xs font-bold tracking-[0.13em] text-primary shadow-[0_0_28px_-12px_rgb(34_211_238_/_0.75)] backdrop-blur-md"
             >
               <Gamepad2 className="w-4 h-4" />
-              WANGNAMYEN ESPORTS LEAGUE
+              WANGNAMYEN ESPORTS
             </motion.div>
             <motion.h1
               initial={{ opacity: 0, y: 20 }}
