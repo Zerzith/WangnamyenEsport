@@ -157,6 +157,8 @@ export default function EventDetail() {
     members: [
       { ...initialMember },
       { ...initialMember },
+      { ...initialMember },
+      { ...initialMember },
       { ...initialMember }
     ],
     logoUrl: "",
