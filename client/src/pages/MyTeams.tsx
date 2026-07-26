@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useAuth } from "@/hooks/use-auth";
 import { useLocation } from "wouter";
-import { collection, query, where, onSnapshot, updateDoc, doc } from "firebase/firestore";
+import { collection, query, where, onSnapshot, updateDoc, doc, getDocs } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { useToast } from "@/hooks/use-toast";
 import { Card, CardHeader, CardContent, CardTitle, CardDescription } from "@/components/ui/card";
@@ -57,22 +57,33 @@ export default function MyTeams() {
       where("userId", "==", user.uid)
     );
 
+    // ดึง event titles ครั้งเดียวด้วย getDocs แทนการสร้าง onSnapshot ซ้อน
+    const fetchEventTitles = async (): Promise<Record<string, string>> => {
+      try {
+        const eventsSnapshot = await getDocs(collection(db, "events"));
+        const map: Record<string, string> = {};
+        eventsSnapshot.docs.forEach((d) => {
+          map[d.id] = (d.data() as any).title || "";
+        });
+        return map;
+      } catch {
+        return {};
+      }
+    };
+
+    let eventMap: Record<string, string> = {};
+    fetchEventTitles().then(m => { eventMap = m; });
+
     const unsubscribe = onSnapshot(q, async (snapshot) => {
-      const teamsData = snapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data(),
+      // Refresh event map if needed
+      if (Object.keys(eventMap).length === 0) {
+        eventMap = await fetchEventTitles();
+      }
+
+      const teamsData = snapshot.docs.map(d => ({
+        id: d.id,
+        ...d.data(),
       } as TeamRegistration));
-
-      // Fetch event titles
-      const eventsQuery = query(collection(db, "events"));
-      const eventsSnapshot = await new Promise<any>((resolve) => {
-        onSnapshot(eventsQuery, resolve);
-      });
-
-      const eventMap: Record<string, string> = {};
-      eventsSnapshot.docs.forEach((doc: any) => {
-        eventMap[doc.id] = doc.data().title;
-      });
 
       const enrichedTeams = teamsData.map(team => ({
         ...team,

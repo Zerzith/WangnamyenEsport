@@ -146,18 +146,33 @@ export default function AdminDashboard() {
       setTeams(teamsData);
     });
 
+    // Cache ข้อมูล user เพื่อไม่ต้อง fetch ซ้ำทุกครั้งที่ snapshot เปลี่ยน
+    const userCache: Record<string, { displayName: string; email: string }> = {};
+
     const qRegs = query(collection(db, "registrations"), orderBy("createdAt", "desc"));
     const unsubRegs = onSnapshot(qRegs, async (snap) => {
       const regsWithUserDetails = await Promise.all(
         snap.docs.map(async (d) => {
           const regData = { id: d.id, ...d.data() } as any;
           if (regData.userId) {
-            const userDoc = await getDoc(doc(db, "users", regData.userId));
-            if (userDoc.exists()) {
-              const userData = userDoc.data();
-              regData.applicantDisplayName = userData.displayName || "N/A";
-              regData.applicantEmail = userData.email || "N/A";
-              regData.members = regData.members;
+            if (!userCache[regData.userId]) {
+              try {
+                const userDoc = await getDoc(doc(db, "users", regData.userId));
+                if (userDoc.exists()) {
+                  const userData = userDoc.data();
+                  userCache[regData.userId] = {
+                    displayName: userData.displayName || "N/A",
+                    email: userData.email || "N/A",
+                  };
+                }
+              } catch (e) {
+                console.error("Error fetching user:", e);
+              }
+            }
+            const cached = userCache[regData.userId];
+            if (cached) {
+              regData.applicantDisplayName = cached.displayName;
+              regData.applicantEmail = cached.email;
             }
           }
           return regData;

@@ -82,7 +82,7 @@ const EventListItem = ({ item, index }: { item: Event, index: number }) => {
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: index * 0.1 }}
+      transition={{ delay: Math.min(index * 0.08, 0.4) }}
     >
       <Link href={`/event/${item.id}`}>
         <Card className={`group bg-card/50 border-white/10 hover:border-primary/30 transition-all cursor-pointer overflow-hidden h-full ${!isOpen || isFull ? 'opacity-90' : ''}`}>

@@ -86,7 +86,7 @@
       radial-gradient(circle at 88% 10%, rgb(139 92 246 / 0.11), transparent 26rem),
       radial-gradient(circle at 50% 100%, rgb(8 47 73 / 0.38), transparent 42rem),
       linear-gradient(180deg, #09090b 0%, #0b0b10 48%, #09090b 100%);
-    background-attachment: fixed;
+    background-attachment: scroll;
   }
 
   body::before {
@@ -179,6 +179,7 @@
     box-shadow:
       inset 0 1px 0 rgb(255 255 255 / 0.045),
       0 20px 50px -28px rgb(0 0 0 / 0.9);
+    contain: layout style;
   }
 
   .esports-panel::before {
@@ -192,6 +193,7 @@
 
   .esports-panel-interactive {
     @apply transition duration-300 ease-out;
+    will-change: transform;
   }
 
   .esports-panel-interactive:hover {
@@ -269,6 +271,7 @@
       linear-gradient(rgb(148 163 184 / 0.055) 1px, transparent 1px),
       linear-gradient(90deg, rgb(148 163 184 / 0.055) 1px, transparent 1px);
     background-size: 30px 30px;
+    transform: translateZ(0);
   }
 
   .scrollbar-hide::-webkit-scrollbar {

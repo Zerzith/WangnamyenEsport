@@ -35,7 +35,8 @@ export default defineConfig({
         manualChunks: {
           'framer-motion': ['framer-motion'],
           'react-query': ['@tanstack/react-query'],
-          'firebase-app': ['firebase/app', 'firebase/auth', 'firebase/firestore'],
+          'firebase-app': ['firebase/app', 'firebase/auth', 'firebase/firestore', 'firebase/storage'],
+          'emoji-picker': ['emoji-picker-react'],
           'radix-ui': [
             '@radix-ui/react-accordion',
             '@radix-ui/react-alert-dialog',

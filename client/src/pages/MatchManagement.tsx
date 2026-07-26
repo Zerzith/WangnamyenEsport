@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "@/hooks/use-auth";
 import { useLocation } from "wouter";
-import { collection, query, where, onSnapshot, updateDoc, doc, getDocs } from "firebase/firestore";
+import { collection, query, where, onSnapshot, updateDoc, doc, getDocs, getDoc } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { useToast } from "@/hooks/use-toast";
 import { Card, CardHeader, CardContent, CardTitle, CardDescription } from "@/components/ui/card";
@@ -121,44 +121,42 @@ export default function MatchManagement() {
 
       matchesData = [...matchesData, ...matchesData2];
 
-      // Fetch team names and event titles
+      // Fetch team names and event titles โดยใช้ getDoc แทน getDocs+query เพื่อประสิทธิภาพ
       const enrichedMatches = await Promise.all(
         matchesData.map(async (match) => {
           let teamAName = match.teamA;
           let teamBName = match.teamB;
           let eventTitle = "";
 
-          // Fetch team A name
+          // Fetch team A name from registrations (direct doc lookup)
           try {
-            const teamADoc = await getDocs(
-              query(collection(db, "teams"), where("id", "==", match.teamA))
-            );
-            if (teamADoc.docs.length > 0) {
-              teamAName = teamADoc.docs[0].data().teamName || teamADoc.docs[0].data().name;
+            const teamADoc = await getDoc(doc(db, "registrations", match.teamA));
+            if (teamADoc.exists()) {
+              const d = teamADoc.data() as any;
+              teamAName = d.teamName || d.name || match.teamA;
             }
           } catch (error) {
             console.error("Error fetching team A:", error);
           }
 
-          // Fetch team B name
+          // Fetch team B name from registrations (direct doc lookup)
           try {
-            const teamBDoc = await getDocs(
-              query(collection(db, "teams"), where("id", "==", match.teamB))
-            );
-            if (teamBDoc.docs.length > 0) {
-              teamBName = teamBDoc.docs[0].data().teamName || teamBDoc.docs[0].data().name;
+            const teamBDoc = await getDoc(doc(db, "registrations", match.teamB));
+            if (teamBDoc.exists()) {
+              const d = teamBDoc.data() as any;
+              teamBName = d.teamName || d.name || match.teamB;
             }
           } catch (error) {
             console.error("Error fetching team B:", error);
           }
 
-          // Fetch event title
+          // Fetch event title (direct doc lookup)
           try {
-            const eventDoc = await getDocs(
-              query(collection(db, "events"), where("id", "==", match.eventId))
-            );
-            if (eventDoc.docs.length > 0) {
-              eventTitle = eventDoc.docs[0].data().title;
+            if (match.eventId) {
+              const eventDoc = await getDoc(doc(db, "events", match.eventId));
+              if (eventDoc.exists()) {
+                eventTitle = (eventDoc.data() as any).title || "";
+              }
             }
           } catch (error) {
             console.error("Error fetching event:", error);

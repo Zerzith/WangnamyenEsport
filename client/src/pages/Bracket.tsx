@@ -39,6 +39,9 @@ interface Tournament {
   status: string;
 }
 
+// Cache สำหรับเก็บข้อมูลทีมเพื่อไม่ต้อง fetch ซ้ำ
+const teamDataCache: Record<string, { teamName: string; logoUrl?: string }> = {};
+
 export default function Bracket() {
   const [tournaments, setTournaments] = useState<Tournament[]>([]);
   const [selectedTournament, setSelectedTournament] = useState<Tournament | null>(null);
@@ -109,29 +112,36 @@ export default function Bracket() {
         return timeA - timeB;
       });
       
-      // Fetch team names and logos from registrations collection
+      // Fetch team names and logos โดยใช้ cache เพื่อลด Firestore reads
+      const fetchTeamData = async (teamId: string) => {
+        if (!teamId) return null;
+        if (teamDataCache[teamId]) return teamDataCache[teamId];
+        try {
+          const teamDoc = await getDoc(doc(db, "registrations", teamId));
+          if (teamDoc.exists()) {
+            const data = teamDoc.data() as any;
+            teamDataCache[teamId] = { teamName: data.teamName, logoUrl: data.logoUrl };
+            return teamDataCache[teamId];
+          }
+        } catch (error) {
+          console.error("Error fetching team data:", teamId, error);
+        }
+        return null;
+      };
+
       const matchesWithLogos = await Promise.all(
         matchesData.map(async (match) => {
-          try {
-            // ดึงข้อมูลทีม A จาก registrations โดยใช้ registration document ID
-            const teamADoc = await getDoc(doc(db, "registrations", match.teamA));
-            const teamAData = teamADoc.exists() ? teamADoc.data() : null;
-            
-            // ดึงข้อมูลทีม B จาก registrations โดยใช้ registration document ID
-            const teamBDoc = await getDoc(doc(db, "registrations", match.teamB));
-            const teamBData = teamBDoc.exists() ? teamBDoc.data() : null;
-            
-            return {
-              ...match,
-              teamAName: teamAData?.teamName || match.teamA,
-              teamBName: teamBData?.teamName || match.teamB,
-              logoUrlA: teamAData?.logoUrl || undefined,
-              logoUrlB: teamBData?.logoUrl || undefined,
-            };
-          } catch (error) {
-            console.error("Error fetching team data for match:", match.id, error);
-            return match;
-          }
+          const [teamAData, teamBData] = await Promise.all([
+            fetchTeamData(match.teamA),
+            fetchTeamData(match.teamB),
+          ]);
+          return {
+            ...match,
+            teamAName: teamAData?.teamName || match.teamA,
+            teamBName: teamBData?.teamName || match.teamB,
+            logoUrlA: teamAData?.logoUrl || undefined,
+            logoUrlB: teamBData?.logoUrl || undefined,
+          };
         })
       );
       
@@ -300,10 +310,7 @@ function BracketMatch({ match, tournamentGame, registrations = [], onTeamClick }
   // Check if this match has W-D-L data (works for any game: ROV, Free Fire, Valorant, etc.)
   const hasWLDData = match.winsA !== undefined && match.winsB !== undefined;
   
-  // Debug logging
-  if (match.status === 'completed') {
-    console.log(`Match ${match.id}: game='${tournamentGame || match.game || ''}', hasWLDData=${hasWLDData}, winsA=${match.winsA}, winsB=${match.winsB}`);
-  }
+  // (debug logging removed for production performance)
   
   // Determine winner: if W-D-L data exists, use wins; otherwise use score
   const wldWinnerA = isCompleted && hasWLDData && (match.winsA || 0) > (match.winsB || 0);

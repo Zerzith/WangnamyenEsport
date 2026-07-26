@@ -1,12 +1,11 @@
 import { useEffect, useState } from "react";
-import { collection, onSnapshot, query, where, orderBy } from "firebase/firestore";
+import { collection, onSnapshot, query, where, orderBy, getDoc, doc } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Loader2, Trophy, Users, Gamepad2, Award } from "lucide-react";
 import { motion } from "framer-motion";
 import { AvatarCustom } from "@/components/ui/avatar-custom";
 import { TeamMembersModal } from "@/components/TeamMembersModal";
-import { useState, useEffect } from "react";
 
 interface TeamMember {
   name: string;
@@ -16,6 +15,7 @@ interface TeamMember {
   email: string;
   department: string;
   grade: string;
+  isSubstitute?: boolean;
 }
 
 interface ApprovedTeam {
@@ -35,6 +35,8 @@ export default function HallOfFame() {
   const [selectedGame, setSelectedGame] = useState<string>("All");
   const [selectedTeam, setSelectedTeam] = useState<ApprovedTeam | null>(null);
   const [showTeamModal, setShowTeamModal] = useState(false);
+  // Cache event titles เพื่อไม่ต้อง fetch ซ้ำ
+  const [eventTitleCache, setEventTitleCache] = useState<Record<string, string>>({});
   const games = ["All", "Valorant", "RoV", "Free Fire"];
 
   useEffect(() => {
@@ -45,35 +47,47 @@ export default function HallOfFame() {
     );
 
     const unsubscribe = onSnapshot(q, async (snapshot) => {
-      const teamsData = await Promise.all(
-        snapshot.docs.map(async (doc) => {
-          const data = doc.data() as any;
-          let eventTitle = "";
-          
-          // Fetch event title
-          if (data.eventId) {
-            try {
-              const eventDoc = await db.collection("events").doc(data.eventId).get();
-              if (eventDoc.exists) {
-                eventTitle = eventDoc.data().title;
-              }
-            } catch (error) {
-              console.error("Error fetching event:", error);
-            }
-          }
+      // รวบรวม eventId ที่ยังไม่มีใน cache
+      const missingEventIds = new Set<string>();
+      snapshot.docs.forEach(doc => {
+        const data = doc.data();
+        if (data.eventId && !eventTitleCache[data.eventId]) {
+          missingEventIds.add(data.eventId);
+        }
+      });
 
-          return {
-            id: doc.id,
-            teamName: data.teamName,
-            game: data.game,
-            logoUrl: data.logoUrl,
-            members: data.members || [],
-            approvedAt: data.approvedAt,
-            eventId: data.eventId,
-            eventTitle: eventTitle,
-          };
+      // Fetch event titles ที่ยังขาดอยู่ (batch)
+      const newTitles: Record<string, string> = { ...eventTitleCache };
+      await Promise.all(
+        Array.from(missingEventIds).map(async (eventId) => {
+          try {
+            const eventDoc = await getDoc(doc(db, "events", eventId));
+            if (eventDoc.exists()) {
+              newTitles[eventId] = (eventDoc.data() as any).title || "";
+            }
+          } catch (error) {
+            console.error("Error fetching event:", error);
+          }
         })
       );
+
+      if (missingEventIds.size > 0) {
+        setEventTitleCache(newTitles);
+      }
+
+      const teamsData: ApprovedTeam[] = snapshot.docs.map((d) => {
+        const data = d.data() as any;
+        return {
+          id: d.id,
+          teamName: data.teamName,
+          game: data.game,
+          logoUrl: data.logoUrl,
+          members: data.members || [],
+          approvedAt: data.approvedAt,
+          eventId: data.eventId,
+          eventTitle: newTitles[data.eventId] || "",
+        };
+      });
 
       setTeams(teamsData);
       setLoading(false);
@@ -85,8 +99,8 @@ export default function HallOfFame() {
     return () => unsubscribe();
   }, []);
 
-  const filteredTeams = selectedGame === "All" 
-    ? teams 
+  const filteredTeams = selectedGame === "All"
+    ? teams
     : teams.filter(team => team.game === selectedGame);
 
   if (loading) {
@@ -139,7 +153,7 @@ export default function HallOfFame() {
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ delay: index * 0.1 }}
+              transition={{ delay: Math.min(index * 0.08, 0.4) }}
             >
               <Card className="bg-card/50 border-white/10 hover:border-primary/30 transition-all overflow-hidden group">
                 <CardHeader className="pb-4">
@@ -212,7 +226,6 @@ export default function HallOfFame() {
                                 <p className="text-yellow-500 font-semibold">แฟน</p>
                               </div>
                             )}
-
                           </div>
                         </div>
                       ))}

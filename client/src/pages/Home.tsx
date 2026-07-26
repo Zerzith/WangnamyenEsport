@@ -4,8 +4,8 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { ArrowRight, Trophy, Users, Calendar, Loader2, Megaphone, Clock, AlertCircle, Gamepad2 } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
-import { useEffect, useState } from "react";
-import { collection, onSnapshot, query, where, orderBy, limit } from "firebase/firestore";
+import { useEffect, useState, memo } from "react";
+import { collection, onSnapshot, query, where, orderBy, limit, getDocs } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 
 const HERO_BG = "https://images.unsplash.com/photo-1552820728-8ac41f1ce891?q=80&w=2070&auto=format&fit=crop";
@@ -32,20 +32,133 @@ interface News {
   author: string;
 }
 
+const formatDate = (dateString?: string) => {
+  if (!dateString) return "";
+  try {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('th-TH', { year: 'numeric', month: 'short', day: 'numeric' });
+  } catch {
+    return dateString;
+  }
+};
+
+// ย้าย EventCard ออกมาเป็น top-level component เพื่อป้องกัน re-mount ทุกครั้งที่ parent re-render
+const EventCard = memo(({ event, index, registeredCount, user }: {
+  event: Event;
+  index: number;
+  registeredCount: number;
+  user: any;
+}) => {
+  const isFull = event.maxTeams ? registeredCount >= event.maxTeams : false;
+
+  const isExpired = event.registrationDeadline ? (() => {
+    const deadline = new Date(event.registrationDeadline);
+    if (!event.registrationDeadline.includes('T')) {
+      deadline.setHours(23, 59, 59, 999);
+    }
+    return deadline < new Date();
+  })() : false;
+
+  const isOpen = (event.status === 'open' || (event.status !== 'closed' && !isExpired)) && !isFull;
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ delay: Math.min(index * 0.08, 0.4) }}
+      className={`group relative h-[25rem] overflow-hidden rounded-2xl border bg-zinc-950/60 shadow-panel transition-all duration-500 ${
+        !isOpen || isFull ? "border-red-500/35 opacity-90 shadow-[0_20px_50px_-30px_rgb(239_68_68_/_0.45)]" : "border-white/[0.1] hover:-translate-y-1.5 hover:border-primary/50 hover:shadow-panel-hover"
+      }`}
+    >
+      <Link href={`/event/${event.id}`}>
+        <div className="absolute inset-0 cursor-pointer">
+          <img
+            src={event.bannerUrl || HERO_BG}
+            alt={event.title}
+            loading="lazy"
+            className="absolute inset-0 h-full w-full object-cover opacity-70 saturate-[0.88] transition-transform duration-700 group-hover:scale-110 group-hover:saturate-100"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/65 to-zinc-950/5" />
+        </div>
+      </Link>
+
+      <div className="absolute top-4 right-4 z-10 flex gap-2">
+        {!isOpen ? (
+          <div className="flex items-center gap-1.5 rounded-full border border-red-400/25 bg-red-500/15 px-3 py-1.5 text-[10px] font-black uppercase tracking-widest text-red-200 shadow-[0_0_18px_-9px_rgb(239_68_68_/_0.8)] backdrop-blur-md">
+            <AlertCircle className="w-3 h-3" />
+            ปิดรับสมัคร
+          </div>
+        ) : isFull ? (
+          <div className="flex items-center gap-1.5 rounded-full border border-red-400/25 bg-red-500/15 px-3 py-1.5 text-[10px] font-black uppercase tracking-widest text-red-200 shadow-[0_0_18px_-9px_rgb(239_68_68_/_0.8)] backdrop-blur-md">
+            <AlertCircle className="w-3 h-3" />
+            เต็มแล้ว
+          </div>
+        ) : (
+          <div className="flex items-center gap-1.5 rounded-full border border-emerald-400/25 bg-emerald-400/15 px-3 py-1.5 text-[10px] font-black uppercase tracking-widest text-emerald-200 shadow-[0_0_18px_-9px_rgb(52_211_153_/_0.8)] backdrop-blur-md">
+            <div className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
+            เปิดรับสมัคร
+          </div>
+        )}
+      </div>
+
+      <div className="pointer-events-none absolute bottom-0 left-0 w-full p-6 sm:p-7">
+        <div className="flex items-center gap-2 mb-3 flex-wrap">
+          <span className="rounded-full border border-primary/25 bg-primary/15 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.14em] text-primary backdrop-blur-md">
+            {event.game}
+          </span>
+          <span className="flex items-center gap-1 text-[10px] text-white/80 font-bold uppercase tracking-wider">
+            <Calendar className="w-3 h-3 text-primary" /> {event.date}
+          </span>
+        </div>
+
+        <h3 className="pointer-events-auto mb-3 font-display text-2xl font-bold text-white transition-colors group-hover:text-primary">
+          <Link href={`/event/${event.id}`}>{event.title}</Link>
+        </h3>
+
+        <div className="flex items-center justify-between mt-4">
+          <div className="flex items-center gap-2 rounded-xl border border-white/10 bg-zinc-950/55 px-3 py-1.5 text-sm backdrop-blur-md">
+            <Users className="w-4 h-4 text-primary" />
+            <span className={isFull ? "text-red-400 font-bold" : "text-white font-bold"}>
+              {registeredCount}/{event.maxTeams || 16} ทีม
+            </span>
+          </div>
+          {isOpen && !isFull && (
+            <Link href={user ? `/event/${event.id}` : "/login"}>
+              <Button size="sm" className="pointer-events-auto rounded-xl border-primary/45 bg-primary px-4 font-bold text-primary-foreground shadow-[0_12px_24px_-12px_rgb(34_211_238_/_0.9)] hover:bg-primary">
+                สมัครเลย
+              </Button>
+            </Link>
+          )}
+          {(!isOpen || isFull) && (
+            <Link href={`/event/${event.id}`}>
+              <Button size="sm" variant="outline" className="pointer-events-auto rounded-xl border-white/15 bg-white/[0.035] px-4 font-bold text-white/80 hover:border-primary/35 hover:bg-primary/10 hover:text-primary">
+                ดูรายละเอียด
+              </Button>
+            </Link>
+          )}
+        </div>
+      </div>
+    </motion.div>
+  );
+});
+
 export default function Home() {
   const { user } = useAuth();
   const [events, setEvents] = useState<Event[]>([]);
   const [news, setNews] = useState<News[]>([]);
   const [loading, setLoading] = useState(true);
   const [champions, setChampions] = useState<Event[]>([]);
+  // เก็บ registeredCount ทุก event ไว้ใน map เดียว แทนที่จะสร้าง listener แยกทุกการ์ด
+  const [registrationCounts, setRegistrationCounts] = useState<Record<string, number>>({});
 
   useEffect(() => {
     // ดึงข้อมูลการแข่งขัน
     const qEvents = query(
-      collection(db, "events"), 
+      collection(db, "events"),
       orderBy("createdAt", "desc")
     );
-    
+
     const unsubEvents = onSnapshot(qEvents, (snapshot) => {
       const eventsList = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Event));
       setEvents(eventsList);
@@ -59,135 +172,28 @@ export default function Home() {
       setNews(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as any)));
     });
 
+    // ดึง registration counts ทั้งหมดในครั้งเดียว (1 listener แทน N listeners)
+    const qRegs = query(
+      collection(db, "registrations"),
+      where("status", "==", "approved")
+    );
+    const unsubRegs = onSnapshot(qRegs, (snapshot) => {
+      const counts: Record<string, number> = {};
+      snapshot.docs.forEach(doc => {
+        const eventId = doc.data().eventId;
+        if (eventId) {
+          counts[eventId] = (counts[eventId] || 0) + 1;
+        }
+      });
+      setRegistrationCounts(counts);
+    });
+
     return () => {
       unsubEvents();
       unsubNews();
+      unsubRegs();
     };
   }, []);
-
-  const formatDate = (dateString?: string) => {
-    if (!dateString) return "";
-    try {
-      const date = new Date(dateString);
-      return date.toLocaleDateString('th-TH', { year: 'numeric', month: 'short', day: 'numeric' });
-    } catch {
-      return dateString;
-    }
-  };
-
-  // Component สำหรับการ์ดแสดงการแข่งขัน
-  const EventCard = ({ event, index }: { event: Event, index: number }) => {
-    const [registeredCount, setRegisteredCount] = useState(event.registeredTeams || 0);
-
-    useEffect(() => {
-      const qRegs = query(
-        collection(db, "registrations"),
-        where("eventId", "==", event.id),
-        where("status", "==", "approved")
-      );
-      
-      const unsubRegs = onSnapshot(qRegs, (snapshot) => {
-        setRegisteredCount(snapshot.docs.length);
-      });
-
-      return () => unsubRegs();
-    }, [event.id]);
-
-    const isFull = event.maxTeams ? registeredCount >= event.maxTeams : false;
-    
-    // Check if registration deadline has passed
-    // registrationDeadline can be in format: YYYY-MM-DD or YYYY-MM-DDTHH:mm
-    const isExpired = event.registrationDeadline ? (() => {
-      const deadline = new Date(event.registrationDeadline);
-      // If time is not specified, set to end of day (23:59:59)
-      if (!event.registrationDeadline.includes('T')) {
-        deadline.setHours(23, 59, 59, 999);
-      }
-      return deadline < new Date();
-    })() : false;
-    
-    const isOpen = (event.status === 'open' || (event.status !== 'closed' && !isExpired)) && !isFull;
-
-    return (
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ delay: index * 0.1 }}
-        className={`group relative h-[25rem] overflow-hidden rounded-2xl border bg-zinc-950/60 shadow-panel transition-all duration-500 ${
-          !isOpen || isFull ? "border-red-500/35 opacity-90 shadow-[0_20px_50px_-30px_rgb(239_68_68_/_0.45)]" : "border-white/[0.1] hover:-translate-y-1.5 hover:border-primary/50 hover:shadow-panel-hover"
-        }`}
-      >
-        <Link href={`/event/${event.id}`}>
-          <div className="absolute inset-0 cursor-pointer">
-            <img 
-              src={event.bannerUrl || HERO_BG}
-              alt={event.title}
-              className="absolute inset-0 h-full w-full object-cover opacity-70 saturate-[0.88] transition-transform duration-700 group-hover:scale-110 group-hover:saturate-100"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/65 to-zinc-950/5" />
-          </div>
-        </Link>
-        
-        <div className="absolute top-4 right-4 z-10 flex gap-2">
-          {!isOpen ? (
-            <div className="flex items-center gap-1.5 rounded-full border border-red-400/25 bg-red-500/15 px-3 py-1.5 text-[10px] font-black uppercase tracking-widest text-red-200 shadow-[0_0_18px_-9px_rgb(239_68_68_/_0.8)] backdrop-blur-md">
-              <AlertCircle className="w-3 h-3" />
-              ปิดรับสมัคร
-            </div>
-          ) : isFull ? (
-            <div className="flex items-center gap-1.5 rounded-full border border-red-400/25 bg-red-500/15 px-3 py-1.5 text-[10px] font-black uppercase tracking-widest text-red-200 shadow-[0_0_18px_-9px_rgb(239_68_68_/_0.8)] backdrop-blur-md">
-              <AlertCircle className="w-3 h-3" />
-              เต็มแล้ว
-            </div>
-          ) : (
-            <div className="flex items-center gap-1.5 rounded-full border border-emerald-400/25 bg-emerald-400/15 px-3 py-1.5 text-[10px] font-black uppercase tracking-widest text-emerald-200 shadow-[0_0_18px_-9px_rgb(52_211_153_/_0.8)] backdrop-blur-md">
-              <div className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
-              เปิดรับสมัคร
-            </div>
-          )}
-        </div>
-        
-        <div className="pointer-events-none absolute bottom-0 left-0 w-full p-6 sm:p-7">
-          <div className="flex items-center gap-2 mb-3 flex-wrap">
-            <span className="rounded-full border border-primary/25 bg-primary/15 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.14em] text-primary backdrop-blur-md">
-              {event.game}
-            </span>
-            <span className="flex items-center gap-1 text-[10px] text-white/80 font-bold uppercase tracking-wider">
-              <Calendar className="w-3 h-3 text-primary" /> {event.date}
-            </span>
-          </div>
-          
-          <h3 className="pointer-events-auto mb-3 font-display text-2xl font-bold text-white transition-colors group-hover:text-primary">
-            <Link href={`/event/${event.id}`}>{event.title}</Link>
-          </h3>
-          
-          <div className="flex items-center justify-between mt-4">
-            <div className="flex items-center gap-2 rounded-xl border border-white/10 bg-zinc-950/55 px-3 py-1.5 text-sm backdrop-blur-md">
-              <Users className="w-4 h-4 text-primary" />
-              <span className={isFull ? "text-red-400 font-bold" : "text-white font-bold"}>
-                {registeredCount}/{event.maxTeams || 16} ทีม
-              </span>
-            </div>
-            {isOpen && !isFull && (
-              <Link href={user ? `/event/${event.id}` : "/login"}>
-                <Button size="sm" className="pointer-events-auto rounded-xl border-primary/45 bg-primary px-4 font-bold text-primary-foreground shadow-[0_12px_24px_-12px_rgb(34_211_238_/_0.9)] hover:bg-primary">
-                  สมัครเลย
-                </Button>
-              </Link>
-            )}
-            {(!isOpen || isFull) && (
-              <Link href={`/event/${event.id}`}>
-                <Button size="sm" variant="outline" className="pointer-events-auto rounded-xl border-white/15 bg-white/[0.035] px-4 font-bold text-white/80 hover:border-primary/35 hover:bg-primary/10 hover:text-primary">
-                  ดูรายละเอียด
-                </Button>
-              </Link>
-            )}
-          </div>
-        </div>
-      </motion.div>
-    );
-  };
 
   return (
     <div className="min-h-screen bg-transparent">
@@ -260,7 +266,7 @@ export default function Home() {
                   key={event.id}
                   initial={{ opacity: 0, scale: 0.9 }}
                   animate={{ opacity: 1, scale: 1 }}
-                  transition={{ delay: index * 0.1 }}
+                  transition={{ delay: Math.min(index * 0.08, 0.4) }}
                 >
                   <Link href={`/event/${event.id}`}>
                     <Card className="group cursor-pointer rounded-2xl border-yellow-400/25 bg-gradient-to-br from-yellow-400/15 via-yellow-500/[0.045] to-transparent p-8 text-center shadow-[0_20px_50px_-30px_rgb(234_179_8_/_0.45)] transition-all duration-300 hover:-translate-y-1 hover:border-yellow-300/45 hover:shadow-[0_26px_56px_-32px_rgb(234_179_8_/_0.7)]">
@@ -282,7 +288,7 @@ export default function Home() {
       {/* Events Section */}
       <section className="relative overflow-hidden py-24">
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[600px] bg-primary/5 rounded-full blur-[120px] -z-10" />
-        
+
         <div className="container mx-auto px-4">
           <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-4">
             <div>
@@ -309,7 +315,13 @@ export default function Home() {
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-10">
               {events.map((event, i) => (
-                <EventCard key={event.id} event={event} index={i} />
+                <EventCard
+                  key={event.id}
+                  event={event}
+                  index={i}
+                  registeredCount={registrationCounts[event.id] ?? (event.registeredTeams || 0)}
+                  user={user}
+                />
               ))}
             </div>
           )}
