@@ -374,7 +374,7 @@ export default function MyTeams() {
           initial={{ opacity: 0, x: -300 }}
           animate={{ opacity: 1, x: 0 }}
           exit={{ opacity: 0, x: -300 }}
-          className="fixed left-0 top-16 z-40 w-64 h-[calc(100vh-4rem)] bg-card/95 backdrop-blur-sm border-r border-white/10 shadow-2xl"
+          className="fixed left-0 top-16 z-40 w-64 h-[calc(100vh-4rem)] bg-card/95  border-r border-white/10 shadow-xl"
         >
           <div className="p-4 space-y-2">
             <div className="flex items-center justify-between mb-6">
@@ -413,7 +413,7 @@ export default function MyTeams() {
       {/* Overlay */}
       {sidebarOpen && (
         <div
-          className="fixed inset-0 z-30 bg-black/50 backdrop-blur-sm top-16"
+          className="fixed inset-0 z-30 bg-black/50  top-16"
           onClick={() => setSidebarOpen(false)}
         />
       )}

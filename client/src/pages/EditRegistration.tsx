@@ -243,7 +243,7 @@ export default function EditRegistration() {
 
         <form onSubmit={handleUpdate} className="space-y-8">
           {/* Logo Upload Section */}
-          <Card className="bg-card/50 border-white/10 p-8 rounded-3xl backdrop-blur-md shadow-2xl ring-1 ring-primary/20">
+          <Card className="bg-card/50 border-white/10 p-8 rounded-3xl  shadow-xl ring-1 ring-primary/20">
             <h2 className="text-2xl font-bold text-white mb-6 flex items-center gap-3">
               <Edit2 className="w-6 h-6 text-primary" /> แก้ไขรายละเอียดทีม
             </h2>
@@ -279,7 +279,7 @@ export default function EditRegistration() {
                   onClick={() => fileInputRef.current?.click()}
                   className="flex flex-col items-center cursor-pointer"
                 >
-                  <div className="w-20 h-20 rounded-3xl bg-primary/10 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                  <div className="w-20 h-20 rounded-3xl bg-primary/10 flex items-center justify-center mb-4 group-hover:scale-105 transition-transform">
                     {uploading ? <Loader2 className="w-10 h-10 text-primary animate-spin" /> : <ImageIcon className="w-10 h-10 text-primary" />}
                   </div>
                   <p className="text-white font-bold">อัปโหลดโลโก้ทีม</p>
@@ -463,7 +463,7 @@ export default function EditRegistration() {
           initial={{ opacity: 0, x: -300 }}
           animate={{ opacity: 1, x: 0 }}
           exit={{ opacity: 0, x: -300 }}
-          className="fixed left-0 top-16 z-40 w-64 h-[calc(100vh-4rem)] bg-card/95 backdrop-blur-sm border-r border-white/10 shadow-2xl"
+          className="fixed left-0 top-16 z-40 w-64 h-[calc(100vh-4rem)] bg-card/95  border-r border-white/10 shadow-xl"
         >
           <div className="p-4 space-y-2">
             <div className="flex items-center justify-between mb-6">
@@ -502,7 +502,7 @@ export default function EditRegistration() {
       {/* Overlay */}
       {sidebarOpen && (
         <div
-          className="fixed inset-0 z-30 bg-black/50 backdrop-blur-sm top-16"
+          className="fixed inset-0 z-30 bg-black/50  top-16"
           onClick={() => setSidebarOpen(false)}
         />
       )}

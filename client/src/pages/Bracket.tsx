@@ -173,7 +173,7 @@ export default function Bracket() {
           <motion.div
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="mb-5 inline-flex items-center gap-2 rounded-full border border-primary/25 bg-primary/[0.09] px-4 py-2 text-xs font-bold tracking-[0.14em] text-primary shadow-[0_0_28px_-13px_rgb(34_211_238_/_0.8)] backdrop-blur-md"
+            className="mb-5 inline-flex items-center gap-2 rounded-full border border-primary/25 bg-primary/[0.09] px-4 py-2 text-xs font-bold tracking-[0.14em] text-primary shadow-[0_0_20px_-10px_rgb(34_211_238_/_0.8)] "
           >
             <Swords className="w-4 h-4" />
             REAL-TIME TOURNAMENT BRACKET
@@ -357,13 +357,13 @@ function BracketMatch({ match, tournamentGame, registrations = [], onTeamClick }
       className="relative"
     >
       <Card
-        className={`group w-64 border-white/[0.1] bg-zinc-900/80 backdrop-blur-xl transition-all duration-500 hover:-translate-y-1 hover:border-primary/50 hover:shadow-panel-hover md:w-72 ${
-          isOngoing ? "border-red-500/45 ring-1 ring-red-500/45 shadow-[0_0_28px_-14px_rgb(239_68_68_/_0.8)]" : ""
+        className={`group w-64 border-white/[0.1] bg-zinc-900/80  transition-all duration-200 hover:-translate-y-1 hover:border-primary/50 hover:shadow-panel-hover md:w-72 ${
+          isOngoing ? "border-red-500/45 ring-1 ring-red-500/45 shadow-[0_0_16px_-10px_rgb(239_68_68_/_0.8)]" : ""
         } ${isCompleted ? "shadow-[0_18px_45px_-30px_rgb(0_0_0_/_0.9)]" : ""}`}
       >
         {/* Match Status Badge - Inline at top of card */}
         <div className="flex justify-center pt-3 pb-1">
-          <div className={`rounded-full border border-white/15 ${statusBadge.bgColor} ${statusBadge.textColor} px-3 py-1 text-[9px] font-black uppercase tracking-[0.12em] shadow-lg backdrop-blur-md ${statusBadge.animate}`}>
+          <div className={`rounded-full border border-white/15 ${statusBadge.bgColor} ${statusBadge.textColor} px-3 py-1 text-[9px] font-black uppercase tracking-[0.12em] shadow-lg  ${statusBadge.animate}`}>
             {statusBadge.text}
           </div>
         </div>

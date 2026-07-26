@@ -91,7 +91,7 @@ export default function Login() {
 
   return (
     <div className="container mx-auto flex min-h-[calc(100vh-11rem)] items-center justify-center px-4 py-16 sm:px-6">
-      <Card className="esports-panel w-full max-w-md border-white/[0.12] bg-zinc-900/75 shadow-[0_30px_80px_-36px_rgb(0_0_0_/_0.95),0_0_44px_-26px_rgb(34_211_238_/_0.32)]">
+      <Card className="esports-panel w-full max-w-md border-white/[0.12] bg-zinc-900/75 shadow-[0_20px_60px_-30px_rgb(0_0_0_/_0.95),0_0_44px_-26px_rgb(34_211_238_/_0.32)]">
         <CardHeader className="space-y-2 pb-4 text-center">
           <CardTitle className="font-display text-3xl font-bold uppercase tracking-tight text-white">
             {isRegister ? "สมัครสมาชิก" : "เข้าสู่ระบบ"}

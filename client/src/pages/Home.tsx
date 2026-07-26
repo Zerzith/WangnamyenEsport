@@ -67,8 +67,8 @@ const EventCard = memo(({ event, index, registeredCount, user }: {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ delay: Math.min(index * 0.08, 0.4) }}
-      className={`group relative h-[25rem] overflow-hidden rounded-2xl border bg-zinc-950/60 shadow-panel transition-all duration-500 ${
-        !isOpen || isFull ? "border-red-500/35 opacity-90 shadow-[0_20px_50px_-30px_rgb(239_68_68_/_0.45)]" : "border-white/[0.1] hover:-translate-y-1.5 hover:border-primary/50 hover:shadow-panel-hover"
+      className={`group relative h-[25rem] overflow-hidden rounded-2xl border bg-zinc-950/60 shadow-panel transition-all duration-200 ${
+        !isOpen || isFull ? "border-red-500/35 opacity-90 shadow-[0_14px_36px_-24px_rgb(239_68_68_/_0.45)]" : "border-white/[0.1] hover:-translate-y-1.5 hover:border-primary/50 hover:shadow-panel-hover"
       }`}
     >
       <Link href={`/event/${event.id}`}>
@@ -77,7 +77,7 @@ const EventCard = memo(({ event, index, registeredCount, user }: {
             src={event.bannerUrl || HERO_BG}
             alt={event.title}
             loading="lazy"
-            className="absolute inset-0 h-full w-full object-cover opacity-70 saturate-[0.88] transition-transform duration-700 group-hover:scale-110 group-hover:saturate-100"
+            className="absolute inset-0 h-full w-full object-cover opacity-70 saturate-[0.88] transition-transform duration-300 group-hover:scale-105 group-hover:saturate-100"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/65 to-zinc-950/5" />
         </div>
@@ -85,17 +85,17 @@ const EventCard = memo(({ event, index, registeredCount, user }: {
 
       <div className="absolute top-4 right-4 z-10 flex gap-2">
         {!isOpen ? (
-          <div className="flex items-center gap-1.5 rounded-full border border-red-400/25 bg-red-500/15 px-3 py-1.5 text-[10px] font-black uppercase tracking-widest text-red-200 shadow-[0_0_18px_-9px_rgb(239_68_68_/_0.8)] backdrop-blur-md">
+          <div className="flex items-center gap-1.5 rounded-full border border-red-400/25 bg-red-500/15 px-3 py-1.5 text-[10px] font-black uppercase tracking-widest text-red-200 shadow-[0_0_18px_-9px_rgb(239_68_68_/_0.8)] ">
             <AlertCircle className="w-3 h-3" />
             ปิดรับสมัคร
           </div>
         ) : isFull ? (
-          <div className="flex items-center gap-1.5 rounded-full border border-red-400/25 bg-red-500/15 px-3 py-1.5 text-[10px] font-black uppercase tracking-widest text-red-200 shadow-[0_0_18px_-9px_rgb(239_68_68_/_0.8)] backdrop-blur-md">
+          <div className="flex items-center gap-1.5 rounded-full border border-red-400/25 bg-red-500/15 px-3 py-1.5 text-[10px] font-black uppercase tracking-widest text-red-200 shadow-[0_0_18px_-9px_rgb(239_68_68_/_0.8)] ">
             <AlertCircle className="w-3 h-3" />
             เต็มแล้ว
           </div>
         ) : (
-          <div className="flex items-center gap-1.5 rounded-full border border-emerald-400/25 bg-emerald-400/15 px-3 py-1.5 text-[10px] font-black uppercase tracking-widest text-emerald-200 shadow-[0_0_18px_-9px_rgb(52_211_153_/_0.8)] backdrop-blur-md">
+          <div className="flex items-center gap-1.5 rounded-full border border-emerald-400/25 bg-emerald-400/15 px-3 py-1.5 text-[10px] font-black uppercase tracking-widest text-emerald-200 shadow-[0_0_18px_-9px_rgb(52_211_153_/_0.8)] ">
             <div className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
             เปิดรับสมัคร
           </div>
@@ -104,7 +104,7 @@ const EventCard = memo(({ event, index, registeredCount, user }: {
 
       <div className="pointer-events-none absolute bottom-0 left-0 w-full p-6 sm:p-7">
         <div className="flex items-center gap-2 mb-3 flex-wrap">
-          <span className="rounded-full border border-primary/25 bg-primary/15 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.14em] text-primary backdrop-blur-md">
+          <span className="rounded-full border border-primary/25 bg-primary/15 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.14em] text-primary ">
             {event.game}
           </span>
           <span className="flex items-center gap-1 text-[10px] text-white/80 font-bold uppercase tracking-wider">
@@ -117,7 +117,7 @@ const EventCard = memo(({ event, index, registeredCount, user }: {
         </h3>
 
         <div className="flex items-center justify-between mt-4">
-          <div className="flex items-center gap-2 rounded-xl border border-white/10 bg-zinc-950/55 px-3 py-1.5 text-sm backdrop-blur-md">
+          <div className="flex items-center gap-2 rounded-xl border border-white/10 bg-zinc-950/55 px-3 py-1.5 text-sm ">
             <Users className="w-4 h-4 text-primary" />
             <span className={isFull ? "text-red-400 font-bold" : "text-white font-bold"}>
               {registeredCount}/{event.maxTeams || 16} ทีม
@@ -208,7 +208,7 @@ export default function Home() {
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="mb-7 inline-flex items-center gap-2 rounded-full border border-primary/25 bg-primary/[0.09] px-4 py-2 text-xs font-bold tracking-[0.13em] text-primary shadow-[0_0_28px_-12px_rgb(34_211_238_/_0.75)] backdrop-blur-md"
+              className="mb-7 inline-flex items-center gap-2 rounded-full border border-primary/25 bg-primary/[0.09] px-4 py-2 text-xs font-bold tracking-[0.13em] text-primary shadow-[0_0_20px_-8px_rgb(34_211_238_/_0.75)] "
             >
               <Gamepad2 className="w-4 h-4" />
               WANGNAMYEN ESPORTS
@@ -269,7 +269,7 @@ export default function Home() {
                   transition={{ delay: Math.min(index * 0.08, 0.4) }}
                 >
                   <Link href={`/event/${event.id}`}>
-                    <Card className="group cursor-pointer rounded-2xl border-yellow-400/25 bg-gradient-to-br from-yellow-400/15 via-yellow-500/[0.045] to-transparent p-8 text-center shadow-[0_20px_50px_-30px_rgb(234_179_8_/_0.45)] transition-all duration-300 hover:-translate-y-1 hover:border-yellow-300/45 hover:shadow-[0_26px_56px_-32px_rgb(234_179_8_/_0.7)]">
+                    <Card className="group cursor-pointer rounded-2xl border-yellow-400/25 bg-gradient-to-br from-yellow-400/15 via-yellow-500/[0.045] to-transparent p-8 text-center shadow-[0_14px_36px_-24px_rgb(234_179_8_/_0.45)] transition-all duration-300 hover:-translate-y-1 hover:border-yellow-300/45 hover:shadow-[0_18px_44px_-20px_rgb(234_179_8_/_0.7)]">
                       <Trophy className="w-12 h-12 text-yellow-500 mx-auto mb-4 group-hover:animate-bounce" />
                       <h3 className="text-xl font-bold text-white mb-2">{event.title}</h3>
                       <p className="text-yellow-500 font-black text-2xl uppercase tracking-tighter">CHAMPION</p>
@@ -330,7 +330,7 @@ export default function Home() {
 
       {/* News Section */}
       {news.length > 0 && (
-        <section className="border-y border-white/[0.06] bg-white/[0.018] py-24 backdrop-blur-sm">
+        <section className="border-y border-white/[0.06] bg-white/[0.018] py-24 ">
           <div className="container mx-auto px-4">
             <div className="flex items-center justify-between mb-12">
               <div className="flex items-center gap-3">

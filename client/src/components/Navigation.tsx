@@ -30,12 +30,12 @@ export function Navigation() {
 
   return (
     <>
-      <nav className="sticky top-0 z-50 w-full border-b border-white/[0.08] bg-zinc-950/75 shadow-[0_12px_36px_-24px_rgb(0_0_0_/_0.9)] backdrop-blur-2xl">
+      <nav className="sticky top-0 z-50 w-full border-b border-white/[0.08] bg-zinc-950/90 shadow-[0_8px_24px_-16px_rgb(0_0_0_/_0.9)]">
         <div className="container mx-auto flex min-h-[4rem] sm:min-h-[4.5rem] items-center justify-between gap-1.5 px-2 sm:px-5">
           {/* Logo Section */}
           <Link href="/">
             <div className="group flex flex-shrink-0 cursor-pointer items-center gap-2.5">
-              <div className="relative flex h-9 w-9 items-center justify-center overflow-hidden rounded-xl border border-primary/35 bg-gradient-to-br from-primary via-sky-400 to-accent shadow-[0_0_24px_-8px_rgb(34_211_238_/_0.95)] transition duration-300 group-hover:-translate-y-0.5 group-hover:shadow-glow">
+              <div className="relative flex h-9 w-9 items-center justify-center overflow-hidden rounded-xl border border-primary/35 bg-gradient-to-br from-primary via-sky-400 to-accent shadow-[0_0_16px_-8px_rgb(34_211_238_/_0.95)] transition duration-300 group-hover:-translate-y-0.5 group-hover:shadow-glow">
                 <span className="relative z-10 font-display text-xl font-bold text-zinc-950">E</span>
                 <div className="absolute inset-0 bg-gradient-to-tr from-zinc-950/20 via-transparent to-white/30" />
               </div>

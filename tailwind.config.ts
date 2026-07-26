@@ -99,8 +99,8 @@ export default {
         mono: ["var(--font-mono)"],
       },
       boxShadow: {
-        panel: "inset 0 1px 0 rgb(255 255 255 / 0.045), 0 20px 50px -28px rgb(0 0 0 / 0.9)",
-        "panel-hover": "inset 0 1px 0 rgb(255 255 255 / 0.07), 0 26px 56px -32px rgb(0 0 0 / 0.95), 0 0 32px -14px rgb(34 211 238 / 0.38)",
+        panel: "inset 0 1px 0 rgb(255 255 255 / 0.045), 0 14px 36px -24px rgb(0 0 0 / 0.85)",
+        "panel-hover": "inset 0 1px 0 rgb(255 255 255 / 0.07), 0 18px 44px -20px rgb(0 0 0 / 0.9), 0 0 20px -10px rgb(34 211 238 / 0.25)",
         glow: "0 0 0 1px rgb(34 211 238 / 0.1), 0 0 30px -10px rgb(34 211 238 / 0.45)",
         "glow-violet": "0 0 0 1px rgb(139 92 246 / 0.1), 0 0 30px -10px rgb(139 92 246 / 0.4)",
       },

@@ -80,7 +80,7 @@ export function ScoreCard({ match }: ScoreCardProps) {
     <motion.div 
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="relative overflow-hidden rounded-2xl border border-white/10 bg-card/50 hover:border-primary/50 transition-all group backdrop-blur-sm"
+      className="relative overflow-hidden rounded-2xl border border-white/10 bg-card/50 hover:border-primary/50 transition-all group "
       style={match.bannerUrl ? { backgroundImage: `url(${match.bannerUrl})`, backgroundSize: 'cover', backgroundPosition: 'center', backgroundRepeat: 'no-repeat' } : {}}
     >
       <div className="relative z-10 p-6">
@@ -122,7 +122,7 @@ export function ScoreCard({ match }: ScoreCardProps) {
             {hasWLDData ? (
               <div className="flex flex-col items-center gap-2">
                 {/* W-D-L Format */}
-                <div className="flex items-center gap-2 md:gap-4 font-display font-bold text-lg md:text-2xl bg-black/60 px-4 py-2 rounded-xl border border-white/5 shadow-2xl">
+                <div className="flex items-center gap-2 md:gap-4 font-display font-bold text-lg md:text-2xl bg-black/60 px-4 py-2 rounded-xl border border-white/5 shadow-xl">
                   <div className="flex flex-col items-center">
                     <span className="text-green-400 text-xl md:text-2xl">{match.winsA || 0}</span>
                     <span className="text-[8px] text-green-400/60 font-normal">ชนะ</span>
@@ -148,7 +148,7 @@ export function ScoreCard({ match }: ScoreCardProps) {
               </div>
             ) : (
               /* Regular Score Display */
-              <div className="flex items-center gap-3 md:gap-5 font-display font-bold text-3xl md:text-5xl bg-black/60 px-6 py-3 rounded-2xl border border-white/5 shadow-2xl">
+              <div className="flex items-center gap-3 md:gap-5 font-display font-bold text-3xl md:text-5xl bg-black/60 px-6 py-3 rounded-2xl border border-white/5 shadow-xl">
                 <span className={match.scoreA >= match.scoreB ? 'text-white' : 'text-white/40'}>{match.scoreA}</span>
                 <span className="text-primary/40 text-2xl md:text-4xl">:</span>
                 <span className={match.scoreB >= match.scoreA ? 'text-white' : 'text-white/40'}>{match.scoreB}</span>
@@ -187,7 +187,7 @@ export function ScoreCard({ match }: ScoreCardProps) {
       </div>
       
       {/* Bottom Decorative Line */}
-      <div className={`absolute bottom-0 left-0 h-1 transition-all duration-500 ${isLive ? 'w-full bg-red-600' : 'w-0 group-hover:w-full bg-primary'}`} />
+      <div className={`absolute bottom-0 left-0 h-1 transition-all duration-200 ${isLive ? 'w-full bg-red-600' : 'w-0 group-hover:w-full bg-primary'}`} />
     </motion.div>
   );
 }

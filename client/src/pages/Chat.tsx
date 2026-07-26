@@ -178,7 +178,7 @@ export default function Chat() {
                 <div className="absolute top-4 left-4 bg-red-600 text-white px-3 py-1 rounded-full text-xs font-bold flex items-center gap-2 shadow-lg">
                   <span className="w-2 h-2 bg-white rounded-full animate-pulse"></span> LIVE
                 </div>
-                <div className="absolute top-4 right-4 bg-black/70 backdrop-blur-sm text-white px-3 py-1 rounded-full text-xs flex items-center gap-2">
+                <div className="absolute top-4 right-4 bg-black/70  text-white px-3 py-1 rounded-full text-xs flex items-center gap-2">
                   <Eye className="w-4 h-4" /> {viewerCount} ผู้ชม
                 </div>
               </div>
@@ -275,7 +275,7 @@ export default function Chat() {
         </div>
 
         <div className="lg:col-span-1 flex flex-col h-full overflow-hidden">
-          <Card className="bg-card/50 border-white/10 backdrop-blur-sm flex-1 flex flex-col overflow-hidden">
+          <Card className="bg-card/50 border-white/10  flex-1 flex flex-col overflow-hidden">
             <div className="p-4 border-b border-white/10 flex items-center justify-between bg-white/5">
               <h3 className="font-bold text-white flex items-center gap-2">
                 <MessageCircle className="w-4 h-4 text-primary" /> แชทสด

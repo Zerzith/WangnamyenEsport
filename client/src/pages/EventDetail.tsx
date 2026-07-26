@@ -90,7 +90,7 @@ const EventListItem = ({ item, index }: { item: Event, index: number }) => {
             <img
               src={item.bannerUrl || "https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=2070&auto=format&fit=crop"}
               alt={item.title}
-              className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+              className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
             <div className="absolute top-4 left-4">
@@ -491,7 +491,7 @@ export default function EventDetail() {
       )}
 
       {/* Event Banner */}
-      <div className="relative h-80 rounded-3xl overflow-hidden mb-8 border border-white/10 shadow-2xl">
+      <div className="relative h-80 rounded-3xl overflow-hidden mb-8 border border-white/10 shadow-xl">
         <img
           src={event.bannerUrl || "https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=2070&auto=format&fit=crop"}
           alt={event.title}
@@ -530,7 +530,7 @@ export default function EventDetail() {
                 </h2>
                 <div className="flex flex-col items-center gap-4 mt-6">
                   {registrations.find(r => r.id === event.championTeamId)?.logoUrl && (
-                    <div className="w-24 h-24 rounded-2xl overflow-hidden ring-4 ring-yellow-500/50 shadow-2xl shadow-yellow-500/20">
+                    <div className="w-24 h-24 rounded-2xl overflow-hidden ring-4 ring-yellow-500/50 shadow-xl shadow-yellow-500/20">
                       <img 
                         src={registrations.find(r => r.id === event.championTeamId)?.logoUrl} 
                         alt="Champion Logo" 
@@ -549,7 +549,7 @@ export default function EventDetail() {
             </motion.div>
           )}
 
-          <Card className="bg-card/50 border-white/10 p-8 rounded-3xl backdrop-blur-md shadow-2xl ring-1 ring-primary/20">
+          <Card className="bg-card/50 border-white/10 p-8 rounded-3xl  shadow-xl ring-1 ring-primary/20">
             <h2 className="text-2xl font-bold text-white mb-6 flex items-center gap-2">
               <div className="w-1 h-6 bg-primary rounded-full" />
               รายละเอียดการแข่งขัน
@@ -588,20 +588,20 @@ export default function EventDetail() {
                 ลงสมัครเข้าแข่งขันตอนนี้
               </Button>
             ) : !isOpen ? (
-              <Card className="bg-red-500/10 border-red-500/20 p-8 rounded-3xl text-center backdrop-blur-md">
+              <Card className="bg-red-500/10 border-red-500/20 p-8 rounded-3xl text-center ">
                 <AlertCircle className="w-12 h-12 text-red-500 mx-auto mb-4" />
                 <h2 className="text-2xl font-bold text-white mb-2">ปิดรับสมัครแล้ว</h2>
                 <p className="text-muted-foreground">รายการแข่งขันนี้ไม่ได้เปิดรับสมัครในขณะนี้</p>
               </Card>
             ) : isFull ? (
-              <Card className="bg-yellow-500/10 border-yellow-500/20 p-8 rounded-3xl text-center backdrop-blur-md">
+              <Card className="bg-yellow-500/10 border-yellow-500/20 p-8 rounded-3xl text-center ">
                 <Users className="w-12 h-12 text-yellow-500 mx-auto mb-4" />
                 <h2 className="text-2xl font-bold text-white mb-2">ทีมสมัครเต็มแล้ว</h2>
                 <p className="text-muted-foreground">ขออภัย รายการแข่งขันนี้มีผู้สมัครครบจำนวนแล้ว</p>
               </Card>
             ) : null
           ) : !showRegistrationForm && (
-            <Card className="bg-card/50 border-white/10 p-8 rounded-3xl border-primary/20 bg-primary/5 backdrop-blur-md">
+            <Card className="bg-card/50 border-white/10 p-8 rounded-3xl border-primary/20 bg-primary/5 ">
               <div className="flex flex-col md:flex-row items-center gap-6">
                 <div className="w-20 h-20 bg-primary/20 rounded-2xl flex items-center justify-center shrink-0 overflow-hidden ring-2 ring-primary/30">
                   {userRegistration.logoUrl ? (
@@ -643,7 +643,7 @@ export default function EventDetail() {
           )}
 
           {showRegistrationForm && (
-            <Card className="bg-card/50 border-white/10 p-8 rounded-3xl backdrop-blur-md shadow-2xl ring-1 ring-primary/20">
+            <Card className="bg-card/50 border-white/10 p-8 rounded-3xl  shadow-xl ring-1 ring-primary/20">
               <h2 className="text-2xl font-bold text-white mb-6 flex items-center gap-3">
                 {isEditing ? (
                   <><Edit2 className="w-6 h-6 text-primary" /> แก้ไขรายละเอียดทีม</>
@@ -684,7 +684,7 @@ export default function EventDetail() {
                       onClick={() => fileInputRef.current?.click()}
                       className="flex flex-col items-center cursor-pointer"
                     >
-                      <div className="w-20 h-20 rounded-3xl bg-primary/10 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                      <div className="w-20 h-20 rounded-3xl bg-primary/10 flex items-center justify-center mb-4 group-hover:scale-105 transition-transform">
                         {uploading ? <Loader2 className="w-10 h-10 text-primary animate-spin" /> : <ImageIcon className="w-10 h-10 text-primary" />}
                       </div>
                       <p className="text-white font-bold">อัปโหลดโลโก้ทีม</p>
@@ -869,7 +869,7 @@ export default function EventDetail() {
         {/* Sidebar */}
         <div className="space-y-8">
           {/* Approved Teams */}
-          <Card className="bg-card/50 border-white/10 p-6 rounded-3xl backdrop-blur-md">
+          <Card className="bg-card/50 border-white/10 p-6 rounded-3xl ">
             <h3 className="text-xl font-bold text-white mb-6 flex items-center gap-2">
               <Trophy className="w-5 h-5 text-yellow-500" />
               ทีมที่เข้าร่วม ({approvedCount})
@@ -907,7 +907,7 @@ export default function EventDetail() {
 
           {/* Pending Teams (Admin only) */}
           {isAdmin && pendingCount > 0 && (
-            <Card className="bg-card/50 border-white/10 p-6 rounded-3xl border-yellow-500/20 backdrop-blur-md">
+            <Card className="bg-card/50 border-white/10 p-6 rounded-3xl border-yellow-500/20 ">
               <h3 className="text-xl font-bold text-white mb-6 flex items-center gap-2">
                 <div className="w-2 h-2 rounded-full bg-yellow-500 animate-pulse" />
                 รออนุมัติ ({pendingCount})
