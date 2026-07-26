@@ -1,4 +1,5 @@
 import { Switch, Route } from "wouter";
+import { Suspense, lazy } from "react";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
@@ -7,46 +8,65 @@ import { AuthProvider } from "@/hooks/use-auth";
 import { Navigation } from "@/components/Navigation";
 import { Footer } from "@/components/Footer";
 
-// Pages
-import Home from "@/pages/Home";
-import Login from "@/pages/Login";
-import RegisterTeam from "@/pages/RegisterTeam";
-import MyTeams from "@/pages/MyTeams";
-import Bracket from "@/pages/Bracket";
-import HallOfFame from "@/pages/HallOfFame";
-import Chat from "@/pages/Chat";
-import Profile from "@/pages/Profile";
-import EventDetail from "@/pages/EventDetail";
-import AdminDashboard from "@/pages/AdminDashboard";
-import About from "@/pages/About";
-import Contact from "@/pages/Contact";
-import Privacy from "@/pages/Privacy";
-import Rules from "@/pages/Rules";
-import EditRegistration from "@/pages/EditRegistration";
-import MatchManagement from "@/pages/MatchManagement";
-import NotFound from "@/pages/not-found";
+// Lazy-loaded pages
+const Home = lazy(() => import("@/pages/Home"));
+const Login = lazy(() => import("@/pages/Login"));
+const RegisterTeam = lazy(() => import("@/pages/RegisterTeam"));
+const MyTeams = lazy(() => import("@/pages/MyTeams"));
+const Bracket = lazy(() => import("@/pages/Bracket"));
+const HallOfFame = lazy(() => import("@/pages/HallOfFame"));
+const Chat = lazy(() => import("@/pages/Chat"));
+const Profile = lazy(() => import("@/pages/Profile"));
+const EventDetail = lazy(() => import("@/pages/EventDetail"));
+const AdminDashboard = lazy(() => import("@/pages/AdminDashboard"));
+const About = lazy(() => import("@/pages/About"));
+const Contact = lazy(() => import("@/pages/Contact"));
+const Privacy = lazy(() => import("@/pages/Privacy"));
+const Rules = lazy(() => import("@/pages/Rules"));
+const EditRegistration = lazy(() => import("@/pages/EditRegistration"));
+const MatchManagement = lazy(() => import("@/pages/MatchManagement"));
+const NotFound = lazy(() => import("@/pages/not-found"));
+
+function LoadingFallback() {
+  return (
+    <div className="flex items-center justify-center min-h-[60vh]">
+      <div className="flex flex-col items-center gap-3">
+        <div className="h-8 w-8 rounded-full border-2 border-primary border-t-transparent animate-spin" />
+        <span className="text-sm text-muted-foreground">กำลังโหลด...</span>
+      </div>
+    </div>
+  );
+}
+
+function RouteWithSuspense({ component: Component, ...rest }: { component: any; [key: string]: any }) {
+  return (
+    <Suspense fallback={<LoadingFallback />}>
+      <Route {...rest} component={Component} />
+    </Suspense>
+  );
+}
 
 function Router() {
   return (
     <Switch>
-      <Route path="/" component={Home} />
-      <Route path="/login" component={Login} />
-      <Route path="/register-team" component={RegisterTeam} />
-      <Route path="/my-teams" component={MyTeams} />
-      <Route path="/bracket" component={Bracket} />
-      <Route path="/hall-of-fame" component={HallOfFame} />
-      <Route path="/chat" component={Chat} />
-      <Route path="/profile" component={Profile} />
-      <Route path="/event/:id" component={EventDetail} />
-      <Route path="/events" component={EventDetail} />
-      <Route path="/admin" component={AdminDashboard} />
-      <Route path="/about" component={About} />
-      <Route path="/contact" component={Contact} />
-      <Route path="/privacy" component={Privacy} />
-      <Route path="/rules" component={Rules} />
-      <Route path="/edit-registration/:registrationId" component={EditRegistration} />
-      <Route path="/match-management" component={MatchManagement} />
-      <Route component={NotFound} />
+      <RouteWithSuspense path="/" component={Home} />
+      <RouteWithSuspense path="/login" component={Login} />
+      <RouteWithSuspense path="/register-team" component={RegisterTeam} />
+      <RouteWithSuspense path="/my-teams" component={MyTeams} />
+      <RouteWithSuspense path="/bracket" component={Bracket} />
+      <RouteWithSuspense path="/hall-of-fame" component={HallOfFame} />
+      <RouteWithSuspense path="/chat" component={Chat} />
+      <RouteWithSuspense path="/profile" component={Profile} />
+      <RouteWithSuspense path="/event/:id" component={EventDetail} />
+      <RouteWithSuspense path="/events" component={EventDetail} />
+      <RouteWithSuspense path="/admin" component={AdminDashboard} />
+      <RouteWithSuspense path="/about" component={About} />
+      <RouteWithSuspense path="/contact" component={Contact} />
+      <RouteWithSuspense path="/privacy" component={Privacy} />
+      <RouteWithSuspense path="/rules" component={Rules} />
+      <RouteWithSuspense path="/edit-registration/:registrationId" component={EditRegistration} />
+      <RouteWithSuspense path="/match-management" component={MatchManagement} />
+      <RouteWithSuspense component={NotFound} />
     </Switch>
   );
 }
