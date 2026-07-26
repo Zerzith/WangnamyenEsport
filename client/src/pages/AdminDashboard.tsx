@@ -443,9 +443,6 @@ export default function AdminDashboard() {
       return;
     }
 
-    const event = events.find(e => e.id === selectedEventId);
-    const isRoV = event?.game?.toLowerCase().includes("rov");
-
     try {
       const matchData: any = {
         eventId: selectedEventId,
@@ -456,17 +453,14 @@ export default function AdminDashboard() {
         scoreA: 0,
         scoreB: 0,
         status: "pending",
+        winsA: 0,
+        lossesA: 0,
+        drawsA: 0,
+        winsB: 0,
+        lossesB: 0,
+        drawsB: 0,
         createdAt: serverTimestamp()
       };
-
-      if (isRoV) {
-        matchData.winsA = 0;
-        matchData.lossesA = 0;
-        matchData.drawsA = 0;
-        matchData.winsB = 0;
-        matchData.lossesB = 0;
-        matchData.drawsB = 0;
-      }
 
       await addDoc(collection(db, "matches"), matchData);
       toast({ title: "สร้างแมตช์เรียบร้อย" });
