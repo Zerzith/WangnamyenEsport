@@ -35,10 +35,11 @@ export function Navigation() {
           {/* Logo Section */}
           <Link href="/">
             <div className="group flex flex-shrink-0 cursor-pointer items-center gap-2.5">
-              <div className="relative flex h-9 w-9 items-center justify-center overflow-hidden rounded-xl border border-primary/35 bg-gradient-to-br from-primary via-sky-400 to-accent shadow-[0_0_16px_-8px_rgb(34_211_238_/_0.95)] transition duration-300 group-hover:-translate-y-0.5 group-hover:shadow-glow">
-                <span className="relative z-10 font-display text-xl font-bold text-zinc-950">E</span>
-                <div className="absolute inset-0 bg-gradient-to-tr from-zinc-950/20 via-transparent to-white/30" />
-              </div>
+              <img
+                src="/logo.png"
+                alt="WNYTC Esports Championship"
+                className="h-10 w-10 rounded-xl object-contain"
+              />
               <span className="hidden whitespace-nowrap font-display text-sm font-bold uppercase tracking-tight text-white transition-colors group-hover:text-primary md:block sm:text-xl">
                 WangNamYen<span className="text-primary">Esports</span>
               </span>
