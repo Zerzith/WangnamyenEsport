@@ -276,8 +276,8 @@ export default function AdminDashboard() {
       return;
     }
     
-    // Combine deadline date and time
-    const registrationDeadlineWithTime = `${newRegDeadline}T${newRegDeadlineTime}`;
+    // Combine deadline date and time with Bangkok timezone offset (+07:00)
+    const registrationDeadlineWithTime = `${newRegDeadline}T${newRegDeadlineTime}:00+07:00`;
     setIsCreatingEvent(true);
     try {
       let bannerUrlToSave = newBannerUrl;
@@ -743,7 +743,7 @@ export default function AdminDashboard() {
                   </div>
                   <div>
                     <Label htmlFor="deadlineTime">เวลาปิดรับสมัคร (HH:mm)</Label>
-                    <Input id="deadlineTime" type="time" value={newRegDeadlineTime} onChange={(e) => setNewRegDeadlineTime(e.target.value)} required />
+                    <Input id="deadlineTime" type="time" step="60" value={newRegDeadlineTime} onChange={(e) => setNewRegDeadlineTime(e.target.value)} required className="[color-scheme:dark]" />
                   </div>
                     <div>
                       <Label htmlFor="newBannerUrl">URL รูปภาพแบนเนอร์ (เลือกอย่างใดอย่างหนึ่ง)</Label>
