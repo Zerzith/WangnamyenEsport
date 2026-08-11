@@ -265,7 +265,7 @@ export default function Home() {
       {/* Champions Section */}
       {champions.length > 0 && (
         <section className="border-y border-white/[0.06] bg-zinc-900/50 py-20">
-          <div className="container mx-auto px-4">
+          <div className="w-full px-2 sm:px-4 lg:px-6">
             <div className="mb-12">
               <h2 className="text-3xl font-bold text-white">ทำเนียบแชมป์เปี้ยน</h2>
             </div>
@@ -295,7 +295,7 @@ export default function Home() {
 
       {/* Events Section */}
       <section className="py-24">
-        <div className="container mx-auto px-4">
+        <div className="w-full px-2 sm:px-4 lg:px-6">
           <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-4">
             <div>
               <span className="mb-2 block font-display text-xs font-bold uppercase tracking-[0.2em] text-primary">Tournaments</span>
@@ -334,7 +334,7 @@ export default function Home() {
       {/* News Section */}
       {news.length > 0 && (
         <section className="border-y border-white/[0.06] bg-zinc-900/50 py-24">
-          <div className="container mx-auto px-4">
+          <div className="w-full px-2 sm:px-4 lg:px-6">
             <div className="mb-12">
               <h2 className="text-3xl font-display font-bold text-white">ข่าวสารล่าสุด</h2>
             </div>

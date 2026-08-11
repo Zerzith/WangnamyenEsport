@@ -190,7 +190,7 @@ export default function EditRegistration() {
 
   if (loading) {
     return (
-      <div className="container mx-auto px-4 py-24">
+      <div className="w-full px-2 sm:px-4 lg:px-6 py-24">
         <div className="text-center">
           <Loader2 className="w-12 h-12 animate-spin mx-auto text-primary mb-4" />
           <p className="text-muted-foreground text-lg">กำลังโหลดข้อมูล...</p>
@@ -205,7 +205,7 @@ export default function EditRegistration() {
 
   return (
     <div className="min-h-screen">
-      <div className="container mx-auto px-4 py-12">
+      <div className="w-full px-2 sm:px-4 lg:px-6 py-12">
         <div className="flex items-center gap-4 mb-8">
           <Button
             variant="ghost"

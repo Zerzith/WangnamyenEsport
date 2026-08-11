@@ -78,7 +78,7 @@ function App() {
         <TooltipProvider>
           <div className="app-shell min-h-screen flex flex-col bg-background text-foreground font-sans">
             <Navigation />
-            <main className="page-frame flex-grow">
+            <main className="flex-grow">
               <Router />
             </main>
             <Footer />

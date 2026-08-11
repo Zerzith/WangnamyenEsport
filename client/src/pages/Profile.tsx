@@ -149,8 +149,8 @@ export default function Profile() {
   }
 
   return (
-    <div className="min-h-screen py-12 px-4">
-      <div className="max-w-md mx-auto">
+    <div className="min-h-screen py-12 px-2 sm:px-4">
+      <div className="w-full max-w-md mx-auto px-2 sm:px-4">
         <h1 className="text-3xl font-bold text-white mb-8">โปรไฟล์</h1>
 
         {message && (

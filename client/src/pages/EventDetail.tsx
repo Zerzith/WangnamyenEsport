@@ -423,7 +423,7 @@ export default function EventDetail() {
 
   if (loading) {
     return (
-      <div className="container mx-auto px-4 py-24">
+      <div className="w-full px-2 sm:px-4 lg:px-6 py-24">
         <div className="text-center">
           <Loader2 className="w-12 h-12 animate-spin mx-auto text-primary mb-4" />
           <p className="text-muted-foreground text-lg">กำลังโหลดข้อมูลการแข่งขัน...</p>
@@ -435,7 +435,7 @@ export default function EventDetail() {
   // List View (When no eventId is provided)
   if (!eventId) {
     return (
-      <div className="container mx-auto px-4 py-12">
+      <div className="w-full px-2 sm:px-4 lg:px-6 py-12">
         <div className="mb-12">
           <Button
             onClick={() => setLocation("/")}
@@ -471,7 +471,7 @@ export default function EventDetail() {
   // Detail View (When eventId is provided)
   if (!event) {
     return (
-      <div className="container mx-auto px-4 py-12">
+      <div className="w-full px-2 sm:px-4 lg:px-6 py-12">
         <div className="text-center">
           <p className="text-muted-foreground text-lg mb-4">ไม่พบข้อมูลการแข่งขันที่คุณต้องการ</p>
           <Button onClick={() => setLocation("/events")} variant="outline">
@@ -500,7 +500,7 @@ export default function EventDetail() {
   const isOpen = (event.status === 'open' || (event.status !== 'closed' && !isExpired)) && !isFull;
 
   return (
-    <div className="container mx-auto px-4 py-12">
+    <div className="w-full px-2 sm:px-4 lg:px-6 py-12">
       {/* Header */}
       <Button
         onClick={() => setLocation("/events")}

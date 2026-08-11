@@ -108,7 +108,7 @@ export default function Rules() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-12">
+    <div className="w-full px-2 sm:px-4 lg:px-6 py-12">
       <div className="mb-12">
         <div className="mb-6">
           <h1 className="text-4xl font-display font-bold text-white uppercase tracking-tight">กฎกติกาการแข่งขัน</h1>

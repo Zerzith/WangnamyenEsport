@@ -708,8 +708,8 @@ export default function AdminDashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0a0e17] pt-24 pb-12 px-4">
-      <div className="max-w-6xl mx-auto space-y-8">
+    <div className="min-h-screen bg-[#0a0e17] pt-24 pb-12 px-2 sm:px-4">
+      <div className="w-full max-w-6xl mx-auto space-y-8 px-2 sm:px-4 lg:px-6">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
           <div>
             <h1 className="text-3xl font-bold text-white flex items-center gap-3">

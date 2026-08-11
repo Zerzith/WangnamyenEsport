@@ -7,8 +7,8 @@ import { MapPin, Phone, Mail, Facebook, Globe } from "lucide-react";
 
 export default function Contact() {
   return (
-    <div className="min-h-screen py-12 px-4">
-      <div className="container mx-auto max-w-6xl">
+    <div className="min-h-screen py-12 px-2 sm:px-4">
+      <div className="w-full max-w-6xl mx-auto px-2 sm:px-4 lg:px-6">
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}

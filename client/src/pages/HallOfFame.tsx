@@ -112,7 +112,7 @@ export default function HallOfFame() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-12">
+    <div className="w-full px-2 sm:px-4 lg:px-6 py-12">
       <div className="mb-12">
         <div className="flex items-center gap-3 mb-6">
           <Trophy className="w-8 h-8 text-primary" />

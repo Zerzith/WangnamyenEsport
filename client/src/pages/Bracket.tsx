@@ -159,7 +159,7 @@ export default function Bracket() {
 
   if (loading) {
     return (
-      <div className="container mx-auto px-4 py-24 flex flex-col items-center justify-center">
+      <div className="w-full px-2 sm:px-4 lg:px-6 py-24 flex flex-col items-center justify-center">
         <Loader2 className="w-12 h-12 animate-spin text-primary mb-4" />
         <p className="text-muted-foreground animate-pulse">กำลังโหลดข้อมูลสายการแข่งขันแบบเรียลไทม์...</p>
       </div>
@@ -168,7 +168,7 @@ export default function Bracket() {
 
   return (
     <div className="min-h-screen bg-transparent">
-      <div className="container mx-auto px-4 py-14 sm:px-6">
+      <div className="w-full px-2 sm:px-4 lg:px-6 py-14">
         <div className="mb-12 text-center">
           <motion.div
             initial={{ opacity: 0, y: -20 }}
