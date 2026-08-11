@@ -1,8 +1,9 @@
 import { Link } from "wouter";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Card } from "@/components/ui/card";
-import { ArrowRight, Trophy, Loader2 } from "lucide-react";
+import { ArrowRight, Trophy, Loader2, X } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
 import { useEffect, useState, memo } from "react";
 import { collection, onSnapshot, query, where, orderBy, limit, getDocs } from "firebase/firestore";
@@ -164,6 +165,7 @@ export default function Home() {
   const { user } = useAuth();
   const [events, setEvents] = useState<Event[]>([]);
   const [news, setNews] = useState<News[]>([]);
+  const [selectedNews, setSelectedNews] = useState<News | null>(null);
   const [loading, setLoading] = useState(true);
   const [champions, setChampions] = useState<Event[]>([]);
   // เก็บ registeredCount ทุก event ไว้ใน map เดียว แทนที่จะสร้าง listener แยกทุกการ์ด
@@ -353,7 +355,7 @@ export default function Home() {
                   <p className="text-muted-foreground text-sm line-clamp-3 mb-6">{item.content}</p>
                   <div className="flex items-center justify-between border-t border-white/[0.07] pt-4">
                     <span className="text-xs text-white/40">โดย {item.author || "Admin"}</span>
-                    <Button variant="ghost" size="sm" className="h-auto p-0 font-medium text-primary hover:bg-transparent hover:text-cyan-200">
+                    <Button variant="ghost" size="sm" className="h-auto p-0 font-medium text-primary hover:bg-transparent hover:text-cyan-200" onClick={() => setSelectedNews(item)}>
                       อ่านต่อ
                     </Button>
                   </div>
@@ -364,6 +366,35 @@ export default function Home() {
           </div>
         </section>
       )}
+
+      {/* News Detail Modal */}
+      <Dialog open={!!selectedNews} onOpenChange={(open) => { if (!open) setSelectedNews(null); }}>
+        <DialogContent className="max-w-2xl bg-zinc-900 border-white/10 text-white p-0 overflow-hidden max-h-[85vh] overflow-y-auto custom-scrollbar">
+          {selectedNews && (
+            <>
+              {selectedNews.imageUrl && (
+                <div className="w-full aspect-[16/7] overflow-hidden">
+                  <img src={selectedNews.imageUrl} alt={selectedNews.title} className="w-full h-full object-cover" />
+                </div>
+              )}
+              <div className="p-6">
+                <div className="mb-3 text-xs font-bold uppercase tracking-[0.16em] text-primary">
+                  {selectedNews.createdAt?.toDate ? formatDate(selectedNews.createdAt.toDate().toISOString()) : "เมื่อเร็วๆ นี้"}
+                </div>
+                <DialogTitle className="text-2xl font-display font-bold text-white mb-3">
+                  {selectedNews.title}
+                </DialogTitle>
+                <DialogDescription className="text-white/70 text-base leading-relaxed whitespace-pre-wrap">
+                  {selectedNews.content}
+                </DialogDescription>
+                <div className="mt-4 pt-4 border-t border-white/10 text-xs text-white/40">
+                  โดย {selectedNews.author || "Admin"}
+                </div>
+              </div>
+            </>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
