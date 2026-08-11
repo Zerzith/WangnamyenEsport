@@ -4,6 +4,7 @@ import { useAuth } from "@/hooks/use-auth";
 import { useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { Card, CardHeader, CardTitle, CardContent, CardDescription } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Label } from "@/components/ui/label";
@@ -15,7 +16,7 @@ import { Badge } from "@/components/ui/badge";
 import {
   Loader2, Plus, Trash2, Calendar, Users, Trophy,
   Check, X, Swords, Megaphone, ShieldAlert,
-  UserCheck, UserX, Eye, EyeOff, LayoutGrid, MonitorPlay,
+  UserCheck, UserX, Eye, EyeOff, LayoutGrid, MonitorPlay, ImagePlus, FileImage,
   ArrowLeft
 } from "lucide-react";
 import { collection, onSnapshot, addDoc, deleteDoc, doc, updateDoc, query, orderBy, where, serverTimestamp, getDoc, getDocs } from "firebase/firestore";
@@ -53,6 +54,10 @@ export default function AdminDashboard() {
   // News state
   const [newsTitle, setNewNewsTitle] = useState("");
   const [newsContent, setNewNewsContent] = useState("");
+  const [newsImageFile, setNewsImageFile] = useState<File | null>(null);
+  const [newsImagePreview, setNewsImagePreview] = useState<string | null>(null);
+  const [newsImageUrl, setNewsImageUrl] = useState("");
+  const [isUploadingNewsImage, setIsUploadingNewsImage] = useState(false);
 
   // Form states for new event
   const [newTitle, setNewTitle] = useState("");
@@ -430,18 +435,55 @@ export default function AdminDashboard() {
     }
   };
 
+  const handleNewsImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setNewsImageFile(file);
+      setNewsImagePreview(URL.createObjectURL(file));
+      setNewsImageUrl(""); // Clear URL input if a file is chosen
+    } else {
+      setNewsImageFile(null);
+      setNewsImagePreview(null);
+    }
+  };
+
   const handleCreateNews = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
+      let imageUrlToSave = newsImageUrl;
+      // Upload image to Cloudinary if a file was selected
+      if (newsImageFile) {
+        setIsUploadingNewsImage(true);
+        const formData = new FormData();
+        formData.append("file", newsImageFile);
+        formData.append("upload_preset", CLOUDINARY_UPLOAD_PRESET);
+        const response = await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`, {
+          method: "POST",
+          body: formData,
+        });
+        if (!response.ok) {
+          setIsUploadingNewsImage(false);
+          throw new Error("Failed to upload news image to Cloudinary");
+        }
+        const data = await response.json();
+        imageUrlToSave = data.secure_url;
+        setIsUploadingNewsImage(false);
+      }
+      
       await addDoc(collection(db, "news"), {
         title: newsTitle,
         content: newsContent,
+        imageUrl: imageUrlToSave || null,
         createdAt: serverTimestamp()
       });
       toast({ title: "ประกาศข่าวเรียบร้อย" });
       setNewNewsTitle("");
       setNewNewsContent("");
+      setNewsImageFile(null);
+      setNewsImagePreview(null);
+      setNewsImageUrl("");
     } catch (error) {
+      setIsUploadingNewsImage(false);
       toast({ title: "ผิดพลาดในการประกาศข่าว", variant: "destructive" });
     }
   };
@@ -841,24 +883,89 @@ export default function AdminDashboard() {
                   </div>
                   <div>
                     <Label htmlFor="newsContent">เนื้อหา</Label>
-                    <Input id="newsContent" value={newsContent} onChange={(e) => setNewNewsContent(e.target.value)} placeholder="เนื้อหาข่าว" required />
+                    <Textarea id="newsContent" value={newsContent} onChange={(e) => setNewNewsContent(e.target.value)} placeholder="เนื้อหาข่าว (สามารถใส่ข้อความยาวได้)" required rows={4} className="min-h-[100px]" />
                   </div>
-                  <Button type="submit" className="w-full" disabled={isCreatingEvent}><Megaphone className="mr-2 h-4 w-4" />ประกาศข่าว</Button>
+                  <div>
+                    <Label>รูปภาพประกอบ (ไม่บังคับ)</Label>
+                    <div className="flex flex-col sm:flex-row gap-4 items-start">
+                      <div className="flex-1 space-y-2">
+                        <Input
+                          type="file"
+                          accept="image/*"
+                          onChange={handleNewsImageUpload}
+                          className="cursor-pointer"
+                        />
+                        {newsImagePreview && (
+                          <div className="relative w-full aspect-video rounded-lg overflow-hidden border border-white/10">
+                            <img src={newsImagePreview} alt="Preview" className="w-full h-full object-cover" />
+                            <Button
+                              type="button"
+                              variant="destructive"
+                              size="sm"
+                              className="absolute top-2 right-2 h-7 w-7 p-0"
+                              onClick={() => { setNewsImageFile(null); setNewsImagePreview(null); }}
+                            >
+                              <X className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        )}
+                      </div>
+                      <div className="flex-1 space-y-2">
+                        <p className="text-xs text-muted-foreground">หรือใส่ URL รูปโดยตรง:</p>
+                        <Input
+                          value={newsImageUrl}
+                          onChange={(e) => setNewsImageUrl(e.target.value)}
+                          placeholder="https://example.com/image.jpg"
+                          disabled={!!newsImageFile}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <Button type="submit" className="w-full" disabled={isCreatingEvent || isUploadingNewsImage}>
+                    {isUploadingNewsImage ? (
+                      <><Loader2 className="mr-2 h-4 w-4 animate-spin" />กำลังอัปโหลดรูป...</>
+                    ) : (
+                      <><Megaphone className="mr-2 h-4 w-4" />ประกาศข่าว</>
+                    )}
+                  </Button>
                 </form>
 
-                <h3 className="text-lg font-semibold mt-8 mb-4">ข่าวที่มีอยู่</h3>
-                <div className="space-y-4">
-                  {news.map((item) => (
-                    <Card key={item.id} className="bg-card/70 border-white/10">
-                      <CardContent className="p-4 flex items-center justify-between">
-                        <div>
-                          <p className="font-semibold">{item.title}</p>
-                          <p className="text-sm text-muted-foreground">{item.content}</p>
-                        </div>
-                        <Button variant="destructive" size="sm" onClick={() => handleDeleteNews(item.id)}><Trash2 className="h-4 w-4" /></Button>
-                      </CardContent>
-                    </Card>
-                  ))}
+                <div className="mt-8">
+                  <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
+                    <FileImage className="h-5 w-5 text-primary" />
+                    ข่าวที่มีอยู่
+                    <Badge variant="secondary">{news.length} รายการ</Badge>
+                  </h3>
+                  <div className="space-y-4 max-h-[600px] overflow-y-auto pr-2 custom-scrollbar">
+                    {news.length === 0 ? (
+                      <div className="text-center py-12 text-muted-foreground">
+                        <FileImage className="h-12 w-12 mx-auto mb-4 opacity-30" />
+                        <p>ยังไม่มีประกาศ</p>
+                      </div>
+                    ) : (
+                      news.map((item) => (
+                        <Card key={item.id} className="bg-card/70 border-white/10 overflow-hidden">
+                          <CardContent className="p-0">
+                            {item.imageUrl && (
+                              <div className="w-full aspect-[21/9] overflow-hidden">
+                                <img src={item.imageUrl} alt={item.title} className="w-full h-full object-cover" />
+                              </div>
+                            )}
+                            <div className="p-4 flex items-start justify-between gap-3">
+                              <div className="flex-1 min-w-0">
+                                <p className="font-semibold text-white truncate">{item.title}</p>
+                                <p className="text-sm text-muted-foreground line-clamp-2 mt-1">{item.content}</p>
+                                <p className="text-xs text-white/30 mt-2">
+                                  {item.createdAt?.toDate ? item.createdAt.toDate().toLocaleDateString("th-TH", { year: "numeric", month: "short", day: "numeric" }) : ""}
+                                </p>
+                              </div>
+                              <Button variant="destructive" size="sm" onClick={() => handleDeleteNews(item.id)} className="shrink-0"><Trash2 className="h-4 w-4" /></Button>
+                            </div>
+                          </CardContent>
+                        </Card>
+                      ))
+                    )}
+                  </div>
                 </div>
               </CardContent>
             </Card>
