@@ -227,6 +227,7 @@ export async function registerRoutes(
 
   // Delete user from Firebase Auth (admin only)
   app.delete("/api/admin/users/:id", async (req, res) => {
+    res.setHeader("Content-Type", "application/json");
     try {
       const authHeader = req.headers.authorization;
       if (!authHeader) {
@@ -251,6 +252,7 @@ export async function registerRoutes(
   // Get all Firebase Auth users (admin only)
   app.get("/api/admin/auth-users", async (req, res) => {
     try {
+    res.setHeader("Content-Type", "application/json");
       const authHeader = req.headers.authorization;
       if (!authHeader) {
         return res.status(401).json({ error: "Unauthorized" });
@@ -281,6 +283,7 @@ export async function registerRoutes(
   app.put("/api/admin/users/:id/disable", async (req, res) => {
     try {
       const { disabled } = req.body;
+    res.setHeader("Content-Type", "application/json");
       const authHeader = req.headers.authorization;
       if (!authHeader) {
         return res.status(401).json({ error: "Unauthorized" });
