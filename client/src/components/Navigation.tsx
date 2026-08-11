@@ -30,7 +30,8 @@ export function Navigation() {
 
   return (
     <>
-      <nav className="sticky top-0 z-50 w-full border-b border-white/[0.08] bg-zinc-950/90 shadow-[0_8px_24px_-16px_rgb(0_0_0_/_0.9)]">
+      <nav className="sticky top-0 z-50 w-full border-b border-white/[0.08] bg-zinc-950/90 shadow-[0_6px_20px_-14px_rgb(0_0_0_/_0.9)]">
+        <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-primary/30 via-accent/20 to-transparent"></div>
         <div className="container mx-auto flex min-h-[4rem] sm:min-h-[4.5rem] items-center justify-between gap-1.5 px-2 sm:px-5">
           {/* Logo Section */}
           <Link href="/">
@@ -38,7 +39,7 @@ export function Navigation() {
               <img
                 src="/logo.png"
                 alt="WNYTC Esports Championship"
-                className="h-10 w-10 rounded-xl object-contain"
+                className="h-10 w-10 rounded-lg object-contain"
               />
               <span className="hidden whitespace-nowrap font-display text-sm font-bold uppercase tracking-tight text-white transition-colors group-hover:text-primary md:block sm:text-xl">
                 WangNamYen<span className="text-primary">Esports</span>
@@ -48,7 +49,7 @@ export function Navigation() {
 
           {/* Navigation Items */}
           <div className="scrollbar-hide flex flex-1 items-center justify-center overflow-x-auto px-0.5 sm:px-3">
-            <div className="flex items-center gap-0.5 sm:gap-1 rounded-xl border border-white/[0.055] bg-white/[0.018] p-0.5 sm:p-1">
+            <div className="flex items-center gap-0.5 sm:gap-1 rounded-lg border border-white/[0.055] bg-white/[0.018] p-0.5 sm:p-1">
               {navItems.map((item) => {
                 const isActive = location === item.href;
                 return (

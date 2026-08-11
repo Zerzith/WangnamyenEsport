@@ -491,7 +491,7 @@ export default function EventDetail() {
       )}
 
       {/* Event Banner */}
-      <div className="relative h-80 rounded-3xl overflow-hidden mb-8 border border-white/10 shadow-xl">
+      <div className="relative h-80 rounded-xl overflow-hidden mb-8 border border-white/10 shadow-xl">
         <img
           src={event.bannerUrl || "https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=2070&auto=format&fit=crop"}
           alt={event.title}
@@ -522,7 +522,7 @@ export default function EventDetail() {
               animate={{ opacity: 1, scale: 1 }}
               className="mb-8"
             >
-              <Card className="bg-gradient-to-br from-yellow-500/20 via-yellow-500/5 to-transparent border-yellow-500/30 p-8 rounded-3xl text-center relative overflow-hidden group">
+              <Card className="bg-gradient-to-br from-yellow-500/20 via-yellow-500/5 to-transparent border-yellow-500/30 p-8 rounded-xl text-center relative overflow-hidden group">
                 <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-yellow-500 to-transparent" />
                 <Trophy className="w-16 h-16 text-yellow-500 mx-auto mb-4 animate-bounce" />
                 <h2 className="text-3xl font-black text-white mb-2 tracking-tighter uppercase">
@@ -530,7 +530,7 @@ export default function EventDetail() {
                 </h2>
                 <div className="flex flex-col items-center gap-4 mt-6">
                   {registrations.find(r => r.id === event.championTeamId)?.logoUrl && (
-                    <div className="w-24 h-24 rounded-2xl overflow-hidden ring-4 ring-yellow-500/50 shadow-xl shadow-yellow-500/20">
+                    <div className="w-24 h-24 rounded-xl overflow-hidden ring-4 ring-yellow-500/50 shadow-xl shadow-yellow-500/20">
                       <img 
                         src={registrations.find(r => r.id === event.championTeamId)?.logoUrl} 
                         alt="Champion Logo" 
@@ -549,19 +549,19 @@ export default function EventDetail() {
             </motion.div>
           )}
 
-          <Card className="bg-card/50 border-white/10 p-8 rounded-3xl  shadow-xl ring-1 ring-primary/20">
+          <Card className="bg-card/50 border-white/10 p-8 rounded-xl  shadow-xl ring-1 ring-primary/20">
             <h2 className="text-2xl font-bold text-white mb-6 flex items-center gap-2">
               <div className="w-1 h-6 bg-primary rounded-full" />
               รายละเอียดการแข่งขัน
             </h2>       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-              <div className="flex items-center gap-4 p-4 rounded-2xl bg-white/5 border border-white/5">
+              <div className="flex items-center gap-4 p-4 rounded-xl bg-white/5 border border-white/5">
                 <Calendar className="w-6 h-6 text-primary" />
                 <div>
                   <p className="text-xs text-muted-foreground uppercase font-bold tracking-wider">วันที่แข่งขัน</p>
                   <p className="text-white font-medium">{event.date}</p>
                 </div>
               </div>
-              <div className="flex items-center gap-4 p-4 rounded-2xl bg-white/5 border border-white/5">
+              <div className="flex items-center gap-4 p-4 rounded-xl bg-white/5 border border-white/5">
                 <Users className="w-6 h-6 text-primary" />
                 <div>
                   <p className="text-xs text-muted-foreground uppercase font-bold tracking-wider">ทีมที่ลงสมัคร</p>
@@ -583,27 +583,27 @@ export default function EventDetail() {
             isOpen && !isFull && !showRegistrationForm ? (
               <Button
                 onClick={() => setShowRegistrationForm(true)}
-                className="w-full bg-primary hover:bg-primary/80 py-8 text-xl font-bold rounded-2xl shadow-lg shadow-primary/20 transition-all hover:scale-[1.02]"
+                className="w-full bg-primary hover:bg-primary/80 py-8 text-xl font-bold rounded-xl shadow-lg shadow-primary/20 transition-all hover:scale-[1.02]"
               >
                 ลงสมัครเข้าแข่งขันตอนนี้
               </Button>
             ) : !isOpen ? (
-              <Card className="bg-red-500/10 border-red-500/20 p-8 rounded-3xl text-center ">
+              <Card className="bg-red-500/10 border-red-500/20 p-8 rounded-xl text-center ">
                 <AlertCircle className="w-12 h-12 text-red-500 mx-auto mb-4" />
                 <h2 className="text-2xl font-bold text-white mb-2">ปิดรับสมัครแล้ว</h2>
                 <p className="text-muted-foreground">รายการแข่งขันนี้ไม่ได้เปิดรับสมัครในขณะนี้</p>
               </Card>
             ) : isFull ? (
-              <Card className="bg-yellow-500/10 border-yellow-500/20 p-8 rounded-3xl text-center ">
+              <Card className="bg-yellow-500/10 border-yellow-500/20 p-8 rounded-xl text-center ">
                 <Users className="w-12 h-12 text-yellow-500 mx-auto mb-4" />
                 <h2 className="text-2xl font-bold text-white mb-2">ทีมสมัครเต็มแล้ว</h2>
                 <p className="text-muted-foreground">ขออภัย รายการแข่งขันนี้มีผู้สมัครครบจำนวนแล้ว</p>
               </Card>
             ) : null
           ) : !showRegistrationForm && (
-            <Card className="bg-card/50 border-white/10 p-8 rounded-3xl border-primary/20 bg-primary/5 ">
+            <Card className="bg-card/50 border-white/10 p-8 rounded-xl border-primary/20 bg-primary/5 ">
               <div className="flex flex-col md:flex-row items-center gap-6">
-                <div className="w-20 h-20 bg-primary/20 rounded-2xl flex items-center justify-center shrink-0 overflow-hidden ring-2 ring-primary/30">
+                <div className="w-20 h-20 bg-primary/20 rounded-xl flex items-center justify-center shrink-0 overflow-hidden ring-2 ring-primary/30">
                   {userRegistration.logoUrl ? (
                     <img src={userRegistration.logoUrl} alt={userRegistration.teamName} className="w-full h-full object-cover" />
                   ) : (
@@ -643,7 +643,7 @@ export default function EventDetail() {
           )}
 
           {showRegistrationForm && (
-            <Card className="bg-card/50 border-white/10 p-8 rounded-3xl  shadow-xl ring-1 ring-primary/20">
+            <Card className="bg-card/50 border-white/10 p-8 rounded-xl  shadow-xl ring-1 ring-primary/20">
               <h2 className="text-2xl font-bold text-white mb-6 flex items-center gap-3">
                 {isEditing ? (
                   <><Edit2 className="w-6 h-6 text-primary" /> แก้ไขรายละเอียดทีม</>
@@ -664,10 +664,10 @@ export default function EventDetail() {
                   
                   {formData.logoUrl ? (
                     <div className="relative w-32 h-32 mb-4 group/logo">
-                      <img src={formData.logoUrl} alt="Team Logo Preview" className="w-full h-full object-cover rounded-3xl ring-4 ring-primary/20" />
+                      <img src={formData.logoUrl} alt="Team Logo Preview" className="w-full h-full object-cover rounded-xl ring-4 ring-primary/20" />
                       <div 
                         onClick={() => fileInputRef.current?.click()}
-                        className="absolute inset-0 bg-black/60 rounded-3xl flex items-center justify-center opacity-0 group-hover/logo:opacity-100 transition-opacity cursor-pointer"
+                        className="absolute inset-0 bg-black/60 rounded-xl flex items-center justify-center opacity-0 group-hover/logo:opacity-100 transition-opacity cursor-pointer"
                       >
                         <Upload className="w-8 h-8 text-white" />
                       </div>
@@ -684,7 +684,7 @@ export default function EventDetail() {
                       onClick={() => fileInputRef.current?.click()}
                       className="flex flex-col items-center cursor-pointer"
                     >
-                      <div className="w-20 h-20 rounded-3xl bg-primary/10 flex items-center justify-center mb-4 group-hover:scale-105 transition-transform">
+                      <div className="w-20 h-20 rounded-xl bg-primary/10 flex items-center justify-center mb-4 group-hover:scale-105 transition-transform">
                         {uploading ? <Loader2 className="w-10 h-10 text-primary animate-spin" /> : <ImageIcon className="w-10 h-10 text-primary" />}
                       </div>
                       <p className="text-white font-bold">อัปโหลดโลโก้ทีม</p>
@@ -700,7 +700,7 @@ export default function EventDetail() {
                       value={formData.teamName}
                       onChange={(e) => setFormData({ ...formData, teamName: e.target.value })}
                       placeholder="ระบุชื่อทีมของคุณ"
-                      className="bg-white/5 border-white/10 h-14 rounded-2xl focus:ring-primary text-lg"
+                      className="bg-white/5 border-white/10 h-14 rounded-xl focus:ring-primary text-lg"
                       required
                     />
                   </div>
@@ -711,7 +711,7 @@ export default function EventDetail() {
                     </label>
                     <div className="space-y-6">
                       {formData.members.map((member, index) => (
-                        <div key={index} className="p-6 rounded-2xl bg-white/5 border border-white/5 relative group space-y-4">
+                        <div key={index} className="p-6 rounded-xl bg-white/5 border border-white/5 relative group space-y-4">
                           <div className="absolute -left-3 top-6 w-8 h-8 rounded-full bg-primary flex items-center justify-center text-xs font-bold text-white shadow-lg ring-4 ring-background">
                             {index + 1}
                           </div>
@@ -848,14 +848,14 @@ export default function EventDetail() {
                         logoUrl: "" 
                       });
                     }}
-                    className="h-14 px-8 rounded-2xl text-muted-foreground hover:text-white"
+                    className="h-14 px-8 rounded-xl text-muted-foreground hover:text-white"
                   >
                     ยกเลิก
                   </Button>
                   <Button 
                     type="submit" 
                     disabled={isRegistering || uploading} 
-                    className="bg-primary hover:bg-primary/80 h-14 px-10 rounded-2xl font-bold shadow-lg shadow-primary/20 text-lg"
+                    className="bg-primary hover:bg-primary/80 h-14 px-10 rounded-xl font-bold shadow-lg shadow-primary/20 text-lg"
                   >
                     {isRegistering && <Loader2 className="w-5 h-5 mr-2 animate-spin" />}
                     {isEditing ? 'บันทึกการแก้ไขข้อมูล' : 'ยืนยันการลงสมัครแข่งขัน'}
@@ -869,7 +869,7 @@ export default function EventDetail() {
         {/* Sidebar */}
         <div className="space-y-8">
           {/* Approved Teams */}
-          <Card className="bg-card/50 border-white/10 p-6 rounded-3xl ">
+          <Card className="bg-card/50 border-white/10 p-6 rounded-xl ">
             <h3 className="text-xl font-bold text-white mb-6 flex items-center gap-2">
               <Trophy className="w-5 h-5 text-yellow-500" />
               ทีมที่เข้าร่วม ({approvedCount})
@@ -882,7 +882,7 @@ export default function EventDetail() {
                     setSelectedTeam(reg);
                     setShowTeamModal(true);
                   }}
-                  className="w-full flex items-center gap-3 p-3 rounded-2xl bg-white/5 border border-white/5 hover:bg-white/10 transition-colors group cursor-pointer text-left"
+                  className="w-full flex items-center gap-3 p-3 rounded-xl bg-white/5 border border-white/5 hover:bg-white/10 transition-colors group cursor-pointer text-left"
                 >
                   <div className="w-12 h-12 rounded-xl bg-primary/20 flex items-center justify-center text-white font-bold overflow-hidden ring-2 ring-transparent group-hover:ring-primary/50 transition-all flex-shrink-0">
                     {reg.logoUrl ? (
@@ -907,14 +907,14 @@ export default function EventDetail() {
 
           {/* Pending Teams (Admin only) */}
           {isAdmin && pendingCount > 0 && (
-            <Card className="bg-card/50 border-white/10 p-6 rounded-3xl border-yellow-500/20 ">
+            <Card className="bg-card/50 border-white/10 p-6 rounded-xl border-yellow-500/20 ">
               <h3 className="text-xl font-bold text-white mb-6 flex items-center gap-2">
                 <div className="w-2 h-2 rounded-full bg-yellow-500 animate-pulse" />
                 รออนุมัติ ({pendingCount})
               </h3>
               <div className="space-y-4">
                 {registrations.filter(r => r.status === 'pending').map((reg, index) => (
-                  <div key={index} className="p-4 rounded-2xl bg-yellow-500/5 border border-yellow-500/10">
+                  <div key={index} className="p-4 rounded-xl bg-yellow-500/5 border border-yellow-500/10">
                     <div className="flex items-center justify-between mb-4">
                       <div className="flex items-center gap-3">
                         <div className="w-10 h-10 rounded-lg bg-yellow-500/20 flex items-center justify-center text-white font-bold overflow-hidden">

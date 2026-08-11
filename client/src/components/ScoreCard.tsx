@@ -80,7 +80,7 @@ export function ScoreCard({ match }: ScoreCardProps) {
     <motion.div 
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="relative overflow-hidden rounded-2xl border border-white/10 bg-card/50 hover:border-primary/50 transition-all group "
+      className="relative overflow-hidden rounded-xl border border-white/10 bg-card/50 hover:border-primary/50 transition-all group "
       style={match.bannerUrl ? { backgroundImage: `url(${match.bannerUrl})`, backgroundSize: 'cover', backgroundPosition: 'center', backgroundRepeat: 'no-repeat' } : {}}
     >
       <div className="relative z-10 p-6">
@@ -96,7 +96,7 @@ export function ScoreCard({ match }: ScoreCardProps) {
         <div className="flex items-center justify-between gap-4 md:gap-8">
           {/* Team A */}
           <div className="flex-1 text-center flex flex-col items-center gap-3">
-            <div className={`w-16 h-16 md:w-20 md:h-20 rounded-2xl bg-gradient-to-br from-white/10 to-white/5 flex items-center justify-center border border-white/10 group-hover:border-primary/30 transition-all shadow-xl overflow-hidden ${winnerA ? 'ring-2 ring-primary ring-offset-4 ring-offset-background' : ''}`}>
+            <div className={`w-16 h-16 md:w-20 md:h-20 rounded-xl bg-gradient-to-br from-white/10 to-white/5 flex items-center justify-center border border-white/10 group-hover:border-primary/30 transition-all shadow-xl overflow-hidden ${winnerA ? 'ring-2 ring-primary ring-offset-4 ring-offset-background' : ''}`}>
               {match.logoUrlA ? (
                 <img src={match.logoUrlA} alt={match.teamA} className="w-full h-full object-cover" />
               ) : (
@@ -148,7 +148,7 @@ export function ScoreCard({ match }: ScoreCardProps) {
               </div>
             ) : (
               /* Regular Score Display */
-              <div className="flex items-center gap-3 md:gap-5 font-display font-bold text-3xl md:text-5xl bg-black/60 px-6 py-3 rounded-2xl border border-white/5 shadow-xl">
+              <div className="flex items-center gap-3 md:gap-5 font-display font-bold text-3xl md:text-5xl bg-black/60 px-6 py-3 rounded-xl border border-white/5 shadow-xl">
                 <span className={match.scoreA >= match.scoreB ? 'text-white' : 'text-white/40'}>{match.scoreA}</span>
                 <span className="text-primary/40 text-2xl md:text-4xl">:</span>
                 <span className={match.scoreB >= match.scoreA ? 'text-white' : 'text-white/40'}>{match.scoreB}</span>
@@ -164,7 +164,7 @@ export function ScoreCard({ match }: ScoreCardProps) {
 
           {/* Team B */}
           <div className="flex-1 text-center flex flex-col items-center gap-3">
-            <div className={`w-16 h-16 md:w-20 md:h-20 rounded-2xl bg-gradient-to-br from-white/10 to-white/5 flex items-center justify-center border border-white/10 group-hover:border-primary/30 transition-all shadow-xl overflow-hidden ${winnerB ? 'ring-2 ring-primary ring-offset-4 ring-offset-background' : ''}`}>
+            <div className={`w-16 h-16 md:w-20 md:h-20 rounded-xl bg-gradient-to-br from-white/10 to-white/5 flex items-center justify-center border border-white/10 group-hover:border-primary/30 transition-all shadow-xl overflow-hidden ${winnerB ? 'ring-2 ring-primary ring-offset-4 ring-offset-background' : ''}`}>
               {match.logoUrlB ? (
                 <img src={match.logoUrlB} alt={match.teamB} className="w-full h-full object-cover" />
               ) : (

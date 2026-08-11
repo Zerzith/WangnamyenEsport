@@ -253,7 +253,7 @@ export default function MatchManagement() {
         </div>
 
         {/* Team Selection */}
-        <Card className="bg-card/50 border-white/10 p-6 rounded-3xl mb-8">
+        <Card className="bg-card/50 border-white/10 p-6 rounded-xl mb-8">
           <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
             <Users className="w-5 h-5 text-primary" />
             เลือกทีม
@@ -264,7 +264,7 @@ export default function MatchManagement() {
                 key={team.id}
                 whileHover={{ scale: 1.02 }}
                 onClick={() => setSelectedTeamId(team.id)}
-                className={`p-4 rounded-2xl border-2 transition-all text-left ${
+                className={`p-4 rounded-xl border-2 transition-all text-left ${
                   selectedTeamId === team.id
                     ? "border-primary bg-primary/10"
                     : "border-white/10 bg-white/5 hover:border-white/20"
@@ -331,7 +331,7 @@ export default function MatchManagement() {
                       </div>
                     </CardHeader>
                     <CardContent className="space-y-4">
-                      <div className="flex items-center justify-between p-4 bg-white/5 rounded-2xl border border-white/10">
+                      <div className="flex items-center justify-between p-4 bg-white/5 rounded-xl border border-white/10">
                         <div className="flex-1 text-center">
                           <p className="text-sm text-muted-foreground mb-2">ทีม A</p>
                           <p className="font-bold text-white">{match.teamAName}</p>

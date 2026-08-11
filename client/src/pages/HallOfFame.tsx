@@ -141,7 +141,7 @@ export default function HallOfFame() {
       </div>
 
       {filteredTeams.length === 0 ? (
-        <div className="text-center py-12 bg-card/20 rounded-3xl border border-dashed border-white/10">
+        <div className="text-center py-12 bg-card/20 rounded-xl border border-dashed border-white/10">
           <Award className="w-16 h-16 mx-auto text-white/10 mb-4" />
           <p className="text-muted-foreground">ยังไม่มีทีมที่ผ่านการคัดเลือก</p>
         </div>

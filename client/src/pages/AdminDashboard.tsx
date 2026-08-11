@@ -621,7 +621,7 @@ export default function AdminDashboard() {
             <TabsTrigger value="news" className="py-2.5 px-4"><Megaphone className="mr-2 h-4 w-4" />ข่าวสาร</TabsTrigger>
           </TabsList>
 
-          <TabsContent value="events" className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+          <TabsContent value="events" className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-300">
             <Card className="bg-card/50 border-white/10 overflow-hidden">
               <CardHeader>
                 <CardTitle className="text-xl">สร้างการแข่งขันใหม่</CardTitle>
@@ -762,7 +762,7 @@ export default function AdminDashboard() {
             </Card>
           </TabsContent>
 
-          <TabsContent value="news" className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+          <TabsContent value="news" className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-300">
             <Card className="bg-card/50 border-white/10 overflow-hidden">
               <CardHeader>
                 <CardTitle className="text-xl">จัดการข่าวสาร</CardTitle>
@@ -798,7 +798,7 @@ export default function AdminDashboard() {
             </Card>
           </TabsContent>
 
-          <TabsContent value="registrations" className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+          <TabsContent value="registrations" className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-300">
             <Card className="bg-card/50 border-white/10 overflow-hidden">
               <CardHeader className="flex flex-row items-center justify-between">
                 <CardTitle className="text-xl">คำขอสมัครเข้าร่วม</CardTitle>
@@ -864,7 +864,7 @@ export default function AdminDashboard() {
             </Card>
           </TabsContent>
 
-          <TabsContent value="teams" className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+          <TabsContent value="teams" className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-300">
             <Card className="bg-card/50 border-white/10 overflow-hidden">
               <CardHeader>
                 <CardTitle className="text-xl">ทีมที่ได้รับการอนุมัติ</CardTitle>
@@ -927,7 +927,7 @@ export default function AdminDashboard() {
             </Card>
           </TabsContent>
 
-          <TabsContent value="matches" className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+          <TabsContent value="matches" className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-300">
             <Card className="bg-card/50 border-white/10 overflow-hidden">
               <CardHeader className="flex flex-row items-center justify-between">
                 <CardTitle className="text-xl">จัดการแมตช์</CardTitle>

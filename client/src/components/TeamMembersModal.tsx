@@ -29,7 +29,7 @@ export function TeamMembersModal({
 }: TeamMembersModalProps) {
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto bg-card/95 border-white/10 rounded-3xl">
+      <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto bg-card/95 border-white/10 rounded-xl">
         <DialogHeader className="sticky top-0 bg-card/95 pb-4 border-b border-white/10">
           <div className="flex items-center gap-4">
             {teamLogo && (
@@ -67,7 +67,7 @@ export function TeamMembersModal({
             members.map((member, index) => (
               <div
                 key={index}
-                className="p-4 rounded-2xl bg-white/5 border border-white/5 hover:bg-white/10 transition-colors"
+                className="p-4 rounded-xl bg-white/5 border border-white/5 hover:bg-white/10 transition-colors"
               >
                 <div className="grid grid-cols-2 gap-4">
                   <div>

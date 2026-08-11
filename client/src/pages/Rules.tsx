@@ -205,8 +205,8 @@ export default function Rules() {
           )}
 
           {/* Important Notice */}
-          <div className="bg-gradient-to-br from-yellow-500/20 to-orange-500/10 border border-yellow-500/20 rounded-3xl p-8 flex flex-col md:flex-row gap-6 items-center md:items-start">
-            <div className="w-16 h-16 rounded-2xl bg-yellow-500/20 flex items-center justify-center flex-shrink-0">
+          <div className="bg-gradient-to-br from-yellow-500/20 to-orange-500/10 border border-yellow-500/20 rounded-xl p-8 flex flex-col md:flex-row gap-6 items-center md:items-start">
+            <div className="w-16 h-16 rounded-xl bg-yellow-500/20 flex items-center justify-center flex-shrink-0">
               <AlertCircle className="w-10 h-10 text-yellow-400" />
             </div>
             <div>

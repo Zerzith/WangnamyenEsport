@@ -231,7 +231,7 @@ export default function EditRegistration() {
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
-            className={`mb-6 p-4 rounded-2xl ${
+            className={`mb-6 p-4 rounded-xl ${
               message.type === "success"
                 ? "bg-green-500/10 border border-green-500/20 text-green-400"
                 : "bg-red-500/10 border border-red-500/20 text-red-400"
@@ -243,7 +243,7 @@ export default function EditRegistration() {
 
         <form onSubmit={handleUpdate} className="space-y-8">
           {/* Logo Upload Section */}
-          <Card className="bg-card/50 border-white/10 p-8 rounded-3xl  shadow-xl ring-1 ring-primary/20">
+          <Card className="bg-card/50 border-white/10 p-8 rounded-xl  shadow-xl ring-1 ring-primary/20">
             <h2 className="text-2xl font-bold text-white mb-6 flex items-center gap-3">
               <Edit2 className="w-6 h-6 text-primary" /> แก้ไขรายละเอียดทีม
             </h2>
@@ -259,10 +259,10 @@ export default function EditRegistration() {
 
               {formData.logoUrl ? (
                 <div className="relative w-32 h-32 mb-4 group/logo">
-                  <img src={formData.logoUrl} alt="Team Logo Preview" className="w-full h-full object-cover rounded-3xl ring-4 ring-primary/20" />
+                  <img src={formData.logoUrl} alt="Team Logo Preview" className="w-full h-full object-cover rounded-xl ring-4 ring-primary/20" />
                   <div
                     onClick={() => fileInputRef.current?.click()}
-                    className="absolute inset-0 bg-black/60 rounded-3xl flex items-center justify-center opacity-0 group-hover/logo:opacity-100 transition-opacity cursor-pointer"
+                    className="absolute inset-0 bg-black/60 rounded-xl flex items-center justify-center opacity-0 group-hover/logo:opacity-100 transition-opacity cursor-pointer"
                   >
                     <Upload className="w-8 h-8 text-white" />
                   </div>
@@ -279,7 +279,7 @@ export default function EditRegistration() {
                   onClick={() => fileInputRef.current?.click()}
                   className="flex flex-col items-center cursor-pointer"
                 >
-                  <div className="w-20 h-20 rounded-3xl bg-primary/10 flex items-center justify-center mb-4 group-hover:scale-105 transition-transform">
+                  <div className="w-20 h-20 rounded-xl bg-primary/10 flex items-center justify-center mb-4 group-hover:scale-105 transition-transform">
                     {uploading ? <Loader2 className="w-10 h-10 text-primary animate-spin" /> : <ImageIcon className="w-10 h-10 text-primary" />}
                   </div>
                   <p className="text-white font-bold">อัปโหลดโลโก้ทีม</p>
@@ -295,7 +295,7 @@ export default function EditRegistration() {
                   value={formData.teamName}
                   onChange={(e) => setFormData({ ...formData, teamName: e.target.value })}
                   placeholder="ระบุชื่อทีมของคุณ"
-                  className="bg-white/5 border-white/10 h-14 rounded-2xl focus:ring-primary text-lg"
+                  className="bg-white/5 border-white/10 h-14 rounded-xl focus:ring-primary text-lg"
                   required
                 />
               </div>
@@ -306,7 +306,7 @@ export default function EditRegistration() {
                 </label>
                 <div className="space-y-6">
                   {formData.members.map((member, index) => (
-                    <div key={index} className="p-6 rounded-2xl bg-white/5 border border-white/5 relative group space-y-4">
+                    <div key={index} className="p-6 rounded-xl bg-white/5 border border-white/5 relative group space-y-4">
                       <div className="absolute -left-3 top-6 w-8 h-8 rounded-full bg-primary flex items-center justify-center text-xs font-bold text-white shadow-lg ring-4 ring-background">
                         {index + 1}
                       </div>
@@ -429,7 +429,7 @@ export default function EditRegistration() {
                 type="button"
                 variant="destructive"
                 onClick={handleDelete}
-                className="h-14 px-8 rounded-2xl"
+                className="h-14 px-8 rounded-xl"
               >
                 <Trash2 className="w-4 h-4 mr-2" />
                 ยกเลิกการสมัคร
@@ -439,14 +439,14 @@ export default function EditRegistration() {
                   type="button"
                   variant="ghost"
                   onClick={() => setLocation("/my-teams")}
-                  className="h-14 px-8 rounded-2xl text-muted-foreground hover:text-white"
+                  className="h-14 px-8 rounded-xl text-muted-foreground hover:text-white"
                 >
                   ยกเลิก
                 </Button>
                 <Button
                   type="submit"
                   disabled={isUpdating || uploading}
-                  className="bg-primary hover:bg-primary/80 h-14 px-10 rounded-2xl font-bold shadow-lg shadow-primary/20 text-lg"
+                  className="bg-primary hover:bg-primary/80 h-14 px-10 rounded-xl font-bold shadow-lg shadow-primary/20 text-lg"
                 >
                   {isUpdating && <Loader2 className="w-5 h-5 mr-2 animate-spin" />}
                   บันทึกการแก้ไขข้อมูล

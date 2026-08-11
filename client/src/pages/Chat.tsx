@@ -293,7 +293,7 @@ export default function Chat() {
                     <div className="flex items-center gap-2 mb-1">
                       <span className="text-[10px] font-bold text-muted-foreground">{censorText(msg.displayName)}</span>
                     </div>
-                    <div className={`px-3 py-2 rounded-2xl text-sm ${msg.userId === user.uid ? 'bg-primary text-white rounded-tr-none' : 'bg-white/10 text-white rounded-tl-none'}`}>
+                    <div className={`px-3 py-2 rounded-xl text-sm ${msg.userId === user.uid ? 'bg-primary text-white rounded-tr-none' : 'bg-white/10 text-white rounded-tl-none'}`}>
                       {censorText(msg.text)}
                     </div>
                   </div>

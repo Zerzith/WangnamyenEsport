@@ -244,7 +244,7 @@ export default function Bracket() {
                       <p className="text-muted-foreground text-lg">ยังไม่มีข้อมูลการแข่งขันในกลุ่มนี้</p>
                     </div>
                   ) : (
-                    <div className="scrollbar-hide overflow-x-auto rounded-2xl border border-white/[0.07] bg-zinc-950/20 pb-12">
+                    <div className="scrollbar-hide overflow-x-auto rounded-xl border border-white/[0.07] bg-zinc-950/20 pb-12">
                       <div className="flex min-w-max justify-center gap-12 px-5 py-10 md:gap-20">
                         {rounds.map((round, roundIndex) => (
                           <div key={round} className="flex flex-col justify-around gap-8">

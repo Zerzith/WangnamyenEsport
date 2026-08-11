@@ -67,8 +67,8 @@ const EventCard = memo(({ event, index, registeredCount, user }: {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ delay: Math.min(index * 0.08, 0.4) }}
-      className={`group relative h-[25rem] overflow-hidden rounded-2xl border bg-zinc-950/60 shadow-panel transition-all duration-200 ${
-        !isOpen || isFull ? "border-red-500/35 opacity-90 shadow-[0_14px_36px_-24px_rgb(239_68_68_/_0.45)]" : "border-white/[0.1] hover:-translate-y-1.5 hover:border-primary/50 hover:shadow-panel-hover"
+      className={`group relative h-[25rem] overflow-hidden rounded-xl border bg-zinc-950/60 shadow-panel clip-corner-tr transition-all duration-150 ${
+        !isOpen || isFull ? "border-red-500/35 opacity-90 shadow-[0_10px_28px_-20px_rgb(239_68_68_/_0.4)]" : "border-white/[0.1] hover:-translate-y-1 hover:border-primary/40 hover:shadow-panel-hover"
       }`}
     >
       <Link href={`/event/${event.id}`}>
@@ -85,17 +85,17 @@ const EventCard = memo(({ event, index, registeredCount, user }: {
 
       <div className="absolute top-4 right-4 z-10 flex gap-2">
         {!isOpen ? (
-          <div className="flex items-center gap-1.5 rounded-full border border-red-400/25 bg-red-500/15 px-3 py-1.5 text-[10px] font-black uppercase tracking-widest text-red-200 shadow-[0_0_18px_-9px_rgb(239_68_68_/_0.8)] ">
+          <div className="flex items-center gap-1.5 rounded-md border border-red-400/25 bg-red-500/15 px-3 py-1.5 text-[10px] font-black uppercase tracking-widest text-red-200 shadow-[0_0_14px_-6px_rgb(239_68_68_/_0.7)]">
             <AlertCircle className="w-3 h-3" />
             ปิดรับสมัคร
           </div>
         ) : isFull ? (
-          <div className="flex items-center gap-1.5 rounded-full border border-red-400/25 bg-red-500/15 px-3 py-1.5 text-[10px] font-black uppercase tracking-widest text-red-200 shadow-[0_0_18px_-9px_rgb(239_68_68_/_0.8)] ">
+          <div className="flex items-center gap-1.5 rounded-md border border-red-400/25 bg-red-500/15 px-3 py-1.5 text-[10px] font-black uppercase tracking-widest text-red-200 shadow-[0_0_14px_-6px_rgb(239_68_68_/_0.7)]">
             <AlertCircle className="w-3 h-3" />
             เต็มแล้ว
           </div>
         ) : (
-          <div className="flex items-center gap-1.5 rounded-full border border-emerald-400/25 bg-emerald-400/15 px-3 py-1.5 text-[10px] font-black uppercase tracking-widest text-emerald-200 shadow-[0_0_18px_-9px_rgb(52_211_153_/_0.8)] ">
+          <div className="flex items-center gap-1.5 rounded-md border border-emerald-400/25 bg-emerald-400/15 px-3 py-1.5 text-[10px] font-black uppercase tracking-widest text-emerald-200 shadow-[0_0_14px_-6px_rgb(52_211_153_/_0.7)]">
             <div className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
             เปิดรับสมัคร
           </div>
@@ -104,7 +104,7 @@ const EventCard = memo(({ event, index, registeredCount, user }: {
 
       <div className="pointer-events-none absolute bottom-0 left-0 w-full p-6 sm:p-7">
         <div className="flex items-center gap-2 mb-3 flex-wrap">
-          <span className="rounded-full border border-primary/25 bg-primary/15 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.14em] text-primary ">
+          <span className="rounded-md border border-primary/25 bg-primary/15 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.14em] text-primary">
             {event.game}
           </span>
           <span className="flex items-center gap-1 text-[10px] text-white/80 font-bold uppercase tracking-wider">
@@ -117,7 +117,7 @@ const EventCard = memo(({ event, index, registeredCount, user }: {
         </h3>
 
         <div className="flex items-center justify-between mt-4">
-          <div className="flex items-center gap-2 rounded-xl border border-white/10 bg-zinc-950/55 px-3 py-1.5 text-sm ">
+          <div className="flex items-center gap-2 rounded-md border border-white/10 bg-zinc-950/55 px-3 py-1.5 text-sm">
             <Users className="w-4 h-4 text-primary" />
             <span className={isFull ? "text-red-400 font-bold" : "text-white font-bold"}>
               {registeredCount}/{event.maxTeams || 16} ทีม
@@ -125,7 +125,7 @@ const EventCard = memo(({ event, index, registeredCount, user }: {
           </div>
           {isOpen && !isFull && (
             <Link href={user ? `/event/${event.id}` : "/login"}>
-              <Button size="sm" className="pointer-events-auto rounded-xl border-primary/45 bg-primary px-4 font-bold text-primary-foreground shadow-[0_12px_24px_-12px_rgb(34_211_238_/_0.9)] hover:bg-primary">
+              <Button size="sm" className="pointer-events-auto rounded-md border-primary/45 bg-primary px-4 font-bold text-primary-foreground shadow-[0_10px_20px_-10px_rgb(34_211_238_/_0.8)] hover:bg-primary">
                 สมัครเลย
               </Button>
             </Link>
@@ -199,7 +199,10 @@ export default function Home() {
     <div className="min-h-screen bg-transparent">
       {/* Hero Section */}
       <section className="esports-grid relative isolate flex min-h-[calc(100vh-4.5rem)] items-center overflow-hidden border-b border-white/[0.06] py-20">
-        <div className="absolute inset-0 z-0 bg-gradient-to-b from-primary/5 via-transparent to-primary/10 opacity-50"></div>
+        <div className="absolute top-0 left-0 w-32 h-0.5 bg-gradient-to-r from-primary to-transparent opacity-40"></div>
+        <div className="absolute top-0 right-0 w-32 h-0.5 bg-gradient-to-l from-accent to-transparent opacity-40"></div>
+        <div className="absolute bottom-0 left-0 w-32 h-0.5 bg-gradient-to-r from-accent to-transparent opacity-30"></div>
+        <div className="absolute inset-0 z-0 bg-gradient-to-b from-primary/4 via-transparent to-primary/8 opacity-50"></div>
         <div className="absolute inset-0 z-0" style={{
           backgroundImage: `radial-gradient(circle at 20% 50%, rgba(59, 130, 246, 0.1) 0%, transparent 50%), radial-gradient(circle at 80% 80%, rgba(139, 92, 246, 0.1) 0%, transparent 50%)`
         }}></div>
@@ -208,7 +211,7 @@ export default function Home() {
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="mb-7 inline-flex items-center gap-2 rounded-full border border-primary/25 bg-primary/[0.09] px-4 py-2 text-xs font-bold tracking-[0.13em] text-primary shadow-[0_0_20px_-8px_rgb(34_211_238_/_0.75)] "
+              className="mb-7 inline-flex items-center gap-2 rounded-md border border-primary/25 bg-primary/[0.09] px-4 py-2 text-xs font-bold tracking-[0.13em] text-primary shadow-[0_0_16px_-6px_rgb(34_211_238_/_0.6)]"
             >
               <Gamepad2 className="w-4 h-4" />
               WANGNAMYEN ESPORTS
@@ -238,12 +241,12 @@ export default function Home() {
               className="flex flex-wrap gap-3 sm:gap-4"
             >
               <Link href="/bracket">
-                <Button size="lg" className="h-14 rounded-xl border-primary/45 bg-primary px-8 text-lg font-bold text-primary-foreground shadow-[0_16px_34px_-14px_rgb(34_211_238_/_0.95)] hover:bg-primary">
+                <Button size="lg" className="h-14 rounded-lg border-primary/45 bg-primary px-8 text-lg font-bold text-primary-foreground shadow-[0_12px_28px_-12px_rgb(34_211_238_/_0.8)] hover:bg-primary">
                   ดูสายการแข่งขัน
                 </Button>
               </Link>
               <Link href="/rules">
-                <Button size="lg" variant="outline" className="h-14 rounded-xl border-white/15 bg-white/[0.035] px-8 text-lg font-bold text-white hover:border-primary/40 hover:bg-primary/10 hover:text-primary">
+                <Button size="lg" variant="outline" className="h-14 rounded-lg border-white/15 bg-white/[0.035] px-8 text-lg font-bold text-white hover:border-primary/40 hover:bg-primary/10 hover:text-primary">
                   กฎการแข่งขัน
                 </Button>
               </Link>
@@ -269,8 +272,8 @@ export default function Home() {
                   transition={{ delay: Math.min(index * 0.08, 0.4) }}
                 >
                   <Link href={`/event/${event.id}`}>
-                    <Card className="group cursor-pointer rounded-2xl border-yellow-400/25 bg-gradient-to-br from-yellow-400/15 via-yellow-500/[0.045] to-transparent p-8 text-center shadow-[0_14px_36px_-24px_rgb(234_179_8_/_0.45)] transition-all duration-300 hover:-translate-y-1 hover:border-yellow-300/45 hover:shadow-[0_18px_44px_-20px_rgb(234_179_8_/_0.7)]">
-                      <Trophy className="w-12 h-12 text-yellow-500 mx-auto mb-4 group-hover:animate-bounce" />
+                    <Card className="group cursor-pointer rounded-xl border-yellow-400/25 bg-gradient-to-br from-yellow-400/15 via-yellow-500/[0.045] to-transparent p-8 text-center shadow-[0_10px_28px_-20px_rgb(234_179_8_/_0.4)] transition-all duration-150 hover:-translate-y-1 hover:border-yellow-300/40 hover:shadow-[0_14px_32px_-18px_rgb(234_179_8_/_0.6)]">
+                      <Trophy className="w-12 h-12 text-yellow-500 mx-auto mb-4 transition-transform duration-150 group-hover:scale-105" />
                       <h3 className="text-xl font-bold text-white mb-2">{event.title}</h3>
                       <p className="text-yellow-500 font-black text-2xl uppercase tracking-tighter">CHAMPION</p>
                       <div className="mt-4 inline-flex items-center text-sm text-muted-foreground group-hover:text-white transition-colors">
@@ -287,7 +290,7 @@ export default function Home() {
 
       {/* Events Section */}
       <section className="relative overflow-hidden py-24">
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[600px] bg-primary/5 rounded-full blur-[120px] -z-10" />
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[600px] bg-primary/4 rounded-full blur-[100px] -z-10" />
 
         <div className="container mx-auto px-4">
           <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-4">
@@ -343,7 +346,7 @@ export default function Home() {
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               {news.map((item) => (
-                <Card key={item.id} className="group esports-panel esports-panel-interactive rounded-2xl border-white/[0.09] bg-zinc-900/55 p-6">
+                <Card key={item.id} className="group esports-panel esports-panel-interactive rounded-xl border-white/[0.09] bg-zinc-900/55 p-6">
                   <div className="mb-4 flex items-center gap-2 text-xs font-bold uppercase tracking-[0.16em] text-primary">
                     <Clock className="w-3 h-3" />
                     {item.createdAt?.toDate ? formatDate(item.createdAt.toDate().toISOString()) : "เมื่อเร็วๆ นี้"}

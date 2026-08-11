@@ -6,11 +6,11 @@ export default {
   theme: {
     extend: {
       borderRadius: {
-        lg: "0.75rem",
-        md: "0.5625rem",
-        sm: "0.375rem",
-        xl: "1rem",
-        "2xl": "1.25rem",
+        lg: "0.5rem",
+        md: "0.375rem",
+        sm: "0.25rem",
+        xl: "0.625rem",
+        "2xl": "0.75rem",
       },
       colors: {
         background: "hsl(var(--background) / <alpha-value>)",
@@ -99,10 +99,10 @@ export default {
         mono: ["var(--font-mono)"],
       },
       boxShadow: {
-        panel: "inset 0 1px 0 rgb(255 255 255 / 0.045), 0 14px 36px -24px rgb(0 0 0 / 0.85)",
-        "panel-hover": "inset 0 1px 0 rgb(255 255 255 / 0.07), 0 18px 44px -20px rgb(0 0 0 / 0.9), 0 0 20px -10px rgb(34 211 238 / 0.25)",
-        glow: "0 0 0 1px rgb(34 211 238 / 0.1), 0 0 30px -10px rgb(34 211 238 / 0.45)",
-        "glow-violet": "0 0 0 1px rgb(139 92 246 / 0.1), 0 0 30px -10px rgb(139 92 246 / 0.4)",
+        panel: "inset 0 1px 0 rgb(255 255 255 / 0.04), 0 10px 28px -20px rgb(0 0 0 / 0.8)",
+        "panel-hover": "inset 0 1px 0 rgb(255 255 255 / 0.05), 0 14px 32px -18px rgb(0 0 0 / 0.85), 0 0 0 1px rgb(34 211 238 / 0.04)",
+        glow: "0 0 0 1px rgb(34 211 238 / 0.08), 0 0 24px -8px rgb(34 211 238 / 0.35)",
+        "glow-violet": "0 0 0 1px rgb(139 92 246 / 0.08), 0 0 24px -8px rgb(139 92 246 / 0.35)",
       },
       backgroundImage: {
         "arena-radial": "radial-gradient(circle at top right, rgb(34 211 238 / 0.16), transparent 42%), radial-gradient(circle at bottom left, rgb(139 92 246 / 0.13), transparent 44%)",
