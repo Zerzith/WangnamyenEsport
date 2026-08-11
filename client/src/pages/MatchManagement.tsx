@@ -6,6 +6,7 @@ import { db } from "@/lib/firebase";
 import { useToast } from "@/hooks/use-toast";
 import { Card, CardHeader, CardContent, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { Loader2, Swords, Calendar, Trophy, Users, Check, X, Menu } from "lucide-react";
 import { motion } from "framer-motion";
@@ -51,6 +52,8 @@ export default function MatchManagement() {
   const [loadingMatches, setLoadingMatches] = useState(false);
   const [selectedTeam, setSelectedTeam] = useState<any | null>(null);
   const [showTeamModal, setShowTeamModal] = useState(false);
+  const [selectedEventId, setSelectedEventId] = useState<string>("all");
+  const [events, setEvents] = useState<{id: string; title: string}[]>([]);
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const userMenuItems = [
@@ -178,6 +181,29 @@ export default function MatchManagement() {
     return () => unsubscribe();
   }, [selectedTeamId]);
 
+  // Fetch events for filter dropdown
+  useEffect(() => {
+    if (!selectedTeamId) return;
+    const fetchEvents = async () => {
+      try {
+        const eventIds = [...new Set(matches.map(m => m.eventId).filter(Boolean))];
+        const eventsData = await Promise.all(
+          eventIds.map(async (eventId) => {
+            try {
+              const eventDoc = await getDoc(doc(db, "events", eventId));
+              if (eventDoc.exists()) {
+                return { id: eventId, title: (eventDoc.data() as any).title || eventId };
+              }
+            } catch (e) {}
+            return { id: eventId, title: eventId };
+          })
+        );
+        setEvents(eventsData.filter(e => e.title));
+      } catch (e) {}
+    };
+    fetchEvents();
+  }, [matches, selectedTeamId]);
+
   const handleConfirmMatch = async (matchId: string) => {
     try {
       await updateDoc(doc(db, "matches", matchId), {
@@ -279,17 +305,34 @@ export default function MatchManagement() {
 
         {/* Matches List */}
         <div className="space-y-6">
+          <div className="flex items-center justify-between flex-wrap gap-4">
           <h3 className="text-2xl font-bold text-white flex items-center gap-2">
             <Trophy className="w-6 h-6 text-primary" />
             แมตช์ของทีม
           </h3>
 
+          {events.length > 1 && (
+            <Select value={selectedEventId} onValueChange={setSelectedEventId}>
+              <SelectTrigger className="w-[220px] bg-zinc-900 border-white/20 text-white">
+                <SelectValue placeholder="เลือกรายการแข่ง" />
+              </SelectTrigger>
+              <SelectContent className="bg-zinc-900 border-white/20">
+                <SelectItem value="all">ทุกรายการ</SelectItem>
+                {events.map((event) => (
+                  <SelectItem key={event.id} value={event.id}>
+                    {event.title}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          )}
+          </div>
           {loadingMatches ? (
             <div className="text-center py-12">
               <Loader2 className="w-12 h-12 animate-spin mx-auto text-primary mb-4" />
               <p className="text-muted-foreground">กำลังโหลดแมตช์...</p>
             </div>
-          ) : matches.length === 0 ? (
+          ) : matches.filter(m => selectedEventId === "all" || m.eventId === selectedEventId).length === 0 ? (
             <Card className="bg-zinc-900 border-white/10 text-center py-12">
               <Swords className="w-20 h-20 mx-auto text-white/20 mb-4" />
               <h3 className="text-xl font-bold text-white/40 mb-2">ยังไม่มีแมตช์</h3>
@@ -297,7 +340,7 @@ export default function MatchManagement() {
             </Card>
           ) : (
             <div className="grid grid-cols-1 gap-4">
-              {matches.map((match, index) => (
+              {matches.filter(m => selectedEventId === "all" || m.eventId === selectedEventId).map((match, index) => (
                 <motion.div
                   key={match.id}
                   initial={{ opacity: 0, y: 20 }}
