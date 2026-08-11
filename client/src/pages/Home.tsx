@@ -195,8 +195,8 @@ export default function Home() {
     <div className="min-h-screen bg-transparent">
       {/* Hero Section */}
       <section className="esports-grid relative flex min-h-[calc(100vh-4.5rem)] items-center border-b border-white/[0.06] py-20">
-        <div className="container relative z-10 mx-auto px-4 sm:px-6">
-          <div className="max-w-4xl">
+        <div className="relative z-10 px-4 sm:px-8">
+          <div>
             <div className="mb-7 inline-flex items-center gap-2 rounded-md border border-primary/25 bg-primary/10 px-4 py-2 text-xs font-bold tracking-[0.13em] text-primary">
               WANGNAMYEN ESPORTS
             </div>

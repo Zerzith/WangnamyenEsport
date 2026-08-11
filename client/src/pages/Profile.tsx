@@ -3,42 +3,26 @@ import { useAuth } from "@/hooks/use-auth";
 import { useLocation } from "wouter";
 import { doc, getDoc, updateDoc, serverTimestamp } from "firebase/firestore";
 import { updateProfile } from "firebase/auth";
-import { db, auth } from "@/lib/firebase";
+import { db } from "@/lib/firebase";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import { AvatarCustom } from "@/components/ui/avatar-custom";
-import { Camera, Check, X, Loader2, User, Mail, GraduationCap, Shield } from "lucide-react";
+import { Camera, Check, X, Loader2 } from "lucide-react";
 
 // Cloudinary config
 const CLOUDINARY_URL = `https://api.cloudinary.com/v1_1/djubsqri6/image/upload`;
 const UPLOAD_PRESET = "wangnamyenesport";
 
-interface UserProfile {
-  displayName: string;
-  email: string;
-  studentId: string;
-  photoURL?: string;
-  bio?: string;
-  team?: string;
-}
-
 export default function Profile() {
   const { user } = useAuth();
   const [, setLocation] = useLocation();
-  const [profile, setProfile] = useState<UserProfile | null>(null);
+  const [profile, setProfile] = useState<any>(null);
   const [isEditing, setIsEditing] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [isUploadingPhoto, setIsUploadingPhoto] = useState(false);
-  const [formData, setFormData] = useState<UserProfile>({
-    displayName: "",
-    email: "",
-    studentId: "",
-    photoURL: "",
-    bio: "",
-    team: "",
-  });
+  const [displayName, setDisplayName] = useState("");
   const [photoPreview, setPhotoPreview] = useState<string>("");
+  const [photoURL, setPhotoURL] = useState("");
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
 
@@ -56,10 +40,11 @@ export default function Profile() {
         try {
           const userDoc = await getDoc(doc(db, "users", user.uid));
           if (userDoc.exists()) {
-            const userData = userDoc.data() as UserProfile;
+            const userData = userDoc.data();
             setProfile(userData);
-            setFormData(userData);
+            setDisplayName(userData.displayName || "");
             setPhotoPreview(userData.photoURL || "");
+            setPhotoURL(userData.photoURL || "");
           }
         } catch (error) {
           console.error("Error loading profile:", error);
@@ -103,11 +88,7 @@ export default function Profile() {
       const data = await response.json();
       const cloudinaryUrl = data.secure_url;
 
-      setFormData((prev) => ({
-        ...prev,
-        photoURL: cloudinaryUrl,
-      }));
-
+      setPhotoURL(cloudinaryUrl);
       setMessage({ type: "success", text: "อัปโหลดรูปภาพสำเร็จ" });
       setTimeout(() => setMessage(null), 2000);
     } catch (error) {
@@ -123,31 +104,30 @@ export default function Profile() {
   };
 
   const handleSaveProfile = async () => {
-    if (!user || !auth.currentUser) return;
+    if (!user) return;
 
     setIsSaving(true);
     try {
-      const authUpdate: any = {};
-      if (formData.displayName) authUpdate.displayName = formData.displayName;
-      if (formData.photoURL) authUpdate.photoURL = formData.photoURL;
+      // Update Firebase Auth display name
+      await updateProfile(user, {
+        displayName: displayName.trim() || null,
+        photoURL: photoURL || null,
+      });
 
-      if (Object.keys(authUpdate).length > 0) {
-        await updateProfile(auth.currentUser, authUpdate);
-      }
-
+      // Update Firestore
       const firestoreData: any = {
-        displayName: formData.displayName || "",
-        email: formData.email || "",
-        studentId: formData.studentId || "",
-        photoURL: formData.photoURL || "",
-        bio: formData.bio || "",
-        team: formData.team || "",
+        displayName: displayName.trim() || "",
+        photoURL: photoURL || "",
         updatedAt: serverTimestamp(),
       };
 
       await updateDoc(doc(db, "users", user.uid), firestoreData);
 
-      setProfile(formData);
+      setProfile((prev: any) => ({
+        ...prev,
+        displayName: displayName.trim(),
+        photoURL: photoURL,
+      }));
       setIsEditing(false);
       setMessage({ type: "success", text: "บันทึกข้อมูลเรียบร้อยแล้ว" });
       setTimeout(() => setMessage(null), 3000);
@@ -162,55 +142,48 @@ export default function Profile() {
 
   if (!profile) {
     return (
-      <div className="container mx-auto px-4 py-12">
-        <div className="text-center">
-          <Loader2 className="w-8 h-8 animate-spin mx-auto text-primary" />
-          <p className="text-muted-foreground mt-4">กำลังโหลดข้อมูล...</p>
-        </div>
+      <div className="min-h-screen flex items-center justify-center">
+        <Loader2 className="w-8 h-8 animate-spin text-primary" />
       </div>
     );
   }
 
   return (
-    <div className="container mx-auto px-4 py-12">
-      <div className="max-w-2xl mx-auto">
-        <h1 className="text-4xl font-display font-bold text-white mb-8 uppercase tracking-wider">โปรไฟล์ของฉัน</h1>
+    <div className="min-h-screen py-12 px-4">
+      <div className="max-w-md mx-auto">
+        <h1 className="text-3xl font-bold text-white mb-8">โปรไฟล์</h1>
 
         {message && (
           <div
-            className={`mb-6 p-4 rounded-lg flex items-center gap-3 ${
+            className={`mb-6 p-4 rounded-lg ${
               message.type === "success"
-                ? "bg-green-500/20 border border-green-500/50 text-green-300"
-                : "bg-red-500/20 border border-red-500/50 text-red-300"
+                ? "bg-green-500/10 border border-green-500/20 text-green-300"
+                : "bg-red-500/10 border border-red-500/20 text-red-300"
             }`}
           >
-            {message.type === "success" ? <Check className="w-5 h-5" /> : <X className="w-5 h-5" />}
             {message.text}
           </div>
         )}
 
-        <Card className="bg-zinc-900 border-white/10 p-8 overflow-hidden relative">
-          <div className="absolute top-0 left-0 w-full h-1 bg-primary" />
-          
+        <Card className="bg-zinc-900 border border-white/5 p-8">
           {/* Profile Photo Section */}
-          <div className="flex flex-col items-center mb-10">
+          <div className="flex flex-col items-center mb-8">
             <div className="relative group">
               <AvatarCustom 
                 src={photoPreview || profile.photoURL} 
                 name={profile.displayName || "Gamer"} 
                 size="xl" 
-                className="ring-4 ring-primary/20"
               />
               {isEditing && (
                 <button
                   onClick={() => fileInputRef.current?.click()}
                   disabled={isUploadingPhoto}
-                  className="absolute bottom-0 right-0 bg-primary p-3 rounded-full hover:bg-primary/80 transition-all shadow-lg disabled:opacity-50"
+                  className="absolute bottom-0 right-0 bg-primary p-2.5 rounded-full hover:bg-primary/80 transition-colors disabled:opacity-50"
                 >
                   {isUploadingPhoto ? (
-                    <Loader2 className="w-5 h-5 animate-spin" />
+                    <Loader2 className="w-4 h-4 animate-spin text-white" />
                   ) : (
-                    <Camera className="w-5 h-5 text-white" />
+                    <Camera className="w-4 h-4 text-white" />
                   )}
                 </button>
               )}
@@ -223,113 +196,57 @@ export default function Profile() {
                 className="hidden"
               />
             </div>
-            <div className="mt-4 text-center">
-              <h2 className="text-2xl font-bold text-white">{profile.displayName}</h2>
-              <p className="text-accent text-xs font-bold uppercase tracking-widest mt-1">
-                {profile.team || "No Team"}
-              </p>
-            </div>
+            {isEditing && (
+              <p className="text-xs text-muted-foreground mt-2">กดอัปโหลดรูปใหม่</p>
+            )}
           </div>
 
-          {/* Form Section */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="space-y-2">
-              <label className="text-xs font-bold text-muted-foreground uppercase tracking-widest flex items-center gap-2">
-                <User className="w-3 h-3" /> ชื่อ-นามสกุล
-              </label>
-              <Input
-                value={formData.displayName}
-                onChange={(e) => setFormData({ ...formData, displayName: e.target.value })}
-                disabled={!isEditing}
-                className="bg-zinc-900 border-white/10 focus:border-primary/50"
-              />
-            </div>
-
-            <div className="space-y-2">
-              <label className="text-xs font-bold text-muted-foreground uppercase tracking-widest flex items-center gap-2">
-                <Mail className="w-3 h-3" /> อีเมล
-              </label>
-              <Input
-                type="email"
-                value={formData.email}
-                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                disabled={!isEditing}
-                className="bg-zinc-900 border-white/10 focus:border-primary/50"
-              />
-            </div>
-
-            <div className="space-y-2">
-              <label className="text-xs font-bold text-muted-foreground uppercase tracking-widest flex items-center gap-2">
-                <GraduationCap className="w-3 h-3" /> รหัสนักศึกษา
-              </label>
-              <Input
-                value={formData.studentId}
-                onChange={(e) => setFormData({ ...formData, studentId: e.target.value })}
-                disabled={!isEditing}
-                className="bg-zinc-900 border-white/10 focus:border-primary/50"
-              />
-            </div>
-
-            <div className="space-y-2">
-              <label className="text-xs font-bold text-muted-foreground uppercase tracking-widest flex items-center gap-2">
-                <Shield className="w-3 h-3" /> ทีม
-              </label>
-              <Input
-                value={formData.team || ""}
-                onChange={(e) => setFormData({ ...formData, team: e.target.value })}
-                disabled={!isEditing}
-                className="bg-zinc-900 border-white/10 focus:border-primary/50"
-              />
-            </div>
-
-            <div className="md:col-span-2 space-y-2">
-              <label className="text-xs font-bold text-muted-foreground uppercase tracking-widest">ประวัติส่วนตัว</label>
-              <textarea
-                value={formData.bio || ""}
-                onChange={(e) => setFormData({ ...formData, bio: e.target.value })}
-                disabled={!isEditing}
-                className="w-full bg-zinc-900 border border-white/10 rounded-lg px-4 py-3 text-white placeholder-muted-foreground focus:border-primary/50 outline-none transition-all resize-none"
-                rows={3}
-              />
-            </div>
+          {/* Display Name */}
+          <div className="space-y-2">
+            <label className="text-sm font-medium text-muted-foreground">ชื่อ</label>
+            <input
+              type="text"
+              value={displayName}
+              onChange={(e) => setDisplayName(e.target.value)}
+              disabled={!isEditing}
+              className="w-full bg-zinc-900 border border-white/5 rounded-md px-3 py-2 text-white placeholder-muted-foreground outline-none disabled:opacity-60"
+              placeholder="ชื่อ-นามสกุล"
+            />
           </div>
 
           {/* Action Buttons */}
-          <div className="flex gap-4 mt-10">
+          <div className="flex gap-3 mt-8">
             {!isEditing ? (
               <Button
                 onClick={() => setIsEditing(true)}
-                className="flex-1 bg-primary hover:bg-primary/80 text-white font-bold py-6"
+                className="flex-1 bg-primary hover:bg-primary/80 text-white font-medium py-3"
               >
-                แก้ไขข้อมูลโปรไฟล์
+                แก้ไขโปรไฟล์
               </Button>
             ) : (
               <>
                 <Button
                   onClick={handleSaveProfile}
                   disabled={isSaving || isUploadingPhoto}
-                  className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-6"
+                  className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-3"
                 >
                   {isSaving ? (
-                    <Loader2 className="w-5 h-5 animate-spin" />
+                    <Loader2 className="w-4 h-4 animate-spin" />
                   ) : (
-                    <>
-                      <Check className="w-5 h-5 mr-2" />
-                      บันทึกการเปลี่ยนแปลง
-                    </>
+                    <>บันทึก</>
                   )}
                 </Button>
                 <Button
                   onClick={() => {
                     setIsEditing(false);
-                    setFormData(profile);
+                    setDisplayName(profile.displayName || "");
                     setPhotoPreview(profile.photoURL || "");
+                    setPhotoURL(profile.photoURL || "");
                   }}
                   variant="outline"
-                  className="flex-1 border-white/10 hover:bg-zinc-900 py-6"
+                  className="flex-1 border-white/5 hover:bg-zinc-800 py-3"
                   disabled={isSaving || isUploadingPhoto}
                 >
-                  <X className="w-5 h-5 mr-2" />
                   ยกเลิก
                 </Button>
               </>
