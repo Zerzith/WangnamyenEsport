@@ -222,7 +222,7 @@ export default function MatchManagement() {
           <Menu className="w-4 h-4 mr-2" />
           กลับไปหน้าแรก
         </Button>
-        <Card className="bg-card/50 border-white/10 text-center py-12">
+        <Card className="bg-zinc-900 border-white/10 text-center py-12">
           <Swords className="w-20 h-20 mx-auto text-white/20 mb-4" />
           <h3 className="text-xl font-bold text-white/40 mb-2">ยังไม่มีทีมที่ได้รับการอนุมัติ</h3>
           <p className="text-muted-foreground">กรุณารอให้ Admin อนุมัติทีมของคุณก่อน</p>
@@ -253,7 +253,7 @@ export default function MatchManagement() {
         </div>
 
         {/* Team Selection */}
-        <Card className="bg-card/50 border-white/10 p-6 rounded-xl mb-8">
+        <Card className="bg-zinc-900 border-white/10 p-6 rounded-xl mb-8">
           <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
             <Users className="w-5 h-5 text-primary" />
             เลือกทีม
@@ -267,7 +267,7 @@ export default function MatchManagement() {
                 className={`p-4 rounded-xl border-2 transition-all text-left ${
                   selectedTeamId === team.id
                     ? "border-primary bg-primary/10"
-                    : "border-white/10 bg-white/5 hover:border-white/20"
+                    : "border-white/10 bg-zinc-900 hover:border-white/20"
                 }`}
               >
                 <p className="font-bold text-white">{team.teamName}</p>
@@ -290,7 +290,7 @@ export default function MatchManagement() {
               <p className="text-muted-foreground">กำลังโหลดแมตช์...</p>
             </div>
           ) : matches.length === 0 ? (
-            <Card className="bg-card/50 border-white/10 text-center py-12">
+            <Card className="bg-zinc-900 border-white/10 text-center py-12">
               <Swords className="w-20 h-20 mx-auto text-white/20 mb-4" />
               <h3 className="text-xl font-bold text-white/40 mb-2">ยังไม่มีแมตช์</h3>
               <p className="text-muted-foreground">Admin จะสร้างแมตช์สำหรับทีมของคุณ</p>
@@ -304,7 +304,7 @@ export default function MatchManagement() {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: index * 0.1 }}
                 >
-                  <Card className="bg-card/50 border-white/10 overflow-hidden hover:border-primary/30 transition-colors">
+                  <Card className="bg-zinc-900 border-white/10 overflow-hidden hover:border-primary/30 transition-colors">
                     <CardHeader>
                       <div className="flex items-center justify-between">
                         <div>
@@ -331,7 +331,7 @@ export default function MatchManagement() {
                       </div>
                     </CardHeader>
                     <CardContent className="space-y-4">
-                      <div className="flex items-center justify-between p-4 bg-white/5 rounded-xl border border-white/10">
+                      <div className="flex items-center justify-between p-4 bg-zinc-900 rounded-xl border border-white/10">
                         <div className="flex-1 text-center">
                           <p className="text-sm text-muted-foreground mb-2">ทีม A</p>
                           <p className="font-bold text-white">{match.teamAName}</p>
@@ -408,7 +408,7 @@ export default function MatchManagement() {
                       w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all
                       ${location === item.href 
                         ? 'bg-primary/20 text-primary border border-primary/50' 
-                        : 'text-muted-foreground hover:text-white hover:bg-white/5'}
+                        : 'text-muted-foreground hover:text-white hover:bg-zinc-900'}
                     `}
                   >
                     <span className="font-medium">{item.label}</span>
@@ -423,7 +423,7 @@ export default function MatchManagement() {
       {/* Overlay */}
       {sidebarOpen && (
         <div
-          className="fixed inset-0 z-30 bg-black/50  top-16"
+          className="fixed inset-0 z-30 bg-zinc-900/50  top-16"
           onClick={() => setSidebarOpen(false)}
         />
       )}

@@ -61,7 +61,7 @@ export function ScoreCard({ match }: ScoreCardProps) {
       case 'upcoming': 
         return 'bg-gray-600/20 text-gray-400 border-x border-b border-gray-500/30';
       default: 
-        return 'bg-white/10 text-white/50 border-x border-b border-white/10';
+        return 'bg-zinc-800 text-white/50 border-x border-b border-white/10';
     }
   };
   
@@ -80,7 +80,7 @@ export function ScoreCard({ match }: ScoreCardProps) {
     <motion.div 
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="relative overflow-hidden rounded-xl border border-white/10 bg-card/50 hover:border-primary/50 transition-all group "
+      className="relative overflow-hidden rounded-xl border border-white/10 bg-zinc-900 hover:border-primary/50 transition-all group "
       style={match.bannerUrl ? { backgroundImage: `url(${match.bannerUrl})`, backgroundSize: 'cover', backgroundPosition: 'center', backgroundRepeat: 'no-repeat' } : {}}
     >
       <div className="relative z-10 p-6">
@@ -96,7 +96,7 @@ export function ScoreCard({ match }: ScoreCardProps) {
         <div className="flex items-center justify-between gap-4 md:gap-8">
           {/* Team A */}
           <div className="flex-1 text-center flex flex-col items-center gap-3">
-            <div className={`w-16 h-16 md:w-20 md:h-20 rounded-xl bg-gradient-to-br from-white/10 to-white/5 flex items-center justify-center border border-white/10 group-hover:border-primary/30 transition-all shadow-xl overflow-hidden ${winnerA ? 'ring-2 ring-primary ring-offset-4 ring-offset-background' : ''}`}>
+            <div className={`w-16 h-16 md:w-20 md:h-20 rounded-xl bg-zinc-800 flex items-center justify-center border border-white/10 group-hover:border-primary/30 transition-all overflow-hidden ${winnerA ? 'border-2 border-primary' : ''}`}>
               {match.logoUrlA ? (
                 <img src={match.logoUrlA} alt={match.teamA} className="w-full h-full object-cover" />
               ) : (
@@ -122,7 +122,7 @@ export function ScoreCard({ match }: ScoreCardProps) {
             {hasWLDData ? (
               <div className="flex flex-col items-center gap-2">
                 {/* W-D-L Format */}
-                <div className="flex items-center gap-2 md:gap-4 font-display font-bold text-lg md:text-2xl bg-black/60 px-4 py-2 rounded-xl border border-white/5 shadow-xl">
+                <div className="flex items-center gap-2 md:gap-4 font-display font-bold text-lg md:text-2xl bg-zinc-900 px-4 py-2 rounded-xl border border-white/5 shadow-xl">
                   <div className="flex flex-col items-center">
                     <span className="text-green-400 text-xl md:text-2xl">{match.winsA || 0}</span>
                     <span className="text-[8px] text-green-400/60 font-normal">ชนะ</span>
@@ -140,7 +140,7 @@ export function ScoreCard({ match }: ScoreCardProps) {
                 </div>
                 
                 {/* Score Points */}
-                <div className="flex items-center gap-3 md:gap-5 font-display font-bold text-2xl md:text-3xl bg-black/40 px-4 py-2 rounded-lg border border-white/5">
+                <div className="flex items-center gap-3 md:gap-5 font-display font-bold text-2xl md:text-3xl bg-zinc-900/50 px-4 py-2 rounded-lg border border-white/5">
                   <span className={match.scoreA >= match.scoreB ? 'text-white' : 'text-white/40'}>{match.scoreA}</span>
                   <span className="text-primary/40 text-lg md:text-2xl">:</span>
                   <span className={match.scoreB >= match.scoreA ? 'text-white' : 'text-white/40'}>{match.scoreB}</span>
@@ -148,7 +148,7 @@ export function ScoreCard({ match }: ScoreCardProps) {
               </div>
             ) : (
               /* Regular Score Display */
-              <div className="flex items-center gap-3 md:gap-5 font-display font-bold text-3xl md:text-5xl bg-black/60 px-6 py-3 rounded-xl border border-white/5 shadow-xl">
+              <div className="flex items-center gap-3 md:gap-5 font-display font-bold text-3xl md:text-5xl bg-zinc-900 px-6 py-3 rounded-xl border border-white/5 shadow-xl">
                 <span className={match.scoreA >= match.scoreB ? 'text-white' : 'text-white/40'}>{match.scoreA}</span>
                 <span className="text-primary/40 text-2xl md:text-4xl">:</span>
                 <span className={match.scoreB >= match.scoreA ? 'text-white' : 'text-white/40'}>{match.scoreB}</span>
@@ -164,7 +164,7 @@ export function ScoreCard({ match }: ScoreCardProps) {
 
           {/* Team B */}
           <div className="flex-1 text-center flex flex-col items-center gap-3">
-            <div className={`w-16 h-16 md:w-20 md:h-20 rounded-xl bg-gradient-to-br from-white/10 to-white/5 flex items-center justify-center border border-white/10 group-hover:border-primary/30 transition-all shadow-xl overflow-hidden ${winnerB ? 'ring-2 ring-primary ring-offset-4 ring-offset-background' : ''}`}>
+            <div className={`w-16 h-16 md:w-20 md:h-20 rounded-xl bg-zinc-800 flex items-center justify-center border border-white/10 group-hover:border-primary/30 transition-all overflow-hidden ${winnerB ? 'border-2 border-primary' : ''}`}>
               {match.logoUrlB ? (
                 <img src={match.logoUrlB} alt={match.teamB} className="w-full h-full object-cover" />
               ) : (

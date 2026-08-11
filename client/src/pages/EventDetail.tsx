@@ -7,7 +7,7 @@ import { db } from "@/lib/firebase";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
-import { Loader2, ArrowLeft, Users, Calendar, Trophy, Check, X, Gamepad2, Clock, AlertCircle, Edit2, Trash2, Upload, ImageIcon, User, GraduationCap, BookOpen, Fingerprint } from "lucide-react";
+import { Loader2, ArrowLeft, X } from "lucide-react";
 import { motion } from "framer-motion";
 import { TeamMembersModal } from "@/components/TeamMembersModal";
 
@@ -85,7 +85,7 @@ const EventListItem = ({ item, index }: { item: Event, index: number }) => {
       transition={{ delay: Math.min(index * 0.08, 0.4) }}
     >
       <Link href={`/event/${item.id}`}>
-        <Card className={`group bg-card/50 border-white/10 hover:border-primary/30 transition-all cursor-pointer overflow-hidden h-full ${!isOpen || isFull ? 'opacity-90' : ''}`}>
+        <Card className={`group bg-zinc-900 border-white/10 hover:border-primary/30 transition-all cursor-pointer overflow-hidden h-full ${!isOpen || isFull ? 'opacity-90' : ''}`}>
           <div className="relative h-48 overflow-hidden">
             <img
               src={item.bannerUrl || "https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=2070&auto=format&fit=crop"}
@@ -94,42 +94,30 @@ const EventListItem = ({ item, index }: { item: Event, index: number }) => {
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
             <div className="absolute top-4 left-4">
-              <span className="px-3 py-1 rounded-full bg-primary text-[10px] font-bold text-white uppercase tracking-wider">
+              <span className="px-3 py-1 rounded-md bg-primary text-[10px] font-bold text-white uppercase tracking-wider">
                 {item.game}
               </span>
             </div>
             <div className="absolute top-4 right-4 flex gap-2">
           {isFull ? (
-            <span className="px-3 py-1 rounded-full bg-red-500 text-[10px] font-bold text-white uppercase tracking-wider flex items-center gap-1">
-              <AlertCircle className="w-3 h-3" /> เต็มแล้ว
-            </span>
+            <span className="px-3 py-1 rounded-md bg-red-500 text-[10px] font-bold text-white uppercase tracking-wider">เต็มแล้ว</span>
           ) : !isOpen ? (
-            <span className="px-3 py-1 rounded-full bg-red-500/80 text-[10px] font-bold text-white uppercase tracking-wider">
-              ปิดรับสมัคร
-                </span>
+            <span className="px-3 py-1 rounded-md bg-red-500/80 text-[10px] font-bold text-white uppercase tracking-wider">ปิดรับสมัคร</span>
               ) : (
-                <span className="px-3 py-1 rounded-full bg-green-500 text-[10px] font-bold text-white uppercase tracking-wider">
-                  เปิดรับสมัคร
-                </span>
+                <span className="px-3 py-1 rounded-md bg-green-500 text-[10px] font-bold text-white uppercase tracking-wider">เปิดรับสมัคร</span>
               )}
             </div>
           </div>
           <div className="p-6">
             <h3 className="text-xl font-bold text-white mb-2 group-hover:text-primary transition-colors">{item.title}</h3>
             <div className="flex items-center gap-4 text-sm text-muted-foreground mb-4">
-              <div className="flex items-center gap-1">
-                <Calendar className="w-4 h-4 text-primary" />
-                <span>{item.date}</span>
-              </div>
-              <div className="flex items-center gap-1">
-                <Users className="w-4 h-4 text-primary" />
-                <span className={isFull ? "text-red-400 font-bold" : ""}>
-                  {registeredCount} / {item.maxTeams || 16} ทีม
-                </span>
-              </div>
+              <span>{item.date}</span>
+              <span className={isFull ? "text-red-400 font-bold" : ""}>
+                {registeredCount} / {item.maxTeams || 16} ทีม
+              </span>
             </div>
-            <Button className="w-full bg-white/5 hover:bg-primary hover:text-white transition-all border-white/10">
-              ดูรายละเอียด
+            <Button className="w-full bg-zinc-900 hover:bg-primary hover:text-white transition-colors border-white/10">
+              ดูรายละเอีย ด
             </Button>
           </div>
         </Card>
@@ -416,7 +404,7 @@ export default function EventDetail() {
         </div>
 
         {allEvents.length === 0 ? (
-          <div className="text-center py-24 bg-card/20 rounded-[3rem] border border-dashed border-white/10">
+          <div className="text-center py-24 bg-zinc-900 rounded-xl border border-dashed border-white/10">
             <Gamepad2 className="w-20 h-20 mx-auto text-white/5 mb-6" />
             <h3 className="text-xl font-bold text-white/40">ไม่พบรายการแข่งขันในขณะนี้</h3>
             <Button onClick={() => setLocation("/")} variant="outline" className="mt-6">
@@ -500,16 +488,16 @@ export default function EventDetail() {
         <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent" />
         <div className="absolute inset-0 flex flex-col justify-end p-8 md:p-12">
           <div className="flex items-center gap-3 mb-4">
-            <span className="px-4 py-1 rounded-full bg-primary text-xs font-bold text-white uppercase tracking-widest shadow-lg">
+            <span className="px-4 py-1 rounded-lg bg-primary text-xs font-bold text-white uppercase tracking-wider">
               {event.game}
             </span>
-            <span className={`px-4 py-1 rounded-full text-xs font-bold uppercase tracking-widest shadow-lg ${
+            <span className={`px-4 py-1 rounded-lg text-xs font-bold uppercase tracking-wider ${
               isOpen ? 'bg-green-500 text-white' : 'bg-red-500 text-white'
             }`}>
               {isOpen ? 'เปิดรับสมัคร' : 'ปิดรับสมัคร'}
             </span>
           </div>
-          <h1 className="text-4xl md:text-6xl font-display font-bold text-white mb-4 text-glow">{event.title}</h1>
+          <h1 className="text-4xl md:text-6xl font-display font-bold text-white mb-4">{event.title}</h1>
         </div>
       </div>
 
@@ -522,15 +510,13 @@ export default function EventDetail() {
               animate={{ opacity: 1, scale: 1 }}
               className="mb-8"
             >
-              <Card className="bg-gradient-to-br from-yellow-500/20 via-yellow-500/5 to-transparent border-yellow-500/30 p-8 rounded-xl text-center relative overflow-hidden group">
-                <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-yellow-500 to-transparent" />
-                <Trophy className="w-16 h-16 text-yellow-500 mx-auto mb-4 animate-bounce" />
-                <h2 className="text-3xl font-black text-white mb-2 tracking-tighter uppercase">
-                  👑 แชมป์เปี้ยน 👑
+              <Card className="bg-zinc-900 border-yellow-500/30 p-8 rounded-xl text-center">
+                <h2 className="text-2xl font-bold text-white mb-2 uppercase tracking-tight">
+                  แชมป์เปี้ยน
                 </h2>
                 <div className="flex flex-col items-center gap-4 mt-6">
                   {registrations.find(r => r.id === event.championTeamId)?.logoUrl && (
-                    <div className="w-24 h-24 rounded-xl overflow-hidden ring-4 ring-yellow-500/50 shadow-xl shadow-yellow-500/20">
+                    <div className="w-24 h-24 rounded-xl overflow-hidden border-2 border-yellow-500/30">
                       <img 
                         src={registrations.find(r => r.id === event.championTeamId)?.logoUrl} 
                         alt="Champion Logo" 
@@ -538,31 +524,23 @@ export default function EventDetail() {
                       />
                     </div>
                   )}
-                  <p className="text-4xl font-black text-yellow-500 drop-shadow-lg">
+                  <p className="text-3xl font-bold text-yellow-400">
                     {registrations.find(r => r.id === event.championTeamId)?.teamName || "ไม่พบข้อมูลทีม"}
                   </p>
-                </div>
-                <div className="absolute -right-8 -bottom-8 opacity-10 group-hover:opacity-20 transition-opacity">
-                  <Trophy className="w-48 h-48 text-yellow-500 rotate-12" />
                 </div>
               </Card>
             </motion.div>
           )}
 
-          <Card className="bg-card/50 border-white/10 p-8 rounded-xl  shadow-xl ring-1 ring-primary/20">
-            <h2 className="text-2xl font-bold text-white mb-6 flex items-center gap-2">
-              <div className="w-1 h-6 bg-primary rounded-full" />
-              รายละเอียดการแข่งขัน
-            </h2>       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-              <div className="flex items-center gap-4 p-4 rounded-xl bg-white/5 border border-white/5">
-                <Calendar className="w-6 h-6 text-primary" />
+          <Card className="bg-zinc-900 border-white/10 p-8 rounded-xl">
+            <h2 className="text-2xl font-bold text-white mb-6">รายละเอียดการแข่งขัน</h2>       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+              <div className="p-4 rounded-xl bg-zinc-900 border border-white/5">
                 <div>
                   <p className="text-xs text-muted-foreground uppercase font-bold tracking-wider">วันที่แข่งขัน</p>
                   <p className="text-white font-medium">{event.date}</p>
                 </div>
               </div>
-              <div className="flex items-center gap-4 p-4 rounded-xl bg-white/5 border border-white/5">
-                <Users className="w-6 h-6 text-primary" />
+              <div className="p-4 rounded-xl bg-zinc-900 border border-white/5">
                 <div>
                   <p className="text-xs text-muted-foreground uppercase font-bold tracking-wider">ทีมที่ลงสมัคร</p>
                   <p className="text-white font-medium">
@@ -588,32 +566,30 @@ export default function EventDetail() {
                 ลงสมัครเข้าแข่งขันตอนนี้
               </Button>
             ) : !isOpen ? (
-              <Card className="bg-red-500/10 border-red-500/20 p-8 rounded-xl text-center ">
-                <AlertCircle className="w-12 h-12 text-red-500 mx-auto mb-4" />
+              <Card className="bg-zinc-900 border-red-500/20 p-8 rounded-xl text-center">
                 <h2 className="text-2xl font-bold text-white mb-2">ปิดรับสมัครแล้ว</h2>
                 <p className="text-muted-foreground">รายการแข่งขันนี้ไม่ได้เปิดรับสมัครในขณะนี้</p>
               </Card>
             ) : isFull ? (
-              <Card className="bg-yellow-500/10 border-yellow-500/20 p-8 rounded-xl text-center ">
-                <Users className="w-12 h-12 text-yellow-500 mx-auto mb-4" />
+              <Card className="bg-zinc-900 border-yellow-500/20 p-8 rounded-xl text-center">
                 <h2 className="text-2xl font-bold text-white mb-2">ทีมสมัครเต็มแล้ว</h2>
                 <p className="text-muted-foreground">ขออภัย รายการแข่งขันนี้มีผู้สมัครครบจำนวนแล้ว</p>
               </Card>
             ) : null
           ) : !showRegistrationForm && (
-            <Card className="bg-card/50 border-white/10 p-8 rounded-xl border-primary/20 bg-primary/5 ">
+            <Card className="bg-zinc-900 border-white/10 p-8 rounded-xl border-primary/20 bg-primary/5 ">
               <div className="flex flex-col md:flex-row items-center gap-6">
                 <div className="w-20 h-20 bg-primary/20 rounded-xl flex items-center justify-center shrink-0 overflow-hidden ring-2 ring-primary/30">
                   {userRegistration.logoUrl ? (
                     <img src={userRegistration.logoUrl} alt={userRegistration.teamName} className="w-full h-full object-cover" />
                   ) : (
-                    <Check className="w-10 h-10 text-primary" />
+                    <span className="text-sm text-muted-foreground">ทีม</span>
                   )}
                 </div>
                 <div className="flex-grow text-center md:text-left">
                   <h2 className="text-2xl font-bold text-white mb-1">คุณได้ลงสมัครแล้ว</h2>
                   <p className="text-muted-foreground mb-3">ทีมของคุณ: <span className="text-white font-bold">{userRegistration.teamName}</span></p>
-                  <div className="inline-flex items-center px-4 py-1.5 rounded-full bg-white/5 border border-white/10">
+                  <div className="inline-flex items-center px-4 py-1.5 rounded-full bg-zinc-900 border border-white/10">
                     <span className="text-xs text-muted-foreground mr-2">สถานะ:</span>
                     <span className={`text-xs font-black uppercase tracking-widest ${
                       userRegistration.status === 'approved' ? 'text-green-400' :
@@ -625,17 +601,17 @@ export default function EventDetail() {
                 <div className="flex flex-col gap-2 shrink-0 w-full md:w-auto">
                   <Button 
                     variant="outline" 
-                    className="border-white/10 hover:bg-white/5 text-white gap-2 rounded-xl h-11"
+                    className="border-white/10 hover:bg-zinc-900 text-white gap-2 rounded-xl h-11"
                     onClick={handleEditRegistration}
                   >
-                    <Edit2 className="w-4 h-4" /> แก้ไขข้อมูล
+แก้ไขข้อมูล
                   </Button>
                   <Button 
                     variant="ghost" 
                     className="text-red-400 hover:bg-red-500/10 hover:text-red-300 gap-2 rounded-xl h-11"
                     onClick={handleCancelRegistration}
                   >
-                    <Trash2 className="w-4 h-4" /> ยกเลิกการสมัคร
+                    ยกเลิกการสมัคร
                   </Button>
                 </div>
               </div>
@@ -643,17 +619,17 @@ export default function EventDetail() {
           )}
 
           {showRegistrationForm && (
-            <Card className="bg-card/50 border-white/10 p-8 rounded-xl  shadow-xl ring-1 ring-primary/20">
+            <Card className="bg-zinc-900 border-white/10 p-8 rounded-xl">
               <h2 className="text-2xl font-bold text-white mb-6 flex items-center gap-3">
                 {isEditing ? (
-                  <><Edit2 className="w-6 h-6 text-primary" /> แก้ไขรายละเอียดทีม</>
+                  <>แก้ไขรายละเอียดทีม</>
                 ) : (
-                  <><Trophy className="w-6 h-6 text-primary" /> ฟอร์มลงสมัครเข้าแข่งขัน</>
+                  <>ฟอร์มลงสมัครเข้าแข่งขัน</>
                 )}
               </h2>
               <form onSubmit={handleRegister} className="space-y-8">
                 {/* Logo Upload Section */}
-                <div className="flex flex-col items-center justify-center p-8 border-2 border-dashed border-white/10 rounded-[2rem] bg-white/5 hover:bg-white/10 transition-all group relative overflow-hidden">
+                <div className="flex flex-col items-center justify-center p-8 border-2 border-dashed border-white/10 rounded-xl bg-zinc-900 hover:bg-zinc-800 transition-all group relative overflow-hidden">
                   <input
                     type="file"
                     ref={fileInputRef}
@@ -667,7 +643,7 @@ export default function EventDetail() {
                       <img src={formData.logoUrl} alt="Team Logo Preview" className="w-full h-full object-cover rounded-xl ring-4 ring-primary/20" />
                       <div 
                         onClick={() => fileInputRef.current?.click()}
-                        className="absolute inset-0 bg-black/60 rounded-xl flex items-center justify-center opacity-0 group-hover/logo:opacity-100 transition-opacity cursor-pointer"
+                        className="absolute inset-0 bg-zinc-900 rounded-xl flex items-center justify-center opacity-0 group-hover/logo:opacity-100 transition-opacity cursor-pointer"
                       >
                         <Upload className="w-8 h-8 text-white" />
                       </div>
@@ -685,7 +661,7 @@ export default function EventDetail() {
                       className="flex flex-col items-center cursor-pointer"
                     >
                       <div className="w-20 h-20 rounded-xl bg-primary/10 flex items-center justify-center mb-4 group-hover:scale-105 transition-transform">
-                        {uploading ? <Loader2 className="w-10 h-10 text-primary animate-spin" /> : <ImageIcon className="w-10 h-10 text-primary" />}
+                        {uploading ? <Loader2 className="w-10 h-10 text-primary animate-spin" /> : null}
                       </div>
                       <p className="text-white font-bold">อัปโหลดโลโก้ทีม</p>
                       <p className="text-xs text-muted-foreground mt-1">แนะนำขนาด 512x512px (PNG/JPG)</p>
@@ -700,18 +676,18 @@ export default function EventDetail() {
                       value={formData.teamName}
                       onChange={(e) => setFormData({ ...formData, teamName: e.target.value })}
                       placeholder="ระบุชื่อทีมของคุณ"
-                      className="bg-white/5 border-white/10 h-14 rounded-xl focus:ring-primary text-lg"
+                      className="bg-zinc-900 border-white/10 h-14 rounded-xl focus:ring-primary text-lg"
                       required
                     />
                   </div>
 
                   <div>
                     <label className="block text-sm font-bold text-white/60 uppercase tracking-wider mb-4 flex items-center gap-2">
-                      <Users className="w-4 h-4 text-primary" /> รายชื่อสมาชิกทีม
+                      รายชื่อสมาชิกทีม
                     </label>
                     <div className="space-y-6">
                       {formData.members.map((member, index) => (
-                        <div key={index} className="p-6 rounded-xl bg-white/5 border border-white/5 relative group space-y-4">
+                        <div key={index} className="p-6 rounded-xl bg-zinc-900 border border-white/5 relative group space-y-4">
                           <div className="absolute -left-3 top-6 w-8 h-8 rounded-full bg-primary flex items-center justify-center text-xs font-bold text-white shadow-lg ring-4 ring-background">
                             {index + 1}
                           </div>
@@ -729,7 +705,7 @@ export default function EventDetail() {
                                   setFormData({ ...formData, members: newMembers });
                                 }}
                                 placeholder="ระบุชื่อ-นามสกุลจริง"
-                                className="bg-white/5 border-white/10 h-11 rounded-xl focus:ring-primary"
+                                className="bg-zinc-900 border-white/10 h-11 rounded-xl focus:ring-primary"
                                 required={index < 3}
                               />
                             </div>
@@ -745,7 +721,7 @@ export default function EventDetail() {
                                   setFormData({ ...formData, members: newMembers });
                                 }}
                                 placeholder="ระบุชื่อที่ใช้ในเกม"
-                                className="bg-white/5 border-white/10 h-11 rounded-xl focus:ring-primary"
+                                className="bg-zinc-900 border-white/10 h-11 rounded-xl focus:ring-primary"
                                 required={index < 3}
                               />
                             </div>
@@ -764,7 +740,7 @@ export default function EventDetail() {
                                   setFormData({ ...formData, members: newMembers });
                                 }}
                                 placeholder="รหัสบัตรนักเรียน/นักศึกษา"
-                                className="bg-white/5 border-white/10 h-11 rounded-xl focus:ring-primary"
+                                className="bg-zinc-900 border-white/10 h-11 rounded-xl focus:ring-primary"
                                 required={index < 3}
                               />
                             </div>
@@ -780,7 +756,7 @@ export default function EventDetail() {
                                   setFormData({ ...formData, members: newMembers });
                                 }}
                                 placeholder="เช่น เทคโนโลยีสารสนเทศ"
-                                className="bg-white/5 border-white/10 h-11 rounded-xl focus:ring-primary"
+                                className="bg-zinc-900 border-white/10 h-11 rounded-xl focus:ring-primary"
                                 required={index < 3}
                               />
                             </div>
@@ -796,7 +772,7 @@ export default function EventDetail() {
                                   setFormData({ ...formData, members: newMembers });
                                 }}
                                 placeholder="เช่น ปวช. 1 / ปวส. 1 / ปวส. 1 ทวิ"
-                                className="bg-white/5 border-white/10 h-11 rounded-xl focus:ring-primary"
+                                className="bg-zinc-900 border-white/10 h-11 rounded-xl focus:ring-primary"
                                 required={index < 3}
                               />
                             </div>
@@ -869,9 +845,8 @@ export default function EventDetail() {
         {/* Sidebar */}
         <div className="space-y-8">
           {/* Approved Teams */}
-          <Card className="bg-card/50 border-white/10 p-6 rounded-xl ">
-            <h3 className="text-xl font-bold text-white mb-6 flex items-center gap-2">
-              <Trophy className="w-5 h-5 text-yellow-500" />
+          <Card className="bg-zinc-900 border-white/10 p-6 rounded-xl">
+            <h3 className="text-xl font-bold text-white mb-6">
               ทีมที่เข้าร่วม ({approvedCount})
             </h3>
             <div className="space-y-3">
@@ -882,7 +857,7 @@ export default function EventDetail() {
                     setSelectedTeam(reg);
                     setShowTeamModal(true);
                   }}
-                  className="w-full flex items-center gap-3 p-3 rounded-xl bg-white/5 border border-white/5 hover:bg-white/10 transition-colors group cursor-pointer text-left"
+                  className="w-full flex items-center gap-3 p-3 rounded-xl bg-zinc-900 border border-white/5 hover:bg-zinc-800 transition-colors group cursor-pointer text-left"
                 >
                   <div className="w-12 h-12 rounded-xl bg-primary/20 flex items-center justify-center text-white font-bold overflow-hidden ring-2 ring-transparent group-hover:ring-primary/50 transition-all flex-shrink-0">
                     {reg.logoUrl ? (
@@ -907,7 +882,7 @@ export default function EventDetail() {
 
           {/* Pending Teams (Admin only) */}
           {isAdmin && pendingCount > 0 && (
-            <Card className="bg-card/50 border-white/10 p-6 rounded-xl border-yellow-500/20 ">
+            <Card className="bg-zinc-900 border-white/10 p-6 rounded-xl border-yellow-500/20 ">
               <h3 className="text-xl font-bold text-white mb-6 flex items-center gap-2">
                 <div className="w-2 h-2 rounded-full bg-yellow-500 animate-pulse" />
                 รออนุมัติ ({pendingCount})
@@ -929,10 +904,10 @@ export default function EventDetail() {
                     </div>
                     <div className="flex gap-2">
                       <Button size="sm" className="flex-1 bg-green-600 hover:bg-green-700 text-white text-xs h-9" onClick={() => handleApproveRegistration(reg.id)}>
-                        <Check className="w-3 h-3 mr-1" /> อนุมัติ
+                        อนุมัติ
                       </Button>
                       <Button size="sm" variant="outline" className="flex-1 border-red-500/50 text-red-400 hover:bg-red-500/10 text-xs h-9" onClick={() => handleRejectRegistration(reg.id)}>
-                        <X className="w-3 h-3 mr-1" /> ปฏิเสธ
+                        ปฏิเสธ
                       </Button>
                     </div>
                   </div>

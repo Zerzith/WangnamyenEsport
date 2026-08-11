@@ -2,7 +2,7 @@ import { Link } from "wouter";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { ArrowRight, Trophy, Users, Calendar, Loader2, Megaphone, Clock, AlertCircle, Gamepad2 } from "lucide-react";
+import { ArrowRight, Trophy, Loader2 } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
 import { useEffect, useState, memo } from "react";
 import { collection, onSnapshot, query, where, orderBy, limit, getDocs } from "firebase/firestore";
@@ -67,8 +67,8 @@ const EventCard = memo(({ event, index, registeredCount, user }: {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ delay: Math.min(index * 0.08, 0.4) }}
-      className={`group relative h-[25rem] overflow-hidden rounded-xl border bg-zinc-950/60 shadow-panel clip-corner-tr transition-all duration-150 ${
-        !isOpen || isFull ? "border-red-500/35 opacity-90 shadow-[0_10px_28px_-20px_rgb(239_68_68_/_0.4)]" : "border-white/[0.1] hover:-translate-y-1 hover:border-primary/40 hover:shadow-panel-hover"
+      className={`group relative h-[25rem] overflow-hidden rounded-xl border bg-zinc-900 clip-corner-tr transition-all duration-150 ${
+        !isOpen || isFull ? "border-red-500/35 opacity-90 " : "border-white/[0.1] hover:-translate-y-1 hover:border-primary/40 hover:"
       }`}
     >
       <Link href={`/event/${event.id}`}>
@@ -85,18 +85,15 @@ const EventCard = memo(({ event, index, registeredCount, user }: {
 
       <div className="absolute top-4 right-4 z-10 flex gap-2">
         {!isOpen ? (
-          <div className="flex items-center gap-1.5 rounded-md border border-red-400/25 bg-red-500/15 px-3 py-1.5 text-[10px] font-black uppercase tracking-widest text-red-200 shadow-[0_0_14px_-6px_rgb(239_68_68_/_0.7)]">
-            <AlertCircle className="w-3 h-3" />
+          <div className="rounded-md border border-red-400/25 bg-red-500/15 px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider text-red-200">
             ปิดรับสมัคร
           </div>
         ) : isFull ? (
-          <div className="flex items-center gap-1.5 rounded-md border border-red-400/25 bg-red-500/15 px-3 py-1.5 text-[10px] font-black uppercase tracking-widest text-red-200 shadow-[0_0_14px_-6px_rgb(239_68_68_/_0.7)]">
-            <AlertCircle className="w-3 h-3" />
+          <div className="rounded-md border border-red-400/25 bg-red-500/15 px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider text-red-200">
             เต็มแล้ว
           </div>
         ) : (
-          <div className="flex items-center gap-1.5 rounded-md border border-emerald-400/25 bg-emerald-400/15 px-3 py-1.5 text-[10px] font-black uppercase tracking-widest text-emerald-200 shadow-[0_0_14px_-6px_rgb(52_211_153_/_0.7)]">
-            <div className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
+          <div className="rounded-md border border-emerald-400/25 bg-emerald-400/15 px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider text-emerald-200">
             เปิดรับสมัคร
           </div>
         )}
@@ -107,8 +104,8 @@ const EventCard = memo(({ event, index, registeredCount, user }: {
           <span className="rounded-md border border-primary/25 bg-primary/15 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.14em] text-primary">
             {event.game}
           </span>
-          <span className="flex items-center gap-1 text-[10px] text-white/80 font-bold uppercase tracking-wider">
-            <Calendar className="w-3 h-3 text-primary" /> {event.date}
+          <span className="text-[10px] text-white/80 font-bold uppercase tracking-wider">
+            {event.date}
           </span>
         </div>
 
@@ -117,22 +114,21 @@ const EventCard = memo(({ event, index, registeredCount, user }: {
         </h3>
 
         <div className="flex items-center justify-between mt-4">
-          <div className="flex items-center gap-2 rounded-md border border-white/10 bg-zinc-950/55 px-3 py-1.5 text-sm">
-            <Users className="w-4 h-4 text-primary" />
+          <div className="rounded-md border border-white/10 bg-zinc-950/55 px-3 py-1.5 text-sm">
             <span className={isFull ? "text-red-400 font-bold" : "text-white font-bold"}>
               {registeredCount}/{event.maxTeams || 16} ทีม
             </span>
           </div>
           {isOpen && !isFull && (
             <Link href={user ? `/event/${event.id}` : "/login"}>
-              <Button size="sm" className="pointer-events-auto rounded-md border-primary/45 bg-primary px-4 font-bold text-primary-foreground shadow-[0_10px_20px_-10px_rgb(34_211_238_/_0.8)] hover:bg-primary">
+              <Button size="sm" className="pointer-events-auto rounded-md border-primary/45 bg-primary px-4 font-bold text-primary-foreground hover:bg-primary/90">
                 สมัครเลย
               </Button>
             </Link>
           )}
           {(!isOpen || isFull) && (
             <Link href={`/event/${event.id}`}>
-              <Button size="sm" variant="outline" className="pointer-events-auto rounded-xl border-white/15 bg-white/[0.035] px-4 font-bold text-white/80 hover:border-primary/35 hover:bg-primary/10 hover:text-primary">
+              <Button size="sm" variant="outline" className="pointer-events-auto rounded-md border-white/15 bg-transparent px-4 font-bold text-white/80 hover:border-primary/35 hover:text-primary">
                 ดูรายละเอียด
               </Button>
             </Link>
@@ -198,24 +194,12 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-transparent">
       {/* Hero Section */}
-      <section className="esports-grid relative isolate flex min-h-[calc(100vh-4.5rem)] items-center overflow-hidden border-b border-white/[0.06] py-20">
-        <div className="absolute top-0 left-0 w-32 h-0.5 bg-gradient-to-r from-primary to-transparent opacity-40"></div>
-        <div className="absolute top-0 right-0 w-32 h-0.5 bg-gradient-to-l from-accent to-transparent opacity-40"></div>
-        <div className="absolute bottom-0 left-0 w-32 h-0.5 bg-gradient-to-r from-accent to-transparent opacity-30"></div>
-        <div className="absolute inset-0 z-0 bg-gradient-to-b from-primary/4 via-transparent to-primary/8 opacity-50"></div>
-        <div className="absolute inset-0 z-0" style={{
-          backgroundImage: `radial-gradient(circle at 20% 50%, rgba(59, 130, 246, 0.1) 0%, transparent 50%), radial-gradient(circle at 80% 80%, rgba(139, 92, 246, 0.1) 0%, transparent 50%)`
-        }}></div>
+      <section className="esports-grid relative flex min-h-[calc(100vh-4.5rem)] items-center border-b border-white/[0.06] py-20">
         <div className="container relative z-10 mx-auto px-4 sm:px-6">
           <div className="max-w-4xl">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="mb-7 inline-flex items-center gap-2 rounded-md border border-primary/25 bg-primary/[0.09] px-4 py-2 text-xs font-bold tracking-[0.13em] text-primary shadow-[0_0_16px_-6px_rgb(34_211_238_/_0.6)]"
-            >
-              <Gamepad2 className="w-4 h-4" />
+            <div className="mb-7 inline-flex items-center gap-2 rounded-md border border-primary/25 bg-primary/10 px-4 py-2 text-xs font-bold tracking-[0.13em] text-primary">
               WANGNAMYEN ESPORTS
-            </motion.div>
+            </div>
             <motion.h1
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -223,7 +207,7 @@ export default function Home() {
               className="mb-7 max-w-4xl font-display text-5xl font-bold leading-[0.92] tracking-[-0.045em] text-white sm:text-6xl md:text-7xl lg:text-8xl"
             >
               ยกระดับการแข่งขัน <br />
-              <span className="text-gradient text-glow">ESPORTS</span> ในวิทยาลัยเทคนิควังน้ำเย็น
+              <span className="text-primary">ESPORTS</span> ในวิทยาลัยเทคนิควังน้ำเย็น
             </motion.h1>
             <motion.p
               initial={{ opacity: 0, y: 20 }}
@@ -241,12 +225,12 @@ export default function Home() {
               className="flex flex-wrap gap-3 sm:gap-4"
             >
               <Link href="/bracket">
-                <Button size="lg" className="h-14 rounded-lg border-primary/45 bg-primary px-8 text-lg font-bold text-primary-foreground shadow-[0_12px_28px_-12px_rgb(34_211_238_/_0.8)] hover:bg-primary">
+                <Button size="lg" className="h-14 rounded-lg border-primary/45 bg-primary px-8 text-lg font-bold text-primary-foreground hover:bg-primary/90">
                   ดูสายการแข่งขัน
                 </Button>
               </Link>
               <Link href="/rules">
-                <Button size="lg" variant="outline" className="h-14 rounded-lg border-white/15 bg-white/[0.035] px-8 text-lg font-bold text-white hover:border-primary/40 hover:bg-primary/10 hover:text-primary">
+                <Button size="lg" variant="outline" className="h-14 rounded-lg border-white/15 bg-transparent px-8 text-lg font-bold text-white hover:border-primary/40 hover:text-primary">
                   กฎการแข่งขัน
                 </Button>
               </Link>
@@ -257,10 +241,9 @@ export default function Home() {
 
       {/* Champions Section */}
       {champions.length > 0 && (
-        <section className="border-y border-white/[0.06] bg-white/[0.018] py-20">
+        <section className="border-y border-white/[0.06] bg-zinc-900/50 py-20">
           <div className="container mx-auto px-4">
-            <div className="flex items-center gap-3 mb-12">
-              <Trophy className="w-8 h-8 text-yellow-500" />
+            <div className="mb-12">
               <h2 className="text-3xl font-bold text-white">ทำเนียบแชมป์เปี้ยน</h2>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -272,10 +255,9 @@ export default function Home() {
                   transition={{ delay: Math.min(index * 0.08, 0.4) }}
                 >
                   <Link href={`/event/${event.id}`}>
-                    <Card className="group cursor-pointer rounded-xl border-yellow-400/25 bg-gradient-to-br from-yellow-400/15 via-yellow-500/[0.045] to-transparent p-8 text-center shadow-[0_10px_28px_-20px_rgb(234_179_8_/_0.4)] transition-all duration-150 hover:-translate-y-1 hover:border-yellow-300/40 hover:shadow-[0_14px_32px_-18px_rgb(234_179_8_/_0.6)]">
-                      <Trophy className="w-12 h-12 text-yellow-500 mx-auto mb-4 transition-transform duration-150 group-hover:scale-105" />
+                    <Card className="group cursor-pointer rounded-xl border-yellow-400/20 bg-zinc-900 p-8 text-center transition-all duration-150 hover:border-yellow-300/35">
                       <h3 className="text-xl font-bold text-white mb-2">{event.title}</h3>
-                      <p className="text-yellow-500 font-black text-2xl uppercase tracking-tighter">CHAMPION</p>
+                      <p className="text-yellow-500 font-bold text-xl uppercase tracking-tight">CHAMPION</p>
                       <div className="mt-4 inline-flex items-center text-sm text-muted-foreground group-hover:text-white transition-colors">
                         ดูรายละเอียด <ArrowRight className="ml-2 w-4 h-4" />
                       </div>
@@ -289,16 +271,11 @@ export default function Home() {
       )}
 
       {/* Events Section */}
-      <section className="relative overflow-hidden py-24">
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[600px] bg-primary/4 rounded-full blur-[100px] -z-10" />
-
+      <section className="py-24">
         <div className="container mx-auto px-4">
           <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-4">
             <div>
-              <div className="flex items-center gap-2 mb-2">
-                <div className="h-px w-9 bg-primary shadow-[0_0_12px_rgb(34_211_238_/_0.8)]" />
-                <span className="font-display text-xs font-bold uppercase tracking-[0.2em] text-primary">Tournaments</span>
-              </div>
+              <span className="mb-2 block font-display text-xs font-bold uppercase tracking-[0.2em] text-primary">Tournaments</span>
               <h2 className="font-display text-4xl font-bold uppercase tracking-tight text-white md:text-5xl">การแข่งขันอีสปอร์ต</h2>
               <p className="text-muted-foreground mt-3 text-lg">รายการแข่งขันทั้งหมดของวิทยาลัยเทคนิควังน้ำเย็น</p>
             </div>
@@ -333,30 +310,24 @@ export default function Home() {
 
       {/* News Section */}
       {news.length > 0 && (
-        <section className="border-y border-white/[0.06] bg-white/[0.018] py-24 ">
+        <section className="border-y border-white/[0.06] bg-zinc-900/50 py-24">
           <div className="container mx-auto px-4">
-            <div className="flex items-center justify-between mb-12">
-              <div className="flex items-center gap-3">
-                <div className="rounded-xl border border-primary/20 bg-primary/10 p-3 text-primary shadow-[0_0_20px_-12px_rgb(34_211_238_/_0.85)]">
-                  <Megaphone className="w-6 h-6" />
-                </div>
-                <h2 className="text-3xl font-display font-bold text-white">ข่าวสารล่าสุด</h2>
-              </div>
+            <div className="mb-12">
+              <h2 className="text-3xl font-display font-bold text-white">ข่าวสารล่าสุด</h2>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               {news.map((item) => (
-                <Card key={item.id} className="group esports-panel esports-panel-interactive rounded-xl border-white/[0.09] bg-zinc-900/55 p-6">
-                  <div className="mb-4 flex items-center gap-2 text-xs font-bold uppercase tracking-[0.16em] text-primary">
-                    <Clock className="w-3 h-3" />
+                <Card key={item.id} className="group esports-panel esports-panel-interactive rounded-xl border-white/[0.09] bg-zinc-900 p-6">
+                  <div className="mb-4 text-xs font-bold uppercase tracking-[0.16em] text-primary">
                     {item.createdAt?.toDate ? formatDate(item.createdAt.toDate().toISOString()) : "เมื่อเร็วๆ นี้"}
                   </div>
                   <h3 className="mb-3 line-clamp-2 font-display text-xl font-bold text-white transition-colors group-hover:text-primary">{item.title}</h3>
                   <p className="text-muted-foreground text-sm line-clamp-3 mb-6">{item.content}</p>
                   <div className="flex items-center justify-between border-t border-white/[0.07] pt-4">
                     <span className="text-xs text-white/40">โดย {item.author || "Admin"}</span>
-                    <Button variant="ghost" size="sm" className="h-auto p-0 font-bold text-primary hover:bg-transparent hover:text-cyan-200">
-                      อ่านต่อ <ArrowRight className="w-4 h-4 ml-1" />
+                    <Button variant="ghost" size="sm" className="h-auto p-0 font-medium text-primary hover:bg-transparent hover:text-cyan-200">
+                      อ่านต่อ
                     </Button>
                   </div>
                 </Card>

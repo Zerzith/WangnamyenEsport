@@ -173,7 +173,7 @@ export default function Bracket() {
           <motion.div
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="mb-5 inline-flex items-center gap-2 rounded-full border border-primary/25 bg-primary/[0.09] px-4 py-2 text-xs font-bold tracking-[0.14em] text-primary shadow-[0_0_20px_-10px_rgb(34_211_238_/_0.8)] "
+            className="mb-5 inline-flex items-center gap-2 rounded-md border border-primary/25 bg-primary/[0.09] px-4 py-2 text-xs font-bold tracking-[0.14em] text-primary  "
           >
             <Swords className="w-4 h-4" />
             REAL-TIME TOURNAMENT BRACKET
@@ -357,7 +357,7 @@ function BracketMatch({ match, tournamentGame, registrations = [], onTeamClick }
       className="relative"
     >
       <Card
-        className={`group w-64 border-white/[0.1] bg-zinc-900/80  transition-all duration-200 hover:-translate-y-1 hover:border-primary/50 hover:shadow-panel-hover md:w-72 ${
+        className={`group w-64 border-white/[0.1] bg-zinc-900  transition-all duration-200 hover:-translate-y-1 hover:border-primary/50 hover: md:w-72 ${
           isOngoing ? "border-red-500/45 ring-1 ring-red-500/45 shadow-[0_0_16px_-10px_rgb(239_68_68_/_0.8)]" : ""
         } ${isCompleted ? "shadow-[0_18px_45px_-30px_rgb(0_0_0_/_0.9)]" : ""}`}
       >
@@ -372,7 +372,7 @@ function BracketMatch({ match, tournamentGame, registrations = [], onTeamClick }
         <div
           className={`flex items-center justify-between border-b border-white/[0.07] p-4 transition-colors ${
             winnerA ? "border-b-primary/35 bg-primary/[0.12]" : ""
-          } ${winnerA ? "ring-1 ring-primary/20" : ""}`}
+          } ${winnerA ? "" : ""}`}
         >
           <button
             onClick={() => {
@@ -402,7 +402,7 @@ function BracketMatch({ match, tournamentGame, registrations = [], onTeamClick }
                 ) : match.lossesA === 1 && match.winsA === 0 && match.drawsA === 0 ? (
                   <span className="text-red-400 px-2 py-1 bg-red-400/10 rounded border border-red-400/30">แพ้</span>
                 ) : (
-                  <span className="text-white/40 px-2 py-1 bg-white/5 rounded border border-white/10">-</span>
+                  <span className="text-white/40 px-2 py-1 bg-zinc-900 rounded border border-white/10">-</span>
                 )}
               </div>
             ) : (
@@ -417,7 +417,7 @@ function BracketMatch({ match, tournamentGame, registrations = [], onTeamClick }
               </div>
             )}
             {winnerA && (
-              <div className="text-xs font-bold px-2 py-1 bg-primary/30 text-primary rounded border border-primary/50">👑</div>
+              <div className="text-xs font-bold px-2 py-1 bg-primary/30 text-primary rounded border border-primary/50">CH</div>
             )}
           </div>
         </div>
@@ -426,7 +426,7 @@ function BracketMatch({ match, tournamentGame, registrations = [], onTeamClick }
         <div
           className={`flex items-center justify-between p-4 transition-colors ${
             winnerB ? "border-t-primary/35 bg-primary/[0.12]" : ""
-          } ${winnerB ? "ring-1 ring-primary/20" : ""}`}
+          } ${winnerB ? "" : ""}`}
         >
           <button
             onClick={() => {
@@ -456,7 +456,7 @@ function BracketMatch({ match, tournamentGame, registrations = [], onTeamClick }
                 ) : match.lossesB === 1 && match.winsB === 0 && match.drawsB === 0 ? (
                   <span className="text-red-400 px-2 py-1 bg-red-400/10 rounded border border-red-400/30">แพ้</span>
                 ) : (
-                  <span className="text-white/40 px-2 py-1 bg-white/5 rounded border border-white/10">-</span>
+                  <span className="text-white/40 px-2 py-1 bg-zinc-900 rounded border border-white/10">-</span>
                 )}
               </div>
             ) : (
@@ -471,7 +471,7 @@ function BracketMatch({ match, tournamentGame, registrations = [], onTeamClick }
               </div>
             )}
             {winnerB && (
-              <div className="text-xs font-bold px-2 py-1 bg-primary/30 text-primary rounded border border-primary/50">👑</div>
+              <div className="text-xs font-bold px-2 py-1 bg-primary/30 text-primary rounded border border-primary/50">CH</div>
             )}
           </div>
         </div>

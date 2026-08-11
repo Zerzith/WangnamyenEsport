@@ -230,8 +230,8 @@ export default function Chat() {
               </div>
             </Card>
           ) : (
-            <Card className="bg-card/30 border-dashed border-white/10 flex-1 flex flex-col items-center justify-center p-12 text-center">
-              <div className="w-20 h-20 rounded-full bg-white/5 flex items-center justify-center mb-6">
+            <Card className="bg-zinc-900 border-dashed border-white/10 flex-1 flex flex-col items-center justify-center p-12 text-center">
+              <div className="w-20 h-20 rounded-full bg-zinc-900 flex items-center justify-center mb-6">
                 <Eye className="w-10 h-10 text-muted-foreground opacity-20" />
               </div>
               <h2 className="text-2xl font-bold text-white mb-2">ไม่มีการถ่ายทอดสดในขณะนี้</h2>
@@ -275,8 +275,8 @@ export default function Chat() {
         </div>
 
         <div className="lg:col-span-1 flex flex-col h-full overflow-hidden">
-          <Card className="bg-card/50 border-white/10  flex-1 flex flex-col overflow-hidden">
-            <div className="p-4 border-b border-white/10 flex items-center justify-between bg-white/5">
+          <Card className="bg-zinc-900 border-white/10  flex-1 flex flex-col overflow-hidden">
+            <div className="p-4 border-b border-white/10 flex items-center justify-between bg-zinc-900">
               <h3 className="font-bold text-white flex items-center gap-2">
                 <MessageCircle className="w-4 h-4 text-primary" /> แชทสด
               </h3>
@@ -293,7 +293,7 @@ export default function Chat() {
                     <div className="flex items-center gap-2 mb-1">
                       <span className="text-[10px] font-bold text-muted-foreground">{censorText(msg.displayName)}</span>
                     </div>
-                    <div className={`px-3 py-2 rounded-xl text-sm ${msg.userId === user.uid ? 'bg-primary text-white rounded-tr-none' : 'bg-white/10 text-white rounded-tl-none'}`}>
+                    <div className={`px-3 py-2 rounded-xl text-sm ${msg.userId === user.uid ? 'bg-primary text-white rounded-tr-none' : 'bg-zinc-800 text-white rounded-tl-none'}`}>
                       {censorText(msg.text)}
                     </div>
                   </div>
@@ -301,7 +301,7 @@ export default function Chat() {
               ))}
             </div>
 
-            <div className="p-4 border-t border-white/10 bg-white/5 relative">
+            <div className="p-4 border-t border-white/10 bg-zinc-900 relative">
               {showEmoji && (
                 <div className="absolute bottom-full right-0 mb-2 z-50">
                   <EmojiPicker onEmojiClick={(emoji) => setNewMessage(prev => prev + emoji.emoji)} theme={Theme.DARK} />

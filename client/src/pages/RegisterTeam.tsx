@@ -306,7 +306,7 @@ export default function RegisterTeam() {
         )}
 
         {/* Event Selection */}
-        <Card className="bg-card/50 border-white/10 p-8 rounded-xl mb-8 ">
+        <Card className="bg-zinc-900 border-white/10 p-8 rounded-xl mb-8 ">
           <h2 className="text-2xl font-bold text-white mb-6 flex items-center gap-2">
             <div className="w-1 h-6 bg-primary rounded-full" />
             เลือกรายการแข่งขัน
@@ -314,7 +314,7 @@ export default function RegisterTeam() {
           <select
             value={selectedEventId}
             onChange={(e) => setSelectedEventId(e.target.value)}
-            className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:ring-primary focus:border-primary [color-scheme:dark]"
+            className="w-full bg-zinc-900 border border-white/10 rounded-xl px-4 py-3 text-white focus:ring-primary focus:border-primary [color-scheme:dark]"
           >
             <option value="" style={{ backgroundColor: '#0f172a', color: 'white' }}>-- เลือกรายการแข่งขัน --</option>
             {allEvents.map((e) => (
@@ -328,20 +328,20 @@ export default function RegisterTeam() {
         {selectedEventId && event && (
           <div className="space-y-8">
             {/* Event Details */}
-            <Card className="bg-card/50 border-white/10 p-8 rounded-xl  shadow-xl ring-1 ring-primary/20">
+            <Card className="bg-zinc-900 border-white/10 p-8 rounded-xl  shadow-xl ">
               <h2 className="text-2xl font-bold text-white mb-6 flex items-center gap-2">
                 <div className="w-1 h-6 bg-primary rounded-full" />
                 รายละเอียดการแข่งขัน
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-                <div className="flex items-center gap-4 p-4 rounded-xl bg-white/5 border border-white/5">
+                <div className="flex items-center gap-4 p-4 rounded-xl bg-zinc-900 border border-white/5">
                   <Trophy className="w-6 h-6 text-primary" />
                   <div>
                     <p className="text-xs text-muted-foreground uppercase font-bold tracking-wider">ชื่อการแข่งขัน</p>
                     <p className="text-white font-medium">{event.title}</p>
                   </div>
                 </div>
-                <div className="flex items-center gap-4 p-4 rounded-xl bg-white/5 border border-white/5">
+                <div className="flex items-center gap-4 p-4 rounded-xl bg-zinc-900 border border-white/5">
                   <Gamepad2 className="w-6 h-6 text-primary" />
                   <div>
                     <p className="text-xs text-muted-foreground uppercase font-bold tracking-wider">เกม</p>
@@ -359,13 +359,13 @@ export default function RegisterTeam() {
             {/* Registration Section */}
             {!userRegistration ? (
               showRegistrationForm ? (
-                <Card className="bg-card/50 border-white/10 p-8 rounded-xl  shadow-xl ring-1 ring-primary/20">
+                <Card className="bg-zinc-900 border-white/10 p-8 rounded-xl  shadow-xl ">
                   <h2 className="text-2xl font-bold text-white mb-6 flex items-center gap-3">
                     <Trophy className="w-6 h-6 text-primary" /> ฟอร์มลงสมัครเข้าแข่งขัน
                   </h2>
                   <form onSubmit={handleRegister} className="space-y-8">
                     {/* Logo Upload Section */}
-                    <div className="flex flex-col items-center justify-center p-8 border-2 border-dashed border-white/10 rounded-[2rem] bg-white/5 hover:bg-white/10 transition-all group relative overflow-hidden">
+                    <div className="flex flex-col items-center justify-center p-8 border-2 border-dashed border-white/10 rounded-xl bg-zinc-900 hover:bg-zinc-800 transition-all group relative overflow-hidden">
                       <input
                         type="file"
                         ref={fileInputRef}
@@ -379,7 +379,7 @@ export default function RegisterTeam() {
                           <img src={formData.logoUrl} alt="Team Logo Preview" className="w-full h-full object-cover rounded-xl ring-4 ring-primary/20" />
                           <div
                             onClick={() => fileInputRef.current?.click()}
-                            className="absolute inset-0 bg-black/60 rounded-xl flex items-center justify-center opacity-0 group-hover/logo:opacity-100 transition-opacity cursor-pointer"
+                            className="absolute inset-0 bg-zinc-900 rounded-xl flex items-center justify-center opacity-0 group-hover/logo:opacity-100 transition-opacity cursor-pointer"
                           >
                             <Upload className="w-8 h-8 text-white" />
                           </div>
@@ -412,7 +412,7 @@ export default function RegisterTeam() {
                           value={formData.teamName}
                           onChange={(e) => setFormData({ ...formData, teamName: e.target.value })}
                           placeholder="ระบุชื่อทีมของคุณ"
-                          className="bg-white/5 border-white/10 h-14 rounded-xl focus:ring-primary text-lg"
+                          className="bg-zinc-900 border-white/10 h-14 rounded-xl focus:ring-primary text-lg"
                           required
                         />
                       </div>
@@ -423,7 +423,7 @@ export default function RegisterTeam() {
                         </label>
                         <div className="space-y-6">
                           {formData.members.map((member, index) => (
-                            <div key={index} className="p-6 rounded-xl bg-white/5 border border-white/5 relative group space-y-4">
+                            <div key={index} className="p-6 rounded-xl bg-zinc-900 border border-white/5 relative group space-y-4">
                               <div className="absolute -left-3 top-6 w-8 h-8 rounded-full bg-primary flex items-center justify-center text-xs font-bold text-white shadow-lg ring-4 ring-background">
                                 {index + 1}
                               </div>
@@ -441,7 +441,7 @@ export default function RegisterTeam() {
                                       setFormData({ ...formData, members: newMembers });
                                     }}
                                     placeholder="ระบุชื่อ-นามสกุลจริง"
-                                    className="bg-white/5 border-white/10 h-11 rounded-xl focus:ring-primary"
+                                    className="bg-zinc-900 border-white/10 h-11 rounded-xl focus:ring-primary"
                                     required={index < 3}
                                   />
                                 </div>
@@ -457,7 +457,7 @@ export default function RegisterTeam() {
                                       setFormData({ ...formData, members: newMembers });
                                     }}
                                     placeholder="ระบุชื่อที่ใช้ในเกม"
-                                    className="bg-white/5 border-white/10 h-11 rounded-xl focus:ring-primary"
+                                    className="bg-zinc-900 border-white/10 h-11 rounded-xl focus:ring-primary"
                                     required={index < 3}
                                   />
                                 </div>
@@ -476,7 +476,7 @@ export default function RegisterTeam() {
                                       setFormData({ ...formData, members: newMembers });
                                     }}
                                     placeholder="รหัส 10 หลัก"
-                                    className="bg-white/5 border-white/10 h-11 rounded-xl focus:ring-primary"
+                                    className="bg-zinc-900 border-white/10 h-11 rounded-xl focus:ring-primary"
                                     required={index < 3}
                                   />
                                 </div>
@@ -492,7 +492,7 @@ export default function RegisterTeam() {
                                       setFormData({ ...formData, members: newMembers });
                                     }}
                                     placeholder="เช่น คอมพิวเตอร์"
-                                    className="bg-white/5 border-white/10 h-11 rounded-xl focus:ring-primary"
+                                    className="bg-zinc-900 border-white/10 h-11 rounded-xl focus:ring-primary"
                                     required={index < 3}
                                   />
                                 </div>
@@ -508,7 +508,7 @@ export default function RegisterTeam() {
                                       setFormData({ ...formData, members: newMembers });
                                     }}
                                     placeholder="เช่น ปวช. 1"
-                                    className="bg-white/5 border-white/10 h-11 rounded-xl focus:ring-primary"
+                                    className="bg-zinc-900 border-white/10 h-11 rounded-xl focus:ring-primary"
                                     required={index < 3}
                                   />
                                 </div>
@@ -581,7 +581,7 @@ export default function RegisterTeam() {
                 </Button>
               )
             ) : !showRegistrationForm && (
-              <Card className="bg-card/50 border-white/10 p-8 rounded-xl border-primary/20 bg-primary/5 ">
+              <Card className="bg-zinc-900 border-white/10 p-8 rounded-xl border-primary/20 bg-primary/5 ">
                 <div className="flex flex-col md:flex-row items-center gap-6">
                   <div className="w-20 h-20 bg-primary/20 rounded-xl flex items-center justify-center shrink-0 overflow-hidden ring-2 ring-primary/30">
                     {userRegistration.logoUrl ? (
@@ -593,7 +593,7 @@ export default function RegisterTeam() {
                   <div className="flex-grow text-center md:text-left">
                     <h2 className="text-2xl font-bold text-white mb-1">คุณได้ลงสมัครแล้ว</h2>
                     <p className="text-muted-foreground mb-3">ทีมของคุณ: <span className="text-white font-bold">{userRegistration.teamName}</span></p>
-                    <div className="inline-flex items-center px-4 py-1.5 rounded-full bg-white/5 border border-white/10">
+                    <div className="inline-flex items-center px-4 py-1.5 rounded-full bg-zinc-900 border border-white/10">
                       <span className="text-xs text-muted-foreground mr-2">สถานะ:</span>
                       <span className={`text-xs font-black uppercase tracking-widest ${
                         userRegistration.status === 'approved' ? 'text-green-400' :
@@ -605,7 +605,7 @@ export default function RegisterTeam() {
                   <div className="flex flex-col gap-2 shrink-0 w-full md:w-auto">
                     <Button
                       variant="outline"
-                      className="border-white/10 hover:bg-white/5 text-white gap-2 rounded-xl h-11"
+                      className="border-white/10 hover:bg-zinc-900 text-white gap-2 rounded-xl h-11"
                       onClick={handleEditRegistration}
                     >
                       <Trophy className="w-4 h-4" /> แก้ไขข้อมูล
@@ -648,7 +648,7 @@ export default function RegisterTeam() {
                       w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all
                       ${location === item.href
                         ? 'bg-primary/20 text-primary border border-primary/50'
-                        : 'text-muted-foreground hover:text-white hover:bg-white/5'}
+                        : 'text-muted-foreground hover:text-white hover:bg-zinc-900'}
                     `}
                   >
                     <span className="font-medium">{item.label}</span>
@@ -663,7 +663,7 @@ export default function RegisterTeam() {
       {/* Overlay */}
       {sidebarOpen && (
         <div
-          className="fixed inset-0 z-30 bg-black/50  top-16"
+          className="fixed inset-0 z-30 bg-zinc-900/50  top-16"
           onClick={() => setSidebarOpen(false)}
         />
       )}

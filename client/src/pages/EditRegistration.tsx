@@ -243,12 +243,12 @@ export default function EditRegistration() {
 
         <form onSubmit={handleUpdate} className="space-y-8">
           {/* Logo Upload Section */}
-          <Card className="bg-card/50 border-white/10 p-8 rounded-xl  shadow-xl ring-1 ring-primary/20">
+          <Card className="bg-zinc-900 border-white/10 p-8 rounded-xl  shadow-xl ">
             <h2 className="text-2xl font-bold text-white mb-6 flex items-center gap-3">
               <Edit2 className="w-6 h-6 text-primary" /> แก้ไขรายละเอียดทีม
             </h2>
 
-            <div className="flex flex-col items-center justify-center p-8 border-2 border-dashed border-white/10 rounded-[2rem] bg-white/5 hover:bg-white/10 transition-all group relative overflow-hidden mb-8">
+            <div className="flex flex-col items-center justify-center p-8 border-2 border-dashed border-white/10 rounded-xl bg-zinc-900 hover:bg-zinc-800 transition-all group relative overflow-hidden mb-8">
               <input
                 type="file"
                 ref={fileInputRef}
@@ -262,7 +262,7 @@ export default function EditRegistration() {
                   <img src={formData.logoUrl} alt="Team Logo Preview" className="w-full h-full object-cover rounded-xl ring-4 ring-primary/20" />
                   <div
                     onClick={() => fileInputRef.current?.click()}
-                    className="absolute inset-0 bg-black/60 rounded-xl flex items-center justify-center opacity-0 group-hover/logo:opacity-100 transition-opacity cursor-pointer"
+                    className="absolute inset-0 bg-zinc-900 rounded-xl flex items-center justify-center opacity-0 group-hover/logo:opacity-100 transition-opacity cursor-pointer"
                   >
                     <Upload className="w-8 h-8 text-white" />
                   </div>
@@ -295,7 +295,7 @@ export default function EditRegistration() {
                   value={formData.teamName}
                   onChange={(e) => setFormData({ ...formData, teamName: e.target.value })}
                   placeholder="ระบุชื่อทีมของคุณ"
-                  className="bg-white/5 border-white/10 h-14 rounded-xl focus:ring-primary text-lg"
+                  className="bg-zinc-900 border-white/10 h-14 rounded-xl focus:ring-primary text-lg"
                   required
                 />
               </div>
@@ -306,7 +306,7 @@ export default function EditRegistration() {
                 </label>
                 <div className="space-y-6">
                   {formData.members.map((member, index) => (
-                    <div key={index} className="p-6 rounded-xl bg-white/5 border border-white/5 relative group space-y-4">
+                    <div key={index} className="p-6 rounded-xl bg-zinc-900 border border-white/5 relative group space-y-4">
                       <div className="absolute -left-3 top-6 w-8 h-8 rounded-full bg-primary flex items-center justify-center text-xs font-bold text-white shadow-lg ring-4 ring-background">
                         {index + 1}
                       </div>
@@ -324,7 +324,7 @@ export default function EditRegistration() {
                               setFormData({ ...formData, members: newMembers });
                             }}
                             placeholder="ระบุชื่อ-นามสกุลจริง"
-                            className="bg-white/5 border-white/10 h-11 rounded-xl focus:ring-primary"
+                            className="bg-zinc-900 border-white/10 h-11 rounded-xl focus:ring-primary"
                             required={index < 3}
                           />
                         </div>
@@ -340,7 +340,7 @@ export default function EditRegistration() {
                               setFormData({ ...formData, members: newMembers });
                             }}
                             placeholder="ระบุชื่อที่ใช้ในเกม"
-                            className="bg-white/5 border-white/10 h-11 rounded-xl focus:ring-primary"
+                            className="bg-zinc-900 border-white/10 h-11 rounded-xl focus:ring-primary"
                             required={index < 3}
                           />
                         </div>
@@ -359,7 +359,7 @@ export default function EditRegistration() {
                               setFormData({ ...formData, members: newMembers });
                             }}
                             placeholder="รหัส 10 หลัก"
-                            className="bg-white/5 border-white/10 h-11 rounded-xl focus:ring-primary"
+                            className="bg-zinc-900 border-white/10 h-11 rounded-xl focus:ring-primary"
                             required={index < 3}
                           />
                         </div>
@@ -375,7 +375,7 @@ export default function EditRegistration() {
                               setFormData({ ...formData, members: newMembers });
                             }}
                             placeholder="เช่น คอมพิวเตอร์"
-                            className="bg-white/5 border-white/10 h-11 rounded-xl focus:ring-primary"
+                            className="bg-zinc-900 border-white/10 h-11 rounded-xl focus:ring-primary"
                             required={index < 3}
                           />
                         </div>
@@ -391,7 +391,7 @@ export default function EditRegistration() {
                               setFormData({ ...formData, members: newMembers });
                             }}
                             placeholder="เช่น ปวช. 1"
-                            className="bg-white/5 border-white/10 h-11 rounded-xl focus:ring-primary"
+                            className="bg-zinc-900 border-white/10 h-11 rounded-xl focus:ring-primary"
                             required={index < 3}
                           />
                         </div>
@@ -487,7 +487,7 @@ export default function EditRegistration() {
                       w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all
                       ${location === item.href
                         ? 'bg-primary/20 text-primary border border-primary/50'
-                        : 'text-muted-foreground hover:text-white hover:bg-white/5'}
+                        : 'text-muted-foreground hover:text-white hover:bg-zinc-900'}
                     `}
                   >
                     <span className="font-medium">{item.label}</span>
@@ -502,7 +502,7 @@ export default function EditRegistration() {
       {/* Overlay */}
       {sidebarOpen && (
         <div
-          className="fixed inset-0 z-30 bg-black/50  top-16"
+          className="fixed inset-0 z-30 bg-zinc-900/50  top-16"
           onClick={() => setSidebarOpen(false)}
         />
       )}

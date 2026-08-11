@@ -581,7 +581,7 @@ export default function AdminDashboard() {
       await updateDoc(doc(db, "events", eventId), {
         championTeamId: teamId
       });
-      toast({ title: "ประกาศแชมป์เปี้ยนเรียบร้อย 👑" });
+      toast({ title: "ประกาศแชมป์เปี้ยนเรียบร้อย" });
     } catch (error) {
       toast({ title: "ผิดพลาดในการประกาศแชมป์เปี้ยน", variant: "destructive" });
     }
@@ -613,7 +613,7 @@ export default function AdminDashboard() {
         </div>
 
         <Tabs defaultValue="events" className="w-full">
-          <TabsList className="bg-card/50 border border-white/10 w-full justify-start overflow-x-auto h-auto p-1 mb-8">
+          <TabsList className="bg-zinc-900 border border-white/10 w-full justify-start overflow-x-auto h-auto p-1 mb-8">
             <TabsTrigger value="events" className="py-2.5 px-4"><Trophy className="mr-2 h-4 w-4" />การแข่งขัน</TabsTrigger>
             <TabsTrigger value="registrations" className="py-2.5 px-4"><UserCheck className="mr-2 h-4 w-4" />คำขอสมัคร</TabsTrigger>
             <TabsTrigger value="teams" className="py-2.5 px-4"><Users className="mr-2 h-4 w-4" />ทีมที่อนุมัติ</TabsTrigger>
@@ -622,7 +622,7 @@ export default function AdminDashboard() {
           </TabsList>
 
           <TabsContent value="events" className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-300">
-            <Card className="bg-card/50 border-white/10 overflow-hidden">
+            <Card className="bg-zinc-900 border-white/10 overflow-hidden">
               <CardHeader>
                 <CardTitle className="text-xl">สร้างการแข่งขันใหม่</CardTitle>
               </CardHeader>
@@ -734,7 +734,7 @@ export default function AdminDashboard() {
                             {event.championTeamId ? (
                               <div className="flex items-center gap-2">
                                 <Badge className="bg-yellow-500 text-black font-bold">
-                                  👑 {teams.find(t => t.id === event.championTeamId)?.name || "แชมป์เปี้ยน"}
+                                  แชมป์เปี้ยน: {teams.find(t => t.id === event.championTeamId)?.name || "แชมป์เปี้ยน"}
                                 </Badge>
                                 <Button size="xs" variant="ghost" className="h-6 w-6 p-0 text-muted-foreground hover:text-red-500" onClick={() => handleRemoveChampion(event.id)}>
                                   <X className="h-3 w-3" />
@@ -763,7 +763,7 @@ export default function AdminDashboard() {
           </TabsContent>
 
           <TabsContent value="news" className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-300">
-            <Card className="bg-card/50 border-white/10 overflow-hidden">
+            <Card className="bg-zinc-900 border-white/10 overflow-hidden">
               <CardHeader>
                 <CardTitle className="text-xl">จัดการข่าวสาร</CardTitle>
               </CardHeader>
@@ -799,7 +799,7 @@ export default function AdminDashboard() {
           </TabsContent>
 
           <TabsContent value="registrations" className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-300">
-            <Card className="bg-card/50 border-white/10 overflow-hidden">
+            <Card className="bg-zinc-900 border-white/10 overflow-hidden">
               <CardHeader className="flex flex-row items-center justify-between">
                 <CardTitle className="text-xl">คำขอสมัครเข้าร่วม</CardTitle>
                 <Select value={selectedRegistrationEvent} onValueChange={setSelectedRegistrationEvent}>
@@ -865,7 +865,7 @@ export default function AdminDashboard() {
           </TabsContent>
 
           <TabsContent value="teams" className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-300">
-            <Card className="bg-card/50 border-white/10 overflow-hidden">
+            <Card className="bg-zinc-900 border-white/10 overflow-hidden">
               <CardHeader>
                 <CardTitle className="text-xl">ทีมที่ได้รับการอนุมัติ</CardTitle>
               </CardHeader>
@@ -928,7 +928,7 @@ export default function AdminDashboard() {
           </TabsContent>
 
           <TabsContent value="matches" className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-300">
-            <Card className="bg-card/50 border-white/10 overflow-hidden">
+            <Card className="bg-zinc-900 border-white/10 overflow-hidden">
               <CardHeader className="flex flex-row items-center justify-between">
                 <CardTitle className="text-xl">จัดการแมตช์</CardTitle>
               </CardHeader>

@@ -67,7 +67,7 @@ export function TeamMembersModal({
             members.map((member, index) => (
               <div
                 key={index}
-                className="p-4 rounded-xl bg-white/5 border border-white/5 hover:bg-white/10 transition-colors"
+                className="p-4 rounded-xl bg-zinc-900 border border-white/5 hover:bg-zinc-800 transition-colors"
               >
                 <div className="grid grid-cols-2 gap-4">
                   <div>

@@ -132,7 +132,7 @@ export default function HallOfFame() {
             className={`px-4 py-2 rounded-lg font-semibold transition-all ${
               selectedGame === game
                 ? "bg-primary text-black"
-                : "bg-card/50 text-white hover:bg-card border border-white/10"
+                : "bg-zinc-900 text-white hover:bg-card border border-white/10"
             }`}
           >
             {game === "All" ? "ทั้งหมด" : game}
@@ -141,7 +141,7 @@ export default function HallOfFame() {
       </div>
 
       {filteredTeams.length === 0 ? (
-        <div className="text-center py-12 bg-card/20 rounded-xl border border-dashed border-white/10">
+        <div className="text-center py-12 bg-zinc-900 rounded-xl border border-dashed border-white/10">
           <Award className="w-16 h-16 mx-auto text-white/10 mb-4" />
           <p className="text-muted-foreground">ยังไม่มีทีมที่ผ่านการคัดเลือก</p>
         </div>
@@ -155,7 +155,7 @@ export default function HallOfFame() {
               viewport={{ once: true }}
               transition={{ delay: Math.min(index * 0.08, 0.4) }}
             >
-              <Card className="bg-card/50 border-white/10 hover:border-primary/30 transition-all overflow-hidden group">
+              <Card className="bg-zinc-900 border-white/10 hover:border-primary/30 transition-all overflow-hidden group">
                 <CardHeader className="pb-4">
                   <div className="flex items-start justify-between">
                     <div className="flex items-center gap-4 flex-1">
@@ -197,7 +197,7 @@ export default function HallOfFame() {
                       {team.members.map((member, memberIndex) => (
                         <div
                           key={memberIndex}
-                          className="p-3 rounded-lg bg-white/5 border border-white/5 text-sm"
+                          className="p-3 rounded-lg bg-zinc-900 border border-white/5 text-sm"
                         >
                           <div className="grid grid-cols-2 gap-2">
                             <div>

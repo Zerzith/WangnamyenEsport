@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { collection, onSnapshot, query, orderBy, where } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Loader2, FileText, AlertCircle, CheckCircle2, Trophy, Shield, Users, Sword } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { motion } from "framer-motion";
 import { AvatarCustom } from "@/components/ui/avatar-custom";
@@ -110,8 +110,7 @@ export default function Rules() {
   return (
     <div className="container mx-auto px-4 py-12">
       <div className="mb-12">
-        <div className="flex items-center gap-3 mb-6">
-          <Shield className="w-8 h-8 text-primary" />
+        <div className="mb-6">
           <h1 className="text-4xl font-display font-bold text-white uppercase tracking-tight">กฎกติกาการแข่งขัน</h1>
         </div>
         <p className="text-muted-foreground max-w-2xl text-lg">
@@ -120,13 +119,11 @@ export default function Rules() {
       </div>
 
       <Tabs defaultValue="rules" className="w-full">
-        <TabsList className="grid w-full max-w-md grid-cols-2 mb-10 bg-white/5 p-1 rounded-xl border border-white/10">
+        <TabsList className="grid w-full max-w-md grid-cols-2 mb-10 bg-zinc-900 p-1 rounded-xl border border-white/10">
           <TabsTrigger value="rules" className="rounded-lg data-[state=active]:bg-primary data-[state=active]:text-white transition-all">
-            <FileText className="w-4 h-4 mr-2" />
             กฎการแข่งขัน
           </TabsTrigger>
           <TabsTrigger value="approved" className="rounded-lg data-[state=active]:bg-primary data-[state=active]:text-white transition-all">
-            <Users className="w-4 h-4 mr-2" />
             ทีมที่ผ่านการคัดเลือก
           </TabsTrigger>
         </TabsList>
@@ -144,21 +141,16 @@ export default function Rules() {
                   viewport={{ once: true }}
                   transition={{ delay: index * 0.1 }}
                 >
-                  <Card className="bg-card/40 border-white/5 hover:border-primary/20 transition-all overflow-hidden group">
+                  <Card className="bg-zinc-900 border-white/5 hover:border-primary/20 transition-all overflow-hidden group">
                     <div className="p-6">
-                      <div className="flex items-start gap-4">
-                        <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0 group-hover:bg-primary/20 transition-colors">
-                          <CheckCircle2 className="w-6 h-6 text-primary" />
-                        </div>
-                        <div>
-                          <h3 className="text-xl font-bold text-white mb-2">{rule.title}</h3>
-                          <p className="text-muted-foreground whitespace-pre-wrap leading-relaxed">{rule.content}</p>
-                          {rule.category && (
-                            <span className="inline-block mt-4 px-3 py-1 rounded-full bg-white/5 text-[10px] font-bold text-primary uppercase tracking-wider border border-white/10">
-                              {rule.category}
-                            </span>
-                          )}
-                        </div>
+                    <div>
+                      <h3 className="text-xl font-bold text-white mb-2">{rule.title}</h3>
+                        <p className="text-muted-foreground whitespace-pre-wrap leading-relaxed">{rule.content}</p>
+                        {rule.category && (
+                          <span className="inline-block mt-4 px-3 py-1 rounded-md bg-zinc-900 text-[10px] font-bold text-primary uppercase tracking-wider border border-white/10">
+                            {rule.category}
+                          </span>
+                        )}
                       </div>
                     </div>
                   </Card>
@@ -183,10 +175,9 @@ export default function Rules() {
                         viewport={{ once: true }}
                         transition={{ delay: itemIndex * 0.05 }}
                       >
-                        <Card className="bg-card/30 border-white/5 hover:border-primary/30 transition-all h-full">
+                        <Card className="bg-zinc-900 border-white/5 hover:border-primary/30 transition-all h-full">
                           <CardHeader className="pb-2">
-                            <CardTitle className="text-lg text-primary flex items-center gap-2">
-                              <Sword className="w-4 h-4" />
+                            <CardTitle className="text-lg text-primary">
                               {item.title}
                             </CardTitle>
                           </CardHeader>
@@ -205,10 +196,7 @@ export default function Rules() {
           )}
 
           {/* Important Notice */}
-          <div className="bg-gradient-to-br from-yellow-500/20 to-orange-500/10 border border-yellow-500/20 rounded-xl p-8 flex flex-col md:flex-row gap-6 items-center md:items-start">
-            <div className="w-16 h-16 rounded-xl bg-yellow-500/20 flex items-center justify-center flex-shrink-0">
-              <AlertCircle className="w-10 h-10 text-yellow-400" />
-            </div>
+          <div className="bg-yellow-500/10 border border-yellow-500/20 rounded-xl p-8">
             <div>
               <h3 className="text-2xl font-bold text-yellow-300 mb-3">ประกาศสำคัญจากคณะกรรมการ</h3>
               <p className="text-yellow-100/70 leading-relaxed text-lg">
@@ -223,8 +211,7 @@ export default function Rules() {
         <TabsContent value="approved" className="space-y-8">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
             <div>
-              <h2 className="text-3xl font-display font-bold text-white flex items-center gap-3">
-                <Trophy className="w-8 h-8 text-primary" />
+              <h2 className="text-3xl font-display font-bold text-white">
                 ทีมที่ผ่านการคัดเลือก
               </h2>
               <p className="text-muted-foreground mt-2">รายชื่อทีมที่ได้รับการตรวจสอบเอกสารและมีสิทธิ์เข้าร่วมการแข่งขัน</p>
@@ -235,7 +222,7 @@ export default function Rules() {
           </div>
 
           {approvedTeams.length === 0 ? (
-            <div className="text-center py-24 bg-card/20 rounded-[3rem] border border-dashed border-white/10">
+            <div className="text-center py-24 bg-zinc-900 rounded-xl border border-dashed border-white/10">
               <Trophy className="w-20 h-20 mx-auto text-white/5 mb-6" />
               <h3 className="text-xl font-bold text-white/40">ยังไม่มีทีมที่ผ่านการคัดเลือกในขณะนี้</h3>
               <p className="text-muted-foreground mt-2">กรุณารอประกาศอย่างเป็นทางการจากผู้จัดการแข่งขัน</p>
@@ -250,9 +237,9 @@ export default function Rules() {
                   viewport={{ once: true }}
                   transition={{ delay: index * 0.1 }}
                 >
-                  <Card className="bg-card/50 border-white/10 hover:border-primary/30 transition-all overflow-hidden h-full group">
+                  <Card className="bg-zinc-900 border-white/10 hover:border-primary/30 transition-all overflow-hidden h-full group">
                     <CardHeader className="relative pb-0">
-                      <div className="absolute top-4 right-4 w-8 h-8 rounded-full bg-white/5 flex items-center justify-center font-black text-[10px] text-white/20 group-hover:text-primary transition-colors">
+                      <div className="absolute top-4 right-4 w-8 h-8 rounded-full bg-zinc-900 flex items-center justify-center font-black text-[10px] text-white/20 group-hover:text-primary transition-colors">
                         #{index + 1}
                       </div>
                       <div className="flex items-center gap-4 mb-6">
@@ -260,11 +247,8 @@ export default function Rules() {
                           <AvatarCustom 
                             src={team.logoUrl} 
                             alt={team.name} 
-                            className="w-20 h-20 ring-4 ring-primary/10 group-hover:ring-primary/30 transition-all"
+                            className="w-20 h-20 border-2 border-primary/20"
                           />
-                          <div className="absolute -bottom-2 -right-2 bg-green-500 w-6 h-6 rounded-full border-4 border-card flex items-center justify-center">
-                            <CheckCircle2 className="w-3 h-3 text-white" />
-                          </div>
                         </div>
                         <div className="flex-1">
                           <CardTitle className="text-xl font-black text-white group-hover:text-primary transition-colors">{team.name}</CardTitle>
@@ -283,7 +267,7 @@ export default function Rules() {
                           <div className="grid grid-cols-1 gap-2">
                             {team.members && team.members.length > 0 ? (
                               team.members.map((member, memberIndex) => (
-                                <div key={memberIndex} className="flex items-center justify-between p-2 rounded-lg bg-white/5 border border-white/5 hover:bg-white/10 transition-colors">
+                                <div key={memberIndex} className="flex items-center justify-between p-2 rounded-lg bg-zinc-900 border border-white/5 hover:bg-zinc-800 transition-colors">
                                   <div className="flex flex-col">
                                     <span className="text-xs font-bold text-white">{member.gameName || member.name}</span>
                                     <span className="text-[9px] text-muted-foreground">{member.department} · {member.grade}</span>

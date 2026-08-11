@@ -5,18 +5,18 @@ import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "@/lib/utils"
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg border font-display text-sm font-semibold uppercase tracking-wide transition-all duration-200 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/35 focus-visible:ring-offset-0 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 active:translate-y-px",
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg border text-sm font-medium transition-colors duration-150 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/35 focus-visible:ring-offset-0 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
   {
     variants: {
       variant: {
         default:
-          "border-primary-border bg-primary text-primary-foreground shadow-[0_10px_26px_-12px_rgb(34_211_238_/_0.9)] hover:-translate-y-0.5 hover:brightness-110 hover:shadow-glow",
+          "border-primary-border bg-primary text-primary-foreground hover:bg-primary/90",
         destructive:
-          "border-destructive-border bg-destructive text-destructive-foreground shadow-[0_10px_24px_-12px_rgb(239_68_68_/_0.8)] hover:-translate-y-0.5 hover:brightness-110",
+          "border-destructive-border bg-destructive text-destructive-foreground hover:bg-destructive/90",
         outline:
-          "border-white/15 bg-white/[0.025] text-foreground shadow-[inset_0_1px_0_rgb(255_255_255_/_0.035)] hover:-translate-y-0.5 hover:border-primary/45 hover:bg-primary/10 hover:text-primary hover:shadow-[0_12px_26px_-18px_rgb(34_211_238_/_0.7)]",
+          "border-white/15 bg-transparent text-foreground hover:border-primary/45 hover:text-primary",
         secondary:
-          "border-secondary-border bg-secondary text-secondary-foreground shadow-[inset_0_1px_0_rgb(255_255_255_/_0.04)] hover:-translate-y-0.5 hover:border-white/20 hover:bg-zinc-700",
+          "border-secondary-border bg-secondary text-secondary-foreground hover:bg-secondary/80",
         ghost:
           "border-transparent text-muted-foreground hover:bg-white/[0.06] hover:text-foreground",
       },

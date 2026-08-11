@@ -189,7 +189,7 @@ export default function Profile() {
           </div>
         )}
 
-        <Card className="bg-card/50 border-white/10 p-8 overflow-hidden relative">
+        <Card className="bg-zinc-900 border-white/10 p-8 overflow-hidden relative">
           <div className="absolute top-0 left-0 w-full h-1 bg-primary" />
           
           {/* Profile Photo Section */}
@@ -241,7 +241,7 @@ export default function Profile() {
                 value={formData.displayName}
                 onChange={(e) => setFormData({ ...formData, displayName: e.target.value })}
                 disabled={!isEditing}
-                className="bg-white/5 border-white/10 focus:border-primary/50"
+                className="bg-zinc-900 border-white/10 focus:border-primary/50"
               />
             </div>
 
@@ -254,7 +254,7 @@ export default function Profile() {
                 value={formData.email}
                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                 disabled={!isEditing}
-                className="bg-white/5 border-white/10 focus:border-primary/50"
+                className="bg-zinc-900 border-white/10 focus:border-primary/50"
               />
             </div>
 
@@ -266,7 +266,7 @@ export default function Profile() {
                 value={formData.studentId}
                 onChange={(e) => setFormData({ ...formData, studentId: e.target.value })}
                 disabled={!isEditing}
-                className="bg-white/5 border-white/10 focus:border-primary/50"
+                className="bg-zinc-900 border-white/10 focus:border-primary/50"
               />
             </div>
 
@@ -278,7 +278,7 @@ export default function Profile() {
                 value={formData.team || ""}
                 onChange={(e) => setFormData({ ...formData, team: e.target.value })}
                 disabled={!isEditing}
-                className="bg-white/5 border-white/10 focus:border-primary/50"
+                className="bg-zinc-900 border-white/10 focus:border-primary/50"
               />
             </div>
 
@@ -288,7 +288,7 @@ export default function Profile() {
                 value={formData.bio || ""}
                 onChange={(e) => setFormData({ ...formData, bio: e.target.value })}
                 disabled={!isEditing}
-                className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-white placeholder-muted-foreground focus:border-primary/50 outline-none transition-all resize-none"
+                className="w-full bg-zinc-900 border border-white/10 rounded-lg px-4 py-3 text-white placeholder-muted-foreground focus:border-primary/50 outline-none transition-all resize-none"
                 rows={3}
               />
             </div>
@@ -326,7 +326,7 @@ export default function Profile() {
                     setPhotoPreview(profile.photoURL || "");
                   }}
                   variant="outline"
-                  className="flex-1 border-white/10 hover:bg-white/5 py-6"
+                  className="flex-1 border-white/10 hover:bg-zinc-900 py-6"
                   disabled={isSaving || isUploadingPhoto}
                 >
                   <X className="w-5 h-5 mr-2" />

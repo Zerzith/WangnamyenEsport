@@ -203,7 +203,7 @@ export default function MyTeams() {
         </div>
 
         {teams.length === 0 ? (
-          <Card className="bg-card/50 border-dashed border-white/10 py-12 text-center">
+          <Card className="bg-zinc-900 border-dashed border-white/10 py-12 text-center">
             <p className="text-muted-foreground mb-4">คุณยังไม่ได้ลงทะเบียนทีมใด</p>
             <Button onClick={() => setLocation("/register-team")} className="bg-primary">
               ลงทะเบียนทีม
@@ -212,11 +212,11 @@ export default function MyTeams() {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {teams.map(team => (
-              <Card key={team.id} className="bg-card/50 border-white/10 overflow-hidden">
+              <Card key={team.id} className="bg-zinc-900 border-white/10 overflow-hidden">
                 <CardContent className="p-6">
                   {/* Logo Section */}
                   <div className="mb-4 relative">
-                    <div className="w-full aspect-square rounded-lg bg-white/5 border border-white/10 flex items-center justify-center overflow-hidden">
+                    <div className="w-full aspect-square rounded-lg bg-zinc-900 border border-white/10 flex items-center justify-center overflow-hidden">
                       {editingTeamId === team.id && logoPreview[team.id] ? (
                         <img 
                           src={logoPreview[team.id]} 
@@ -398,7 +398,7 @@ export default function MyTeams() {
                       w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all
                       ${location === item.href 
                         ? 'bg-primary/20 text-primary border border-primary/50' 
-                        : 'text-muted-foreground hover:text-white hover:bg-white/5'}
+                        : 'text-muted-foreground hover:text-white hover:bg-zinc-900'}
                     `}
                   >
                     <span className="font-medium">{item.label}</span>
@@ -413,7 +413,7 @@ export default function MyTeams() {
       {/* Overlay */}
       {sidebarOpen && (
         <div
-          className="fixed inset-0 z-30 bg-black/50  top-16"
+          className="fixed inset-0 z-30 bg-zinc-900/50  top-16"
           onClick={() => setSidebarOpen(false)}
         />
       )}
