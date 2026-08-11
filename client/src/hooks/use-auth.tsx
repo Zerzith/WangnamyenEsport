@@ -38,7 +38,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         // Fetch additional user data (role) from Firestore
         const userDoc = await getDoc(doc(db, "users", currentUser.uid));
         const userData = userDoc.exists() ? userDoc.data() : {};
-        setUser({ ...currentUser, role: userData.role || "user" });
+        // Preserve the Firebase user prototype (getIdToken, etc.) by using Object.assign
+        setUser(Object.assign(currentUser, { role: userData.role || "user" }));
       } else {
         setUser(null);
       }
