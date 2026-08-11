@@ -45,6 +45,10 @@ export default function AdminDashboard() {
   const [selectedTeam, setSelectedTeam] = useState<any | null>(null);
   const [showTeamModal, setShowTeamModal] = useState(false);
 
+  // User Management State
+  const [authUsers, setAuthUsers] = useState<any[]>([]);
+  const [loadingUsers, setLoadingUsers] = useState(false);
+
 
   // News state
   const [newsTitle, setNewNewsTitle] = useState("");
@@ -587,6 +591,68 @@ export default function AdminDashboard() {
     }
   };
 
+  // User Management Functions
+  const fetchAuthUsers = async () => {
+    if (!user) return;
+    setLoadingUsers(true);
+    try {
+      const token = await user.getIdToken();
+      const response = await fetch("/api/admin/auth-users", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const data = await response.json();
+      if (response.ok) {
+        setAuthUsers(data);
+      }
+    } catch (error) {
+      console.error("Error fetching auth users:", error);
+    } finally {
+      setLoadingUsers(false);
+    }
+  };
+
+  const handleDeleteUser = async (userId: string, userName: string) => {
+    if (!confirm(`ยืนยันการลบผู้ใช้ "${userName}"? การดำเนินการนี้ไม่สามารถย้อนกลับได้`)) return;
+    if (!user) return;
+    try {
+      const token = await user.getIdToken();
+      const response = await fetch(`/api/admin/users/${userId}`, {
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const data = await response.json();
+      if (response.ok) {
+        toast({ title: "ลบผู้ใช้สำเร็จ" });
+        fetchAuthUsers();
+      } else {
+        toast({ title: "ผิดพลาด", description: data.error, variant: "destructive" });
+      }
+    } catch (error) {
+      toast({ title: "ผิดพลาด", variant: "destructive" });
+    }
+  };
+
+  const handleToggleUserDisabled = async (userId: string, currentDisabled: boolean) => {
+    if (!user) return;
+    try {
+      const token = await user.getIdToken();
+      const response = await fetch(`/api/admin/users/${userId}/disable`, {
+        method: "PUT",
+        headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
+        body: JSON.stringify({ disabled: !currentDisabled }),
+      });
+      const data = await response.json();
+      if (response.ok) {
+        toast({ title: currentDisabled ? "เปิดใช้งานผู้ใช้แล้ว" : "ปิดใช้งานผู้ใช้แล้ว" });
+        fetchAuthUsers();
+      } else {
+        toast({ title: "ผิดพลาด", description: data.error, variant: "destructive" });
+      }
+    } catch (error) {
+      toast({ title: "ผิดพลาด", variant: "destructive" });
+    }
+  };
+
   const handleRemoveChampion = async (eventId: string) => {
     if (!confirm("ยืนยันการยกเลิกตำแหน่งแชมป์เปี้ยน?")) return;
     try {
@@ -619,6 +685,7 @@ export default function AdminDashboard() {
             <TabsTrigger value="teams" className="py-2.5 px-4"><Users className="mr-2 h-4 w-4" />ทีมที่อนุมัติ</TabsTrigger>
             <TabsTrigger value="matches" className="py-2.5 px-4"><Swords className="mr-2 h-4 w-4" />จัดการแมตช์</TabsTrigger>
             <TabsTrigger value="news" className="py-2.5 px-4"><Megaphone className="mr-2 h-4 w-4" />ข่าวสาร</TabsTrigger>
+            <TabsTrigger value="users" className="py-2.5 px-4"><Users className="mr-2 h-4 w-4" />ผู้ใช้</TabsTrigger>
           </TabsList>
 
           <TabsContent value="events" className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-300">
@@ -1146,10 +1213,96 @@ export default function AdminDashboard() {
                     );
                   })}
                 </div>
+              </CardContent>            </Card>
+          </TabsContent>
+
+          <TabsContent value="users" className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-300">
+            <Card className="bg-zinc-900 border-white/10 overflow-hidden">
+              <CardHeader>
+                <div className="flex items-center justify-between">
+                  <CardTitle className="text-xl">จัดการผู้ใช้ระบบ</CardTitle>
+                  <Button onClick={fetchAuthUsers} variant="outline" size="sm">
+                    <Loader2 className={`mr-2 h-4 w-4 ${loadingUsers ? 'animate-spin' : ''}`} />
+                    โหลดข้อมูล
+                  </Button>
+                </div>
+              </CardHeader>
+              <CardContent>
+                {authUsers.length === 0 ? (
+                  <div className="text-center py-8 text-muted-foreground">
+                    กดปุ่ม "โหลดข้อมูล" เพื่อดูรายชื่อผู้ใช้ทั้งหมด
+                  </div>
+                ) : (
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-sm">
+                      <thead>
+                        <tr className="border-b border-white/10 text-muted-foreground">
+                          <th className="text-left p-3">ชื่อ</th>
+                          <th className="text-left p-3">อีเมล</th>
+                          <th className="text-left p-3">สถานะ</th>
+                          <th className="text-left p-3">เข้าใช้งานล่าสุด</th>
+                          <th className="text-right p-3">จัดการ</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {authUsers.map((authUser) => (
+                          <tr key={authUser.uid} className="border-b border-white/5 hover:bg-white/[0.02]">
+                            <td className="p-3">
+                              <div className="flex items-center gap-2">
+                                {authUser.photoURL ? (
+                                  <img src={authUser.photoURL} alt="avatar" className="w-8 h-8 rounded-full object-cover" />
+                                ) : (
+                                  <div className="w-8 h-8 rounded-full bg-zinc-800 flex items-center justify-center">
+                                    <span className="text-xs">?</span>
+                                  </div>
+                                )}
+                                <span className="text-white truncate max-w-[150px]">{authUser.displayName || "ไม่มีชื่อ"}</span>
+                              </div>
+                            </td>
+                            <td className="p-3 text-muted-foreground">{authUser.email || "-"}</td>
+                            <td className="p-3">
+                              <Badge variant={authUser.disabled ? "destructive" : "secondary"}>
+                                {authUser.disabled ? "ถูกปิด" : "เปิดใช้งาน"}
+                              </Badge>
+                            </td>
+                            <td className="p-3 text-muted-foreground text-xs">
+                              {authUser.lastSignInTime
+                                ? new Date(authUser.lastSignInTime).toLocaleDateString("th-TH")
+                                : "ไม่เคยเข้าใช้งาน"}
+                            </td>
+                            <td className="p-3 text-right">
+                              <div className="flex items-center justify-end gap-2">
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  onClick={() => handleToggleUserDisabled(authUser.uid, authUser.disabled)}
+                                  className="h-8 px-2"
+                                >
+                                  {authUser.disabled ? (
+                                    <Eye className="w-4 h-4 text-green-400" />
+                                  ) : (
+                                    <EyeOff className="w-4 h-4 text-yellow-400" />
+                                  )}
+                                </Button>
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  onClick={() => handleDeleteUser(authUser.uid, authUser.displayName || authUser.email || "Unknown")}
+                                  className="h-8 px-2 border-destructive/30 hover:border-destructive"
+                                >
+                                  <Trash2 className="w-4 h-4 text-destructive" />
+                                </Button>
+                              </div>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
               </CardContent>
             </Card>
           </TabsContent>
-
         </Tabs>
 
         <Dialog open={isLiveStreamDialogOpen} onOpenChange={setIsLiveStreamDialogOpen}>

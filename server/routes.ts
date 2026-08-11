@@ -225,6 +225,79 @@ export async function registerRoutes(
     }
   });
 
+  // Delete user from Firebase Auth (admin only)
+  app.delete("/api/admin/users/:id", async (req, res) => {
+    try {
+      const authHeader = req.headers.authorization;
+      if (!authHeader) {
+        return res.status(401).json({ error: "Unauthorized" });
+      }
+      const token = authHeader.split("Bearer ")[1];
+      const decodedToken = await auth().verifyIdToken(token);
+      const adminDoc = await db().collection("users").doc(decodedToken.uid).get();
+      if (adminDoc.data()?.role !== "admin") {
+        return res.status(403).json({ error: "Forbidden" });
+      }
+      // Delete from Firebase Auth
+      await auth().deleteUser(req.params.id);
+      // Delete from Firestore
+      await db().collection("users").doc(req.params.id).delete();
+      res.json({ success: true, message: "User deleted" });
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  // Get all Firebase Auth users (admin only)
+  app.get("/api/admin/auth-users", async (req, res) => {
+    try {
+      const authHeader = req.headers.authorization;
+      if (!authHeader) {
+        return res.status(401).json({ error: "Unauthorized" });
+      }
+      const token = authHeader.split("Bearer ")[1];
+      const decodedToken = await auth().verifyIdToken(token);
+      const adminDoc = await db().collection("users").doc(decodedToken.uid).get();
+      if (adminDoc.data()?.role !== "admin") {
+        return res.status(403).json({ error: "Forbidden" });
+      }
+      const listUsersResult = await auth().listUsers(100);
+      const authUsers = listUsersResult.users.map(user => ({
+        uid: user.uid,
+        email: user.email,
+        displayName: user.displayName,
+        photoURL: user.photoURL,
+        disabled: user.disabled,
+        creationTime: user.metadata.creationTime,
+        lastSignInTime: user.metadata.lastSignInTime,
+      }));
+      res.json(authUsers);
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  // Disable/Enable user in Firebase Auth (admin only)
+  app.put("/api/admin/users/:id/disable", async (req, res) => {
+    try {
+      const { disabled } = req.body;
+      const authHeader = req.headers.authorization;
+      if (!authHeader) {
+        return res.status(401).json({ error: "Unauthorized" });
+      }
+      const token = authHeader.split("Bearer ")[1];
+      const decodedToken = await auth().verifyIdToken(token);
+      const adminDoc = await db().collection("users").doc(decodedToken.uid).get();
+      if (adminDoc.data()?.role !== "admin") {
+        return res.status(403).json({ error: "Forbidden" });
+      }
+      await auth().updateUser(req.params.id, { disabled: disabled ?? true });
+      res.json({ success: true, message: `User ${disabled ? 'disabled' : 'enabled'}` });
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
   // Delete chat message (admin only)
   app.delete("/api/chat/:id", async (req, res) => {
     try {
