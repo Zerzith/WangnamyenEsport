@@ -341,7 +341,7 @@ export default function Home() {
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               {news.map((item) => (
-                <Card key={item.id} className="group esports-panel esports-panel-interactive rounded-xl border-white/[0.09] bg-zinc-900 overflow-hidden">
+                <Card key={item.id} className="group esports-panel esports-panel-interactive rounded-xl border-white/[0.09] bg-zinc-900 overflow-hidden cursor-pointer" onClick={() => setSelectedNews(item)}>
                   {item.imageUrl && (
                     <div className="w-full aspect-[16/9] overflow-hidden">
                       <img src={item.imageUrl} alt={item.title} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
@@ -352,7 +352,7 @@ export default function Home() {
                     {item.createdAt?.toDate ? formatDate(item.createdAt.toDate().toISOString()) : "เมื่อเร็วๆ นี้"}
                   </div>
                   <h3 className="mb-3 line-clamp-2 font-display text-xl font-bold text-white transition-colors group-hover:text-primary">{item.title}</h3>
-                  <p className="text-muted-foreground text-sm line-clamp-3 mb-6">{item.content}</p>
+                  {/* Content shown only in modal */}
                   <div className="flex items-center justify-between border-t border-white/[0.07] pt-4">
                     <span className="text-xs text-white/40">โดย {item.author || "Admin"}</span>
                     <Button variant="ghost" size="sm" className="h-auto p-0 font-medium text-primary hover:bg-transparent hover:text-cyan-200" onClick={() => setSelectedNews(item)}>
