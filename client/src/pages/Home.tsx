@@ -238,9 +238,9 @@ export default function Home() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 }}
-              className="mb-5 sm:mb-6 max-w-2xl font-display text-3xl font-bold leading-[1.1] tracking-[-0.02em] text-white sm:text-4xl md:text-5xl"
+              className="mb-5 sm:mb-6 max-w-3xl font-display text-3xl font-bold leading-[1.1] tracking-[-0.02em] text-white sm:text-4xl md:text-5xl"
             >
-              ยกระดับการแข่งขัน <br />
+              ยกระดับการแข่งขัน <span className="hidden md:inline"> </span><br className="md:hidden" />
               <span className="text-primary">ESPORTS</span> ในวิทยาลัยเทคนิควังน้ำเย็น
             </motion.h1>
             <motion.p
