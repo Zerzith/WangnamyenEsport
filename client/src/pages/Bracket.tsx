@@ -417,7 +417,7 @@ function BracketMatch({ match, tournamentGame, registrations = [], onTeamClick }
               </div>
             )}
             {winnerA && (
-              <div className="text-xs font-bold px-2 py-1 bg-primary/30 text-primary rounded border border-primary/50">CH</div>
+              <div className="text-xs font-bold px-2 py-1 bg-primary/30 text-primary rounded border border-primary/50">👑</div>
             )}
           </div>
         </div>
@@ -471,7 +471,7 @@ function BracketMatch({ match, tournamentGame, registrations = [], onTeamClick }
               </div>
             )}
             {winnerB && (
-              <div className="text-xs font-bold px-2 py-1 bg-primary/30 text-primary rounded border border-primary/50">CH</div>
+              <div className="text-xs font-bold px-2 py-1 bg-primary/30 text-primary rounded border border-primary/50">👑</div>
             )}
           </div>
         </div>
