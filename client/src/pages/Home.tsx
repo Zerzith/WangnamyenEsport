@@ -223,11 +223,27 @@ export default function Home() {
           <img 
             src="/assets/college-bg.png" 
             alt="Wang Nam Yen Technical College" 
-            className="h-full w-full object-cover opacity-[0.15] blur-[1px]"
+            className="h-full w-full object-cover opacity-[0.25]"
           />
-          {/* Dark overlay */}
-          <div className="absolute inset-0 bg-gradient-to-r from-black/95 via-black/80 to-black/40" />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/30" />
+          {/* Cyan/primary glow overlay */}
+          <div className="absolute inset-0 bg-gradient-to-r from-[#0a0e17]/98 via-[#0a0e17]/85 to-transparent" />
+          {/* Subtle cyan tint */}
+          <div className="absolute inset-0 bg-cyan-500/[0.03]" />
+        </div>
+        
+        {/* Animated grid pattern overlay */}
+        <div 
+          className="absolute inset-0 z-[1] opacity-[0.08]"
+          style={{
+            backgroundImage: `linear-gradient(rgba(34,211,238,0.3) 1px, transparent 1px), linear-gradient(90deg, rgba(34,211,238,0.3) 1px, transparent 1px)`,
+            backgroundSize: '60px 60px'
+          }}
+        />
+        
+        {/* Radial glow effect */}
+        <div className="absolute inset-0 z-[1]">
+          <div className="absolute top-1/4 right-1/4 w-96 h-96 bg-primary/10 rounded-full blur-[120px] animate-pulse" />
+          <div className="absolute bottom-1/4 left-1/6 w-64 h-64 bg-cyan-500/5 rounded-full blur-[100px]" />
         </div>
         
         <div className="relative z-10 w-full px-4 sm:px-8 lg:px-12">
