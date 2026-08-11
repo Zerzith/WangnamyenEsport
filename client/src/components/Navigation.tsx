@@ -27,7 +27,7 @@ export function Navigation() {
             alt="WNYTC Esports Championship"
             className="h-9 w-9 sm:h-10 sm:w-10 rounded-lg object-contain"
           />
-          <span className="whitespace-nowrap font-display text-xs sm:text-sm lg:text-base font-bold uppercase tracking-tight text-white">
+          <span className="hidden sm:block whitespace-nowrap font-display text-xs sm:text-sm lg:text-base font-bold uppercase tracking-tight text-white">
             WangNamYen<span className="text-primary">Esports</span>
           </span>
         </Link>
