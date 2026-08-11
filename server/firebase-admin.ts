@@ -1,11 +1,60 @@
 import * as admin from "firebase-admin";
 import * as fs from "fs";
 import * as path from "path";
+
 let adminApp: admin.app.App | null = null;
+let initError: Error | null = null;
+
+function tryParseCredential(raw: string): object | null {
+  // Strategy 1: Direct parse (if it's already valid JSON)
+  try {
+    const parsed = JSON.parse(raw);
+    if (parsed && typeof parsed === 'object' && (parsed as any).private_key) {
+      return parsed;
+    }
+  } catch {}
+
+  // Strategy 2: If raw looks like it's a JSON string (double-encoded)
+  try {
+    const onceParsed = JSON.parse(raw);
+    if (typeof onceParsed === 'string') {
+      try {
+        const twiceParsed = JSON.parse(onceParsed);
+        if (twiceParsed && typeof twiceParsed === 'object' && (twiceParsed as any).private_key) {
+          return twiceParsed;
+        }
+      } catch {}
+      // Maybe it was already a proper object after one parse
+      if (onceParsed && typeof onceParsed === 'object' && (onceParsed as any).private_key) {
+        return onceParsed;
+      }
+    }
+  } catch {}
+
+  // Strategy 3: Handle escaped newlines in private_key
+  try {
+    const parsed = JSON.parse(raw);
+    if (parsed && typeof parsed === 'object' && (parsed as any).private_key) {
+      if (typeof (parsed as any).private_key === 'string' && (parsed as any).private_key.includes('\\n')) {
+        (parsed as any).private_key = (parsed as any).private_key.replace(/\\n/g, '\n');
+      }
+      return parsed;
+    }
+  } catch {}
+
+  return null;
+}
+
 export function initializeFirebaseAdmin() {
   if (adminApp) {
     return adminApp;
   }
+
+  if (initError) {
+    // Don't retry if we already failed once (avoid spam)
+    throw initError;
+  }
+
   try {
     // Try to load from file first (for local development)
     const serviceAccountPath = path.join(process.cwd(), "server", "firebase-adminsdk.json");
@@ -15,43 +64,56 @@ export function initializeFirebaseAdmin() {
         credential: admin.credential.cert(serviceAccount),
       });
       console.log("Firebase Admin initialized from file");
-    } else if (process.env.FIREBASE_ADMIN_SDK) {
-      // Try to load from environment variable (for Vercel/production)
-      let serviceAccountStr = process.env.FIREBASE_ADMIN_SDK;
-      // Handle case where the JSON might be stringified twice (common in Vercel)
-      try {
-        let serviceAccount = JSON.parse(serviceAccountStr);
+      return adminApp;
+    }
+
+    // Try environment variable (for Vercel/production)
+    const envRaw = process.env.FIREBASE_ADMIN_SDK;
+    if (envRaw) {
+      const credential = tryParseCredential(envRaw);
+      if (credential) {
         adminApp = admin.initializeApp({
-          credential: admin.credential.cert(serviceAccount),
+          credential: admin.credential.cert(credential as any),
         });
         console.log("Firebase Admin initialized from environment variable");
-      } catch (parseError) {
-        // If it's already a string (double-encoded), try parsing once more
-        try {
-          const doubleParsed = JSON.parse(JSON.parse(serviceAccountStr));
-          adminApp = admin.initializeApp({
-            credential: admin.credential.cert(doubleParsed),
-          });
-          console.log("Firebase Admin initialized from double-encoded environment variable");
-        } catch (doubleParseError) {
-          console.error("Failed to parse FIREBASE_ADMIN_SDK:", doubleParseError);
-          throw doubleParseError;
-        }
+        return adminApp;
       }
-    } else {
-      throw new Error("Firebase Admin SDK credentials not found");
     }
-    return adminApp;
-  } catch (error) {
+
+    // Fallback: Try default credentials (if running on GCP or with ADC)
+    try {
+      adminApp = admin.initializeApp({
+        credential: admin.credential.applicationDefault(),
+      });
+      console.log("Firebase Admin initialized from application default credentials");
+      return adminApp;
+    } catch (adcError) {
+      console.log("Application default credentials not available:", adcError);
+    }
+
+    const error = new Error("Firebase Admin SDK credentials not found");
+    initError = error;
+    throw error;
+  } catch (error: any) {
     console.error("Failed to initialize Firebase Admin:", error);
+    initError = error;
     throw error;
   }
 }
+
 export function getFirebaseAdmin() {
   if (!adminApp) {
     initializeFirebaseAdmin();
   }
   return adminApp!;
 }
-export const db = () => admin.firestore();
-export const auth = () => admin.auth();
+
+export function db() {
+  const app = getFirebaseAdmin();
+  return app.firestore();
+}
+
+export function auth() {
+  const app = getFirebaseAdmin();
+  return app.auth();
+}
