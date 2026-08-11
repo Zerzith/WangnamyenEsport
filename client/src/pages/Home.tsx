@@ -194,17 +194,17 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-transparent">
       {/* Hero Section */}
-      <section className="esports-grid relative flex min-h-[calc(100vh-4.5rem)] items-center border-b border-white/[0.06] py-20">
+      <section className="esports-grid relative flex min-h-[calc(100vh-4.5rem)] items-center border-b border-white/[0.06] py-12 sm:py-20">
         <div className="relative z-10 px-4 sm:px-8">
           <div>
-            <div className="mb-7 inline-flex items-center gap-2 rounded-md border border-primary/25 bg-primary/10 px-4 py-2 text-xs font-bold tracking-[0.13em] text-primary">
+            <div className="mb-5 sm:mb-7 inline-flex items-center gap-2 rounded-md border border-primary/25 bg-primary/10 px-3 sm:px-4 py-1.5 sm:py-2 text-[10px] sm:text-xs font-bold tracking-[0.13em] text-primary">
               WANGNAMYEN ESPORTS
             </div>
             <motion.h1
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 }}
-              className="mb-7 max-w-4xl font-display text-5xl font-bold leading-[0.92] tracking-[-0.045em] text-white sm:text-6xl md:text-7xl lg:text-8xl"
+              className="mb-7 max-w-[85vw] sm:max-w-4xl lg:max-w-5xl font-display text-4xl font-bold leading-[0.95] tracking-[-0.04em] text-white sm:text-5xl md:text-6xl lg:text-8xl xl:text-9xl"
             >
               ยกระดับการแข่งขัน <br />
               <span className="text-primary">ESPORTS</span> ในวิทยาลัยเทคนิควังน้ำเย็น
@@ -213,7 +213,7 @@ export default function Home() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
-              className="mb-9 max-w-2xl text-lg leading-relaxed text-slate-300 sm:text-xl"
+              className="mb-9 max-w-[85vw] sm:max-w-2xl lg:max-w-3xl text-base sm:text-lg lg:text-xl leading-relaxed text-slate-300"
             >
               แพลตฟอร์มจัดการแข่งขันอีสปอร์ตสำหรับนักเรียน/นักศึกษา วิทยาลัยเทคนิควังน้ำเย็น
               ติดตามสายการแข่งขัน ผลการแข่ง และทำเนียบแชมป์เปี้ยนได้ที่นี่
@@ -225,12 +225,12 @@ export default function Home() {
               className="flex flex-wrap gap-3 sm:gap-4"
             >
               <Link href="/bracket">
-                <Button size="lg" className="h-14 rounded-lg border-primary/45 bg-primary px-8 text-lg font-bold text-primary-foreground hover:bg-primary/90">
+                <Button size="lg" className="h-12 sm:h-14 rounded-lg border-primary/45 bg-primary px-5 sm:px-8 text-base sm:text-lg font-bold text-primary-foreground hover:bg-primary/90">
                   ดูสายการแข่งขัน
                 </Button>
               </Link>
               <Link href="/rules">
-                <Button size="lg" variant="outline" className="h-14 rounded-lg border-white/15 bg-transparent px-8 text-lg font-bold text-white hover:border-primary/40 hover:text-primary">
+                <Button size="lg" variant="outline" className="h-12 sm:h-14 rounded-lg border-white/15 bg-transparent px-5 sm:px-8 text-base sm:text-lg font-bold text-white hover:border-primary/40 hover:text-primary">
                   กฎการแข่งขัน
                 </Button>
               </Link>

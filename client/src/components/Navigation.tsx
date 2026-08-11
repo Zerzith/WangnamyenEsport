@@ -20,7 +20,7 @@ export function Navigation() {
   return (
     <>
       <nav className="sticky top-0 z-50 w-full border-b border-white/[0.08] bg-zinc-950/90">
-        <div className="container mx-auto flex min-h-[4rem] sm:min-h-[4.5rem] items-center justify-between gap-1.5 px-2 sm:px-5">
+        <div className="flex min-h-[4rem] sm:min-h-[4.5rem] items-center justify-between gap-1 px-1.5 sm:px-4">
           {/* Logo Section */}
           <Link href="/">
             <div className="group flex flex-shrink-0 cursor-pointer items-center gap-2.5">
@@ -44,7 +44,7 @@ export function Navigation() {
                   <Link key={item.href} href={item.href}>
                     <span
                       className={`
-                        cursor-pointer px-2.5 py-2 text-sm font-medium transition-colors whitespace-nowrap rounded-md
+                        cursor-pointer px-2 py-2 text-xs sm:text-sm font-medium transition-colors whitespace-nowrap rounded-md
                         ${isActive ? 'text-primary bg-primary/10' : 'text-muted-foreground hover:text-white hover:bg-white/[0.05]'}
                       `}
                     >
@@ -58,7 +58,7 @@ export function Navigation() {
                 <Link href={adminItem.href}>
                   <span
                     className={`
-                      cursor-pointer px-2.5 py-2 text-sm font-medium transition-colors whitespace-nowrap rounded-md
+                      cursor-pointer px-2 py-2 text-xs sm:text-sm font-medium transition-colors whitespace-nowrap rounded-md
                       ${location === adminItem.href ? 'text-accent bg-accent/10' : 'text-accent/80 hover:text-accent hover:bg-accent/5'}
                     `}
                   >
@@ -73,7 +73,7 @@ export function Navigation() {
           <div className="flex flex-shrink-0 items-center gap-1 sm:gap-3">
             {user ? (
                 <div className="flex items-center gap-1 sm:gap-3">
-                <div className="hidden flex-col items-end lg:flex">
+                <div className="hidden flex-col items-end lg:flex xl:flex">
                   <span className="whitespace-nowrap text-sm font-medium leading-none text-white">{user.displayName || 'Gamer'}</span>
                 </div>
                 <Link href="/profile">
