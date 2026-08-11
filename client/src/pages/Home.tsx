@@ -30,6 +30,7 @@ interface News {
   id: string;
   title: string;
   content: string;
+  imageUrl?: string;
   createdAt: any;
   author: string;
 }
@@ -338,8 +339,14 @@ export default function Home() {
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               {news.map((item) => (
-                <Card key={item.id} className="group esports-panel esports-panel-interactive rounded-xl border-white/[0.09] bg-zinc-900 p-6">
-                  <div className="mb-4 text-xs font-bold uppercase tracking-[0.16em] text-primary">
+                <Card key={item.id} className="group esports-panel esports-panel-interactive rounded-xl border-white/[0.09] bg-zinc-900 overflow-hidden">
+                  {item.imageUrl && (
+                    <div className="w-full aspect-[16/9] overflow-hidden">
+                      <img src={item.imageUrl} alt={item.title} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                    </div>
+                  )}
+                  <div className="p-6">
+                  <div className="mb-3 text-xs font-bold uppercase tracking-[0.16em] text-primary">
                     {item.createdAt?.toDate ? formatDate(item.createdAt.toDate().toISOString()) : "เมื่อเร็วๆ นี้"}
                   </div>
                   <h3 className="mb-3 line-clamp-2 font-display text-xl font-bold text-white transition-colors group-hover:text-primary">{item.title}</h3>
@@ -349,6 +356,7 @@ export default function Home() {
                     <Button variant="ghost" size="sm" className="h-auto p-0 font-medium text-primary hover:bg-transparent hover:text-cyan-200">
                       อ่านต่อ
                     </Button>
+                  </div>
                   </div>
                 </Card>
               ))}
