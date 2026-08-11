@@ -18,6 +18,8 @@ interface Event {
   registrationDeadline?: string;
   bannerUrl?: string;
   maxTeams?: number;
+  membersPerTeam?: number;
+  maxSubstitutes?: number;
   status?: string;
   registeredTeams?: number;
   logoUrl?: string;
@@ -107,17 +109,35 @@ const EventCard = memo(({ event, index, registeredCount, user }: {
           <span className="text-[10px] text-white/80 font-bold uppercase tracking-wider">
             {event.date}
           </span>
+          {event.registrationDeadline && (
+            <span className="text-[10px] text-red-400 font-medium">
+              ปิด {(() => {
+                try {
+                  const d = new Date(event.registrationDeadline);
+                  const opts: Intl.DateTimeFormatOptions = { timeZone: "Asia/Bangkok", day: "numeric", month: "short", hour: "2-digit", minute: "2-digit", hour12: false };
+                  return new Intl.DateTimeFormat("th-TH", opts).format(d);
+                } catch { return ""; }
+              })()}
+            </span>
+          )}
         </div>
 
         <h3 className="pointer-events-auto mb-3 font-display text-2xl font-bold text-white transition-colors group-hover:text-primary">
           <Link href={`/event/${event.id}`}>{event.title}</Link>
         </h3>
 
-        <div className="flex items-center justify-between mt-4">
-          <div className="rounded-md border border-white/10 bg-zinc-950/55 px-3 py-1.5 text-sm">
-            <span className={isFull ? "text-red-400 font-bold" : "text-white font-bold"}>
-              {registeredCount}/{event.maxTeams || 16} ทีม
-            </span>
+        <div className="flex items-center justify-between mt-4 gap-2">
+          <div className="flex items-center gap-2">
+            <div className="rounded-md border border-white/10 bg-zinc-950/55 px-3 py-1.5 text-sm">
+              <span className={isFull ? "text-red-400 font-bold" : "text-white font-bold"}>
+                {registeredCount}/{event.maxTeams || 16} ทีม
+              </span>
+            </div>
+            {event.maxSubstitutes !== undefined && event.maxSubstitutes > 0 && (
+              <div className="rounded-md border border-primary/20 bg-primary/10 px-3 py-1.5 text-xs text-primary font-medium">
+                สำรอง {event.maxSubstitutes}
+              </div>
+            )}
           </div>
           {isOpen && !isFull && (
             <Link href={user ? `/event/${event.id}` : "/login"}>

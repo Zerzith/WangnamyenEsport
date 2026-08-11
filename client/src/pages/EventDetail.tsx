@@ -1,6 +1,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { useRoute, useLocation, Link } from "wouter";
+
 import { useAuth } from "@/hooks/use-auth";
 import { doc, getDoc, collection, addDoc, query, where, onSnapshot, serverTimestamp, updateDoc, getDocs, limit, orderBy, deleteDoc } from "firebase/firestore";
 import { db } from "@/lib/firebase";
@@ -11,6 +12,34 @@ import { Loader2, ArrowLeft, X, Upload, User, BookOpen, Fingerprint, Gamepad2, G
 import { motion } from "framer-motion";
 import { TeamMembersModal } from "@/components/TeamMembersModal";
 
+// Format deadline with 24-hour Thai time (Asia/Bangkok)
+const formatDeadline = (deadlineStr?: string): string => {
+  if (!deadlineStr) return "";
+  try {
+    const date = new Date(deadlineStr);
+    const options: Intl.DateTimeFormatOptions = {
+      timeZone: "Asia/Bangkok",
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: false,
+    };
+    const formatter = new Intl.DateTimeFormat("th-TH", options);
+    const parts = formatter.formatToParts(date);
+    const dateParts = parts
+      .filter((p) => p.type !== "hour" && p.type !== "minute" && p.type !== "literal" && p.type !== "dayPeriod")
+      .map((p) => p.value)
+      .join("");
+    const hour = parts.find((p) => p.type === "hour")?.value ?? "";
+    const minute = parts.find((p) => p.type === "minute")?.value ?? "";
+    return `${dateParts} เวลา ${hour}:${minute} น.`;
+  } catch {
+    return deadlineStr;
+  }
+};
+
 interface Event {
   id: string;
   title: string;
@@ -18,6 +47,8 @@ interface Event {
   date: string;
   description?: string;
   maxTeams?: number;
+  membersPerTeam?: number;
+  maxSubstitutes?: number;
   registeredTeams?: number;
   bannerUrl?: string;
   status?: string;
@@ -116,6 +147,16 @@ const EventListItem = ({ item, index }: { item: Event, index: number }) => {
                 {registeredCount} / {item.maxTeams || 16} ทีม
               </span>
             </div>
+            {item.registrationDeadline && (
+              <div className="text-sm text-white/60 mb-4">
+                ปิดรับสมัคร: {formatDeadline(item.registrationDeadline)}
+              </div>
+            )}
+            {item.maxSubstitutes !== undefined && item.maxSubstitutes > 0 && (
+              <div className="text-sm text-primary/80 mb-4">
+                ตัวสำรองสูงสุด: {item.maxSubstitutes} คน
+              </div>
+            )}
             <Button className="w-full bg-zinc-900 hover:bg-primary hover:text-white transition-colors border-white/10">
               ดูรายละเอีย ด
             </Button>
@@ -139,6 +180,10 @@ export default function EventDetail() {
   const [isEditing, setIsEditing] = useState(false);
   
   const initialMember = { name: "", gameName: "", grade: "", department: "", studentId: "", phone: "", email: "" };
+  
+  // Determine required members count from event settings (default to 3)
+  const membersPerTeam = event?.membersPerTeam ?? 3;
+  const maxReserves = event?.maxSubstitutes ?? 2;
   
   const [formData, setFormData] = useState({
     teamName: "",
@@ -335,8 +380,9 @@ export default function EventDetail() {
       return { ...initialMember, ...m };
     });
 
-    // Ensure we have at least 3 members fields
-    while (currentMembers.length < 3) {
+    // Ensure we have at least requiredMembers fields
+    const minMembers = event?.membersPerTeam ?? 3;
+    while (currentMembers.length < minMembers) {
       currentMembers.push({ ...initialMember });
     }
     
@@ -684,10 +730,18 @@ export default function EventDetail() {
                   <div>
                     <label className="block text-sm font-bold text-white/60 uppercase tracking-wider mb-4 flex items-center gap-2">
                       รายชื่อสมาชิกทีม
+                      <span className="text-xs text-muted-foreground normal-case font-normal">
+                        (หลัก {membersPerTeam} คน / สำรองได้ max {maxReserves} คน)
+                      </span>
                     </label>
                     <div className="space-y-6">
                       {formData.members.map((member, index) => (
-                        <div key={index} className="p-6 rounded-xl bg-zinc-900 border border-white/5 relative group space-y-4">
+                        <div key={index} className={`p-6 rounded-xl bg-zinc-900 border relative group space-y-4 ${index < membersPerTeam ? 'border-white/5' : 'border-primary/30 bg-primary/5'}`}>
+                          {index >= membersPerTeam && (
+                            <span className="absolute -top-3 left-4 px-2 py-0.5 bg-primary/20 border border-primary/40 rounded text-[10px] font-bold text-primary uppercase tracking-wider">
+                              สำรอง
+                            </span>
+                          )}
                           <div className="absolute -left-3 top-6 w-8 h-8 rounded-full bg-primary flex items-center justify-center text-xs font-bold text-white shadow-lg ring-4 ring-background">
                             {index + 1}
                           </div>
@@ -706,7 +760,7 @@ export default function EventDetail() {
                                 }}
                                 placeholder="ระบุชื่อ-นามสกุลจริง"
                                 className="bg-zinc-900 border-white/10 h-11 rounded-xl focus:ring-primary"
-                                required={index < 3}
+                                required={index < membersPerTeam}
                               />
                             </div>
                             <div>
@@ -722,7 +776,7 @@ export default function EventDetail() {
                                 }}
                                 placeholder="ระบุชื่อที่ใช้ในเกม"
                                 className="bg-zinc-900 border-white/10 h-11 rounded-xl focus:ring-primary"
-                                required={index < 3}
+                                required={index < membersPerTeam}
                               />
                             </div>
                           </div>
@@ -741,7 +795,7 @@ export default function EventDetail() {
                                 }}
                                 placeholder="รหัสบัตรนักเรียน/นักศึกษา"
                                 className="bg-zinc-900 border-white/10 h-11 rounded-xl focus:ring-primary"
-                                required={index < 3}
+                                required={index < membersPerTeam}
                               />
                             </div>
                             <div>
@@ -757,7 +811,7 @@ export default function EventDetail() {
                                 }}
                                 placeholder="เช่น เทคโนโลยีสารสนเทศ"
                                 className="bg-zinc-900 border-white/10 h-11 rounded-xl focus:ring-primary"
-                                required={index < 3}
+                                required={index < membersPerTeam}
                               />
                             </div>
                             <div>
@@ -773,14 +827,14 @@ export default function EventDetail() {
                                 }}
                                 placeholder="เช่น ปวช. 1 / ปวส. 1 / ปวส. 1 ทวิ"
                                 className="bg-zinc-900 border-white/10 h-11 rounded-xl focus:ring-primary"
-                                required={index < 3}
+                                required={index < membersPerTeam}
                               />
                             </div>
                           </div>
 
 
 
-                          {index >= 3 && (
+                          {index >= membersPerTeam && (
                             <button
                               type="button"
                               onClick={() => {
@@ -795,15 +849,17 @@ export default function EventDetail() {
                         </div>
                       ))}
                     </div>
-                    <Button 
-                      type="button" 
-                      variant="ghost" 
-                      size="sm" 
-                      className="mt-6 text-xs text-primary hover:text-primary/80 hover:bg-primary/5 rounded-xl border border-dashed border-primary/30 w-full py-6"
-                      onClick={() => setFormData({ ...formData, members: [...formData.members, { ...initialMember }] })}
-                    >
-                      + เพิ่มสมาชิกสำรอง (Substitute)
-                    </Button>
+                    {formData.members.length < membersPerTeam + maxReserves && (
+                      <Button 
+                        type="button" 
+                        variant="ghost" 
+                        size="sm" 
+                        className="mt-6 text-xs text-primary hover:text-primary/80 hover:bg-primary/5 rounded-xl border border-dashed border-primary/30 w-full py-6"
+                        onClick={() => setFormData({ ...formData, members: [...formData.members, { ...initialMember }] })}
+                      >
+                        + เพิ่มสมาชิกสำรอง (เหลืออีก {membersPerTeam + maxReserves - formData.members.length} ตำแหน่ง)
+                      </Button>
+                    )}
                   </div>
                 </div>
 
@@ -816,12 +872,8 @@ export default function EventDetail() {
                       setIsEditing(false);
                       setFormData({ 
                         teamName: "", 
-                        members: [
-                          { ...initialMember },
-                          { ...initialMember },
-                          { ...initialMember }
-                        ], 
-                        logoUrl: "" 
+                        members: Array.from({ length: membersPerTeam }, () => ({ ...initialMember })), 
+                        logoUrl: ""
                       });
                     }}
                     className="h-14 px-8 rounded-xl text-muted-foreground hover:text-white"
@@ -844,6 +896,44 @@ export default function EventDetail() {
 
         {/* Sidebar */}
         <div className="space-y-8">
+          {/* Event Info */}
+          <Card className="bg-zinc-900 border-white/10 p-6 rounded-xl">
+            <h3 className="text-xl font-bold text-white mb-4">ข้อมูลการแข่งขัน</h3>
+            <div className="space-y-3">
+              {event.registrationDeadline && (
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-lg bg-red-500/20 flex items-center justify-center shrink-0">
+                    <span className="text-red-400 text-xs font-bold">⏰</span>
+                  </div>
+                  <div>
+                    <p className="text-[10px] text-muted-foreground uppercase tracking-wider">ปิดสมัคร</p>
+                    <p className="text-sm text-white font-medium">{formatDeadline(event.registrationDeadline)}</p>
+                  </div>
+                </div>
+              )}
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 rounded-lg bg-primary/20 flex items-center justify-center shrink-0">
+                  <span className="text-primary text-xs font-bold">👥</span>
+                </div>
+                <div>
+                  <p className="text-[10px] text-muted-foreground uppercase tracking-wider">สมาชิกหลักต่อทีม</p>
+                  <p className="text-sm text-white font-medium">{membersPerTeam} คน</p>
+                </div>
+              </div>
+              {maxReserves > 0 && (
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-lg bg-primary/20 flex items-center justify-center shrink-0">
+                    <span className="text-primary text-xs font-bold">🔄</span>
+                  </div>
+                  <div>
+                    <p className="text-[10px] text-muted-foreground uppercase tracking-wider">ตัวสำรองสูงสุด</p>
+                    <p className="text-sm text-white font-medium">{maxReserves} คน</p>
+                  </div>
+                </div>
+              )}
+            </div>
+          </Card>
+
           {/* Approved Teams */}
           <Card className="bg-zinc-900 border-white/10 p-6 rounded-xl">
             <h3 className="text-xl font-bold text-white mb-6">
