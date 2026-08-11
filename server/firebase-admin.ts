@@ -6,20 +6,24 @@ let adminApp: admin.app.App | null = null;
 let initError: Error | null = null;
 
 function tryParseCredential(raw: string): object | null {
+  // Trim whitespace
+  let cleaned = raw.trim();
+  
   // Strategy 1: Direct parse (if it's already valid JSON)
   try {
-    const parsed = JSON.parse(raw);
+    const parsed = JSON.parse(cleaned);
     if (parsed && typeof parsed === 'object' && (parsed as any).private_key) {
       return parsed;
     }
   } catch {}
 
-  // Strategy 2: If raw looks like it's a JSON string (double-encoded)
+  // Strategy 2: If raw is a JSON string (double-encoded)
   try {
-    const onceParsed = JSON.parse(raw);
+    const onceParsed = JSON.parse(cleaned);
     if (typeof onceParsed === 'string') {
+      const trimmed = onceParsed.trim();
       try {
-        const twiceParsed = JSON.parse(onceParsed);
+        const twiceParsed = JSON.parse(trimmed);
         if (twiceParsed && typeof twiceParsed === 'object' && (twiceParsed as any).private_key) {
           return twiceParsed;
         }
@@ -31,9 +35,23 @@ function tryParseCredential(raw: string): object | null {
     }
   } catch {}
 
-  // Strategy 3: Handle escaped newlines in private_key
+  // Strategy 3: Handle escaped newlines in private_key that might be literal \n
   try {
-    const parsed = JSON.parse(raw);
+    const parsed = JSON.parse(cleaned);
+    if (parsed && typeof parsed === 'object' && (parsed as any).private_key) {
+      if (typeof (parsed as any).private_key === 'string' && (parsed as any).private_key.includes('\\n')) {
+        (parsed as any).private_key = (parsed as any).private_key.replace(/\\n/g, '\n');
+      }
+      return parsed;
+    }
+  } catch {}
+
+  // Strategy 4: Try to handle if the value has been URL-encoded or has extra escaping
+  try {
+    let unescaped = cleaned;
+    // Try to unescape any double-escaping
+    unescaped = unescaped.replace(/\\"/g, '"').replace(/\\\\n/g, '\\n');
+    const parsed = JSON.parse(unescaped);
     if (parsed && typeof parsed === 'object' && (parsed as any).private_key) {
       if (typeof (parsed as any).private_key === 'string' && (parsed as any).private_key.includes('\\n')) {
         (parsed as any).private_key = (parsed as any).private_key.replace(/\\n/g, '\n');
@@ -51,7 +69,6 @@ export function initializeFirebaseAdmin() {
   }
 
   if (initError) {
-    // Don't retry if we already failed once (avoid spam)
     throw initError;
   }
 
@@ -69,7 +86,12 @@ export function initializeFirebaseAdmin() {
 
     // Try environment variable (for Vercel/production)
     const envRaw = process.env.FIREBASE_ADMIN_SDK;
+    
+    // Log info about the env var for debugging (don't log full key)
     if (envRaw) {
+      console.log("FIREBASE_ADMIN_SDK env var found, length:", envRaw.length);
+      console.log("FIREBASE_ADMIN_SDK starts with:", envRaw.substring(0, 50));
+      
       const credential = tryParseCredential(envRaw);
       if (credential) {
         adminApp = admin.initializeApp({
@@ -77,7 +99,12 @@ export function initializeFirebaseAdmin() {
         });
         console.log("Firebase Admin initialized from environment variable");
         return adminApp;
+      } else {
+        console.error("FIREBASE_ADMIN_SDK: Failed to parse credential from all strategies");
+        console.error("Raw value sample:", envRaw.substring(0, 100));
       }
+    } else {
+      console.error("FIREBASE_ADMIN_SDK env var is not set");
     }
 
     // Fallback: Try default credentials (if running on GCP or with ADC)
@@ -91,7 +118,7 @@ export function initializeFirebaseAdmin() {
       console.log("Application default credentials not available:", adcError);
     }
 
-    const error = new Error("Firebase Admin SDK credentials not found");
+    const error = new Error("Firebase Admin SDK credentials not found - check FIREBASE_ADMIN_SDK env var in Vercel");
     initError = error;
     throw error;
   } catch (error: any) {
