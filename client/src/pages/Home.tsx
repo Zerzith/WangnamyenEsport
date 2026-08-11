@@ -8,7 +8,7 @@ import { useEffect, useState, memo } from "react";
 import { collection, onSnapshot, query, where, orderBy, limit, getDocs } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 
-const HERO_BG = "/college-building.jpg";
+const HERO_BG = "https://images.unsplash.com/photo-1552820728-8ac41f1ce891?q=80&w=2070&auto=format&fit=crop";
 
 interface Event {
   id: string;
@@ -195,15 +195,13 @@ export default function Home() {
     <div className="min-h-screen bg-transparent">
       {/* Hero Section */}
       <section className="relative flex min-h-[calc(100vh-4.5rem)] items-center border-b border-white/[0.06] overflow-hidden">
-        {/* Background Image - College Building */}
         <div className="absolute inset-0">
           <img
-            src="/college-building.jpg"
-            alt="Wangnamyen Technical College"
+            src={HERO_BG}
+            alt="Esports Background"
             className="w-full h-full object-cover"
           />
-          {/* Dark overlay for readability */}
-          <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/50 to-black/70" />
+          <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/50 to-zinc-950/30" />
         </div>
       </section>
 
