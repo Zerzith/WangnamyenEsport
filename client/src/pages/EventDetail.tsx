@@ -7,7 +7,7 @@ import { db } from "@/lib/firebase";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
-import { Loader2, ArrowLeft, X, Upload } from "lucide-react";
+import { Loader2, ArrowLeft, X, Upload, User, BookOpen, Fingerprint, Gamepad2, GraduationCap } from "lucide-react";
 import { motion } from "framer-motion";
 import { TeamMembersModal } from "@/components/TeamMembersModal";
 
