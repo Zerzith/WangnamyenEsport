@@ -818,31 +818,47 @@ export default function AdminDashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0a0e17] pt-24 pb-12 px-2 sm:px-4">
-      <div className="w-full max-w-6xl mx-auto space-y-8 px-2 sm:px-4 lg:px-6">
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-          <div>
-            <h1 className="text-3xl font-bold text-white flex items-center gap-3">
-              <ShieldAlert className="text-primary w-8 h-8" />
-              แผงควบคุมผู้ดูแลระบบ
-            </h1>
-            <p className="text-muted-foreground">จัดการการแข่งขัน ทีม และข่าวสาร</p>
+    <div className="admin-shell px-2 sm:px-4">
+      <div className="mx-auto w-full max-w-7xl space-y-6 px-2 sm:px-4 lg:px-6">
+        <header className="admin-surface overflow-hidden">
+          <div className="flex flex-col gap-6 p-5 sm:p-6 lg:flex-row lg:items-center lg:justify-between">
+            <div className="flex items-start gap-4">
+              <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-primary/25 bg-primary/10 text-primary">
+                <ShieldAlert className="h-5 w-5" />
+              </div>
+              <div>
+                <p className="mb-1 text-xs font-semibold uppercase tracking-[0.14em] text-primary">WNY E-LEAGUE</p>
+                <h1 className="text-2xl font-bold tracking-tight text-white sm:text-3xl">ศูนย์จัดการการแข่งขัน</h1>
+                <p className="mt-1 text-sm text-muted-foreground">ดูแลรายการแข่งขัน ผู้สมัคร ทีม แมตช์ และข่าวสารจากพื้นที่เดียว</p>
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-2 sm:grid-cols-4 lg:min-w-[27rem]">
+              <div className="admin-stat"><p className="text-xs text-muted-foreground">รายการแข่ง</p><p className="mt-1 text-lg font-bold text-white">{events.length}</p></div>
+              <div className="admin-stat"><p className="text-xs text-muted-foreground">คำขอสมัคร</p><p className="mt-1 text-lg font-bold text-white">{registrations.length}</p></div>
+              <div className="admin-stat"><p className="text-xs text-muted-foreground">ทีมอนุมัติ</p><p className="mt-1 text-lg font-bold text-white">{teams.length}</p></div>
+              <div className="admin-stat"><p className="text-xs text-muted-foreground">แมตช์ทั้งหมด</p><p className="mt-1 text-lg font-bold text-white">{matches.length}</p></div>
+            </div>
           </div>
-        </div>
+        </header>
 
-        <Tabs defaultValue="events" className="w-full">
-          <TabsList className="bg-zinc-900 border border-white/10 w-full justify-start overflow-x-auto h-auto p-1 mb-8">
-            <TabsTrigger value="events" className="py-2.5 px-4"><Trophy className="mr-2 h-4 w-4" />การแข่งขัน</TabsTrigger>
-            <TabsTrigger value="registrations" className="py-2.5 px-4"><UserCheck className="mr-2 h-4 w-4" />คำขอสมัคร</TabsTrigger>
-            <TabsTrigger value="teams" className="py-2.5 px-4"><Users className="mr-2 h-4 w-4" />ทีมที่อนุมัติ</TabsTrigger>
-            <TabsTrigger value="matches" className="py-2.5 px-4"><Swords className="mr-2 h-4 w-4" />จัดการแมตช์</TabsTrigger>
-            <TabsTrigger value="news" className="py-2.5 px-4"><Megaphone className="mr-2 h-4 w-4" />ข่าวสาร</TabsTrigger>
-          </TabsList>
+        <Tabs defaultValue="events" className="grid items-start gap-5 xl:grid-cols-[13.5rem_minmax(0,1fr)]">
+          <aside className="admin-surface overflow-hidden xl:sticky xl:top-24">
+            <div className="admin-nav-label pt-4">เมนูจัดการ</div>
+            <TabsList className="scrollbar-hide flex h-auto w-full justify-start gap-1 overflow-x-auto rounded-none border-0 bg-transparent p-2 shadow-none xl:flex-col xl:items-stretch xl:overflow-visible xl:p-3">
+              <TabsTrigger value="events" className="shrink-0 px-3 py-2.5 xl:w-full xl:justify-start"><Trophy className="mr-2 h-4 w-4" />การแข่งขัน</TabsTrigger>
+              <TabsTrigger value="registrations" className="shrink-0 px-3 py-2.5 xl:w-full xl:justify-start"><UserCheck className="mr-2 h-4 w-4" />คำขอสมัคร</TabsTrigger>
+              <TabsTrigger value="teams" className="shrink-0 px-3 py-2.5 xl:w-full xl:justify-start"><Users className="mr-2 h-4 w-4" />ทีมที่อนุมัติ</TabsTrigger>
+              <TabsTrigger value="matches" className="shrink-0 px-3 py-2.5 xl:w-full xl:justify-start"><Swords className="mr-2 h-4 w-4" />จัดการแมตช์</TabsTrigger>
+              <TabsTrigger value="news" className="shrink-0 px-3 py-2.5 xl:w-full xl:justify-start"><Megaphone className="mr-2 h-4 w-4" />ข่าวสาร</TabsTrigger>
+            </TabsList>
+          </aside>
 
-          <TabsContent value="events" className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-300">
-            <Card className="bg-zinc-900 border-white/10 overflow-hidden">
-              <CardHeader>
+          <div className="min-w-0">
+          <TabsContent value="events" className="mt-0 space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-300">
+            <Card className="admin-surface overflow-hidden">
+              <CardHeader className="border-b border-white/[0.07]">
                 <CardTitle className="text-xl">สร้างการแข่งขันใหม่</CardTitle>
+                <CardDescription>กำหนดรายละเอียด รายชื่อผู้เล่น วันเริ่มแข่งขัน และช่วงเวลาปิดรับสมัคร</CardDescription>
               </CardHeader>
               <CardContent>
                 <form onSubmit={handleCreateEvent} className="space-y-4">
@@ -931,18 +947,34 @@ export default function AdminDashboard() {
                   <Button type="submit" className="w-full" disabled={isCreatingEvent}>{isCreatingEvent ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Plus className="mr-2 h-4 w-4" />}สร้างการแข่งขัน</Button>
                 </form>
 
-                <h3 className="text-lg font-semibold mt-8 mb-4">การแข่งขันที่มีอยู่</h3>
-                <div className="space-y-4">
+                <div className="mt-8 mb-4 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+                  <div>
+                    <p className="text-xs font-semibold uppercase tracking-[0.14em] text-primary">รายการในระบบ</p>
+                    <h3 className="mt-1 text-xl font-semibold text-white">การแข่งขันที่มีอยู่</h3>
+                    <p className="mt-1 text-sm text-muted-foreground">แก้ไขรายละเอียด ตั้งค่าถ่ายทอดสด หรือมอบตำแหน่งแชมป์ให้แต่ละรายการ</p>
+                  </div>
+                  <span className="self-start rounded-md border border-white/[0.08] bg-black/15 px-3 py-1.5 text-sm text-muted-foreground sm:self-auto">ทั้งหมด {events.length} รายการ</span>
+                </div>
+                <div className="space-y-3">
                   {events.map((event) => (
-                    <Card key={event.id} className="bg-card/70 border-white/10">
-                      <CardContent className="p-4 flex items-center justify-between">
-                        <div>
-                          <p className="font-semibold text-lg">{event.title}</p>
-                          <p className="text-sm text-muted-foreground">{event.game} | <Calendar className="inline-block h-4 w-4 mr-1" /> วันเริ่มแข่งขัน: {formatThaiDate(event.date)}</p>
+                    <Card key={event.id} className="overflow-hidden border-white/[0.08] bg-card">
+                      <CardContent className="flex flex-col gap-4 p-4 sm:flex-row sm:items-center sm:justify-between sm:p-5">
+                        <div className="flex min-w-0 items-center gap-4">
+                          <div className="h-14 w-20 shrink-0 overflow-hidden rounded-lg border border-white/[0.08] bg-black/20 sm:h-16 sm:w-24">
+                            {event.bannerUrl ? <img src={event.bannerUrl} alt="" className="h-full w-full object-cover" /> : <Trophy className="m-auto h-full w-5 text-muted-foreground" />}
+                          </div>
+                          <div className="min-w-0">
+                            <div className="mb-1 flex flex-wrap items-center gap-2">
+                              <p className="truncate font-semibold text-white sm:text-lg">{event.title}</p>
+                              <span className="rounded-md border border-primary/20 bg-primary/10 px-2 py-0.5 text-[10px] font-bold tracking-wide text-primary">{event.game}</span>
+                            </div>
+                            <p className="flex items-center gap-1 text-sm text-muted-foreground"><Calendar className="h-4 w-4" />วันเริ่มแข่งขัน: {formatThaiDate(event.date)}</p>
+                            <p className="mt-1 text-xs text-muted-foreground">สูงสุด {event.maxTeams || 16} ทีม · สมาชิก {event.membersPerTeam || 5} คน · สำรอง {event.maxSubstitutes || 0} คน</p>
+                          </div>
                         </div>
-                          <div className="flex flex-col items-end gap-2">
+                          <div className="flex flex-col items-start gap-2 sm:items-end">
                             <div className="flex items-center gap-2">
-                              <Button size="sm" variant="outline" className="gap-1" onClick={() => openEventEditor(event)} title="แก้ไขรายการแข่งขัน">
+                              <Button size="sm" variant="outline" className="gap-1 bg-black/10" onClick={() => openEventEditor(event)} title="แก้ไขรายการแข่งขัน">
                                 <Pencil className="h-4 w-4" />
                                 <span className="hidden sm:inline">แก้ไข</span>
                               </Button>
@@ -955,7 +987,7 @@ export default function AdminDashboard() {
                             </div>
                             {event.championTeamId ? (
                               <div className="flex items-center gap-2">
-                                <Badge className="bg-yellow-500 text-black font-bold">
+                                <Badge className="border border-accent/25 bg-accent/15 font-bold text-accent">
                                   แชมป์เปี้ยน: {teams.find(t => t.id === event.championTeamId)?.name || "แชมป์เปี้ยน"}
                                 </Badge>
                                 <Button size="xs" variant="ghost" className="h-6 w-6 p-0 text-muted-foreground hover:text-red-500" onClick={() => handleRemoveChampion(event.id)}>
@@ -964,7 +996,7 @@ export default function AdminDashboard() {
                               </div>
                             ) : (
                               <Select onValueChange={(teamId) => handleCrownChampion(event.id, teamId)}>
-                                <SelectTrigger className="h-8 w-[140px] text-xs bg-yellow-500/10 border-yellow-500/30 text-yellow-500">
+                                <SelectTrigger className="h-8 w-[140px] border-accent/25 bg-accent/10 text-xs text-accent">
                                   <Trophy className="mr-1 h-3 w-3" />
                                   <SelectValue placeholder="มอบมงกุฎ" />
                                 </SelectTrigger>
@@ -984,8 +1016,8 @@ export default function AdminDashboard() {
             </Card>
           </TabsContent>
 
-          <TabsContent value="news" className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-300">
-            <Card className="bg-zinc-900 border-white/10 overflow-hidden">
+          <TabsContent value="news" className="mt-0 space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-300">
+            <Card className="admin-surface overflow-hidden">
               <CardHeader>
                 <CardTitle className="text-xl">จัดการข่าวสาร</CardTitle>
               </CardHeader>
@@ -1085,8 +1117,8 @@ export default function AdminDashboard() {
             </Card>
           </TabsContent>
 
-          <TabsContent value="registrations" className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-300">
-            <Card className="bg-zinc-900 border-white/10 overflow-hidden">
+          <TabsContent value="registrations" className="mt-0 space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-300">
+            <Card className="admin-surface overflow-hidden">
               <CardHeader className="flex flex-row items-center justify-between">
                 <CardTitle className="text-xl">คำขอสมัครเข้าร่วม</CardTitle>
                 <Select value={selectedRegistrationEvent} onValueChange={setSelectedRegistrationEvent}>
@@ -1151,8 +1183,8 @@ export default function AdminDashboard() {
             </Card>
           </TabsContent>
 
-          <TabsContent value="teams" className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-300">
-            <Card className="bg-zinc-900 border-white/10 overflow-hidden">
+          <TabsContent value="teams" className="mt-0 space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-300">
+            <Card className="admin-surface overflow-hidden">
               <CardHeader>
                 <CardTitle className="text-xl">ทีมที่ได้รับการอนุมัติ</CardTitle>
               </CardHeader>
@@ -1214,8 +1246,8 @@ export default function AdminDashboard() {
             </Card>
           </TabsContent>
 
-          <TabsContent value="matches" className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-300">
-            <Card className="bg-zinc-900 border-white/10 overflow-hidden">
+          <TabsContent value="matches" className="mt-0 space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-300">
+            <Card className="admin-surface overflow-hidden">
               <CardHeader className="flex flex-row items-center justify-between">
                 <CardTitle className="text-xl">จัดการแมตช์</CardTitle>
               </CardHeader>
@@ -1436,6 +1468,7 @@ export default function AdminDashboard() {
               </CardContent>            </Card>
           </TabsContent>
 
+          </div>
         </Tabs>
 
         <Dialog open={isLiveStreamDialogOpen} onOpenChange={setIsLiveStreamDialogOpen}>
@@ -1459,7 +1492,7 @@ export default function AdminDashboard() {
         </Dialog>
 
         <Dialog open={isEventEditDialogOpen} onOpenChange={(open) => { if (!open) closeEventEditor(); }}>
-          <DialogContent className="max-h-[90vh] max-w-3xl overflow-y-auto bg-zinc-950 text-white">
+          <DialogContent className="max-h-[90vh] max-w-3xl overflow-y-auto bg-card text-white">
             <DialogHeader>
               <DialogTitle>แก้ไขรายการแข่งขัน</DialogTitle>
               <DialogDescription>

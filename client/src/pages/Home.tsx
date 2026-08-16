@@ -72,8 +72,8 @@ const EventCard = memo(({ event, index, registeredCount, user }: {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ delay: Math.min(index * 0.08, 0.4) }}
-      className={`group relative h-[25rem] overflow-hidden rounded-xl border bg-zinc-900 clip-corner-tr transition-all duration-150 ${
-        !isOpen || isFull ? "border-red-500/35 opacity-90 " : "border-white/[0.1] hover:-translate-y-1 hover:border-primary/40 hover:"
+      className={`group relative h-[25rem] overflow-hidden rounded-2xl border bg-card shadow-[0_18px_38px_-30px_rgb(0_0_0_/_0.95)] transition-all duration-150 ${
+        !isOpen || isFull ? "border-destructive/35 opacity-90" : "border-white/[0.09] hover:-translate-y-0.5 hover:border-primary/45"
       }`}
     >
       <Link href={`/event/${event.id}`}>
@@ -84,21 +84,21 @@ const EventCard = memo(({ event, index, registeredCount, user }: {
             loading="lazy"
             className="absolute inset-0 h-full w-full object-cover opacity-70 saturate-[0.88] transition-transform duration-300 group-hover:scale-105 group-hover:saturate-100"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/65 to-zinc-950/5" />
+          <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/70 to-slate-950/10" />
         </div>
       </Link>
 
       <div className="absolute top-4 right-4 z-10 flex gap-2">
         {!isOpen ? (
-          <div className="rounded-md border border-red-400/25 bg-red-500/15 px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider text-red-200">
+          <div className="rounded-md border border-red-300/20 bg-slate-950/85 px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider text-red-200">
             ปิดรับสมัคร
           </div>
         ) : isFull ? (
-          <div className="rounded-md border border-red-400/25 bg-red-500/15 px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider text-red-200">
+          <div className="rounded-md border border-red-300/20 bg-slate-950/85 px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider text-red-200">
             เต็มแล้ว
           </div>
         ) : (
-          <div className="rounded-md border border-emerald-400/25 bg-emerald-400/15 px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider text-emerald-200">
+          <div className="rounded-md border border-primary/30 bg-slate-950/85 px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider text-sky-100">
             เปิดรับสมัคร
           </div>
         )}
@@ -106,14 +106,14 @@ const EventCard = memo(({ event, index, registeredCount, user }: {
 
       <div className="pointer-events-none absolute bottom-0 left-0 w-full p-6 sm:p-7">
         <div className="flex items-center gap-2 mb-3 flex-wrap">
-          <span className="rounded-md border border-primary/25 bg-primary/15 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.14em] text-primary">
+            <span className="rounded-md border border-primary/25 bg-slate-950/70 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.14em] text-primary">
             {event.game}
           </span>
-          <span className="text-[10px] text-white/80 font-bold tracking-wider">
+            <span className="text-[10px] text-slate-200 font-bold tracking-wider">
             เริ่มแข่งขัน: {formatThaiDate(event.date)}
           </span>
           {event.registrationDeadline && (
-            <span className="text-[10px] text-red-400 font-medium">
+            <span className="text-[10px] text-amber-200/90 font-medium">
               ปิดรับสมัคร: {formatThaiDateTime(event.registrationDeadline)}
             </span>
           )}
@@ -125,13 +125,13 @@ const EventCard = memo(({ event, index, registeredCount, user }: {
 
         <div className="flex items-center justify-between mt-4 gap-2">
           <div className="flex items-center gap-2">
-            <div className="rounded-md border border-white/10 bg-zinc-950/55 px-3 py-1.5 text-sm">
+              <div className="rounded-md border border-white/[0.1] bg-slate-950/70 px-3 py-1.5 text-sm">
               <span className={isFull ? "text-red-400 font-bold" : "text-white font-bold"}>
                 {registeredCount}/{event.maxTeams || 16} ทีม
               </span>
             </div>
             {event.maxSubstitutes !== undefined && event.maxSubstitutes > 0 && (
-              <div className="rounded-md border border-primary/20 bg-primary/10 px-3 py-1.5 text-xs text-primary font-medium">
+              <div className="rounded-md border border-primary/20 bg-slate-950/70 px-3 py-1.5 text-xs text-primary font-medium">
                 สำรอง {event.maxSubstitutes}
               </div>
             )}
@@ -212,7 +212,7 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-transparent">
       {/* Hero Section */}
-      <section className="relative flex min-h-[calc(100vh-4.5rem)] items-center border-b border-white/[0.06] overflow-hidden">
+      <section className="relative flex min-h-[calc(86vh-4.5rem)] items-center border-b border-white/[0.06] overflow-hidden">
         {/* Background Image */}
         <div className="absolute inset-0 z-0">
           <img 
@@ -221,12 +221,13 @@ export default function Home() {
             className="h-full w-full object-cover"
           />
           {/* Dark overlay */}
-          <div className="absolute inset-0 bg-black/70" />
+          <div className="absolute inset-0 bg-slate-950/80" />
+          <div className="absolute inset-0 bg-gradient-to-r from-slate-950/70 via-transparent to-transparent" />
         </div>
         
         <div className="relative z-10 w-full px-4 sm:px-8 lg:px-12">
           <div className="max-w-3xl">
-            <div className="mb-4 sm:mb-5 inline-flex items-center gap-2 rounded-md border border-primary/25 bg-primary/10 px-3 sm:px-4 py-1.5 sm:py-2 text-[10px] sm:text-xs font-bold tracking-[0.13em] text-primary">
+            <div className="mb-4 sm:mb-5 inline-flex items-center gap-2 rounded-md border border-primary/25 bg-slate-950/70 px-3 sm:px-4 py-1.5 sm:py-2 text-[10px] sm:text-xs font-bold tracking-[0.13em] text-primary">
               WANGNAMYEN ESPORTS
             </div>
             <motion.h1
@@ -270,7 +271,7 @@ export default function Home() {
 
       {/* Champions Section */}
       {champions.length > 0 && (
-        <section className="border-y border-white/[0.06] bg-zinc-900/50 py-20">
+          <section className="border-y border-white/[0.06] bg-black/15 py-20">
           <div className="w-full px-2 sm:px-4 lg:px-6">
             <div className="mb-12">
               <h2 className="text-3xl font-bold text-white">ทำเนียบแชมป์เปี้ยน</h2>
@@ -284,9 +285,9 @@ export default function Home() {
                   transition={{ delay: Math.min(index * 0.08, 0.4) }}
                 >
                   <Link href={`/event/${event.id}`}>
-                    <Card className="group cursor-pointer rounded-xl border-yellow-400/20 bg-zinc-900 p-8 text-center transition-all duration-150 hover:border-yellow-300/35">
+                    <Card className="group cursor-pointer rounded-2xl border-accent/25 bg-card p-8 text-center transition-all duration-150 hover:border-accent/45">
                       <h3 className="text-xl font-bold text-white mb-2">{event.title}</h3>
-                      <p className="text-yellow-500 font-bold text-xl uppercase tracking-tight">CHAMPION</p>
+                      <p className="text-accent font-bold text-xl uppercase tracking-[0.08em]">CHAMPION</p>
                       <div className="mt-4 inline-flex items-center text-sm text-muted-foreground group-hover:text-white transition-colors">
                         ดูรายละเอียด <ArrowRight className="ml-2 w-4 h-4" />
                       </div>
@@ -305,7 +306,7 @@ export default function Home() {
           <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-4">
             <div>
               <span className="mb-2 block font-display text-xs font-bold uppercase tracking-[0.2em] text-primary">Tournaments</span>
-              <h2 className="font-display text-4xl font-bold uppercase tracking-tight text-white md:text-5xl">การแข่งขันอีสปอร์ต</h2>
+              <h2 className="font-display text-4xl font-bold tracking-tight text-white md:text-5xl">การแข่งขันอีสปอร์ต</h2>
               <p className="text-muted-foreground mt-3 text-lg">รายการแข่งขันทั้งหมดของวิทยาลัยเทคนิควังน้ำเย็น</p>
             </div>
           </div>
@@ -339,7 +340,7 @@ export default function Home() {
 
       {/* News Section */}
       {news.length > 0 && (
-        <section className="border-y border-white/[0.06] bg-zinc-900/50 py-24">
+        <section className="border-y border-white/[0.06] bg-black/15 py-24">
           <div className="w-full px-2 sm:px-4 lg:px-6">
             <div className="mb-12">
               <h2 className="text-3xl font-display font-bold text-white">ข่าวสารล่าสุด</h2>
@@ -347,7 +348,7 @@ export default function Home() {
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               {news.map((item) => (
-                <Card key={item.id} className="group esports-panel esports-panel-interactive rounded-xl border-white/[0.09] bg-zinc-900 overflow-hidden cursor-pointer" onClick={() => setSelectedNews(item)}>
+                <Card key={item.id} className="group esports-panel esports-panel-interactive rounded-2xl border-white/[0.09] bg-card overflow-hidden cursor-pointer" onClick={() => setSelectedNews(item)}>
                   {item.imageUrl && (
                     <div className="w-full aspect-[16/9] overflow-hidden">
                       <img src={item.imageUrl} alt={item.title} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
@@ -361,7 +362,7 @@ export default function Home() {
                   {/* Content shown only in modal */}
                   <div className="flex items-center justify-between border-t border-white/[0.07] pt-4">
                     <span className="text-xs text-white/40">โดย {item.author || "Admin"}</span>
-                    <Button variant="ghost" size="sm" className="h-auto p-0 font-medium text-primary hover:bg-transparent hover:text-cyan-200" onClick={() => setSelectedNews(item)}>
+                    <Button variant="ghost" size="sm" className="h-auto p-0 font-medium text-primary hover:bg-transparent hover:text-primary/80" onClick={() => setSelectedNews(item)}>
                       อ่านต่อ
                     </Button>
                   </div>
@@ -375,7 +376,7 @@ export default function Home() {
 
       {/* News Detail Modal */}
       <Dialog open={!!selectedNews} onOpenChange={(open) => { if (!open) setSelectedNews(null); }}>
-        <DialogContent className="max-w-2xl bg-zinc-900 border-white/10 text-white p-0 overflow-hidden max-h-[85vh] overflow-y-auto custom-scrollbar">
+        <DialogContent className="max-w-2xl bg-card border-white/10 text-white p-0 overflow-hidden max-h-[85vh] overflow-y-auto custom-scrollbar">
           {selectedNews && (
             <>
               {selectedNews.imageUrl && (
