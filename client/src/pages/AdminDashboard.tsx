@@ -824,7 +824,7 @@ export default function AdminDashboard() {
           <div className="flex flex-col gap-6 p-5 sm:p-6 lg:flex-row lg:items-center lg:justify-between">
             <div className="flex items-start gap-4">
               <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-primary/25 bg-primary/10 text-primary">
-                <ShieldAlert className="h-5 w-5" />
+                <LayoutGrid className="h-5 w-5" />
               </div>
               <div>
                 <p className="mb-1 text-xs font-semibold uppercase tracking-[0.14em] text-primary">WNY E-LEAGUE</p>
