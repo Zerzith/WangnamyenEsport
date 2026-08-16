@@ -17,7 +17,7 @@ import {
   Loader2, Plus, Trash2, Calendar, Users, Trophy,
   Check, X, Swords, Megaphone, ShieldAlert,
   UserCheck, UserX, Eye, EyeOff, LayoutGrid, MonitorPlay, ImagePlus, FileImage,
-  ArrowLeft
+  ArrowLeft, Pencil
 } from "lucide-react";
 import { collection, onSnapshot, addDoc, deleteDoc, doc, updateDoc, query, orderBy, where, serverTimestamp, getDoc, getDocs } from "firebase/firestore";
 import { db } from "@/lib/firebase";
@@ -74,6 +74,23 @@ export default function AdminDashboard() {
   const [bannerPreview, setBannerPreview] = useState<string | null>(null);
   const [isCreatingEvent, setIsCreatingEvent] = useState(false);
 
+  // Event editing state
+  const [isEventEditDialogOpen, setIsEventEditDialogOpen] = useState(false);
+  const [editingEvent, setEditingEvent] = useState<any | null>(null);
+  const [editTitle, setEditTitle] = useState("");
+  const [editGame, setEditGame] = useState("Valorant");
+  const [editMaxTeams, setEditMaxTeams] = useState("16");
+  const [editMembers, setEditMembers] = useState("5");
+  const [editSubs, setEditSubs] = useState("1");
+  const [editDate, setEditDate] = useState("");
+  const [editRegDeadline, setEditRegDeadline] = useState("");
+  const [editRegDeadlineTime, setEditRegDeadlineTime] = useState("23:59");
+  const [editBannerUrl, setEditBannerUrl] = useState("");
+  const [editBannerFile, setEditBannerFile] = useState<File | null>(null);
+  const [editBannerPreview, setEditBannerPreview] = useState<string | null>(null);
+  const [editStatus, setEditStatus] = useState("upcoming");
+  const [isSavingEvent, setIsSavingEvent] = useState(false);
+
   const handleBannerUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -90,6 +107,43 @@ export default function AdminDashboard() {
     "RoV": "https://files.manuscdn.com/user_upload_by_module/session_file/310519663358539715/NASojnuaGInFLzYF.png",
     "Free Fire": "https://files.manuscdn.com/user_upload_by_module/session_file/310519663358539715/rUDJhrjRVtqbAmGZ.png",
     "Valorant": "https://files.manuscdn.com/user_upload_by_module/session_file/310519663358539715/PBMkCQUSRSaFncUQ.png",
+  };
+
+  const closeEventEditor = () => {
+    setIsEventEditDialogOpen(false);
+    setEditingEvent(null);
+    setEditBannerFile(null);
+    setEditBannerPreview(null);
+  };
+
+  const openEventEditor = (event: any) => {
+    const deadline = typeof event.registrationDeadline === "string" ? event.registrationDeadline : "";
+    const deadlineDate = deadline.includes("T") ? deadline.slice(0, 10) : deadline;
+    const deadlineTimeMatch = deadline.match(/T(\d{2}:\d{2})/);
+
+    setEditingEvent(event);
+    setEditTitle(event.title || "");
+    setEditGame(event.game || "Valorant");
+    setEditMaxTeams(String(event.maxTeams ?? 16));
+    setEditMembers(String(event.membersPerTeam ?? 5));
+    setEditSubs(String(event.maxSubstitutes ?? 0));
+    setEditDate(event.date || "");
+    setEditRegDeadline(deadlineDate);
+    setEditRegDeadlineTime(deadlineTimeMatch?.[1] || "23:59");
+    setEditBannerUrl(event.bannerUrl || "");
+    setEditBannerFile(null);
+    setEditBannerPreview(null);
+    setEditStatus(event.status || "upcoming");
+    setIsEventEditDialogOpen(true);
+  };
+
+  const handleEditBannerUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setEditBannerFile(file);
+    setEditBannerPreview(URL.createObjectURL(file));
+    setEditBannerUrl("");
   };
 
   // Match Management State
@@ -331,6 +385,61 @@ export default function AdminDashboard() {
       toast({ title: "เกิดข้อผิดพลาด", description: (error as Error).message, variant: "destructive" });
     } finally {
       setIsCreatingEvent(false);
+    }
+  };
+
+  const handleUpdateEvent = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editingEvent || !editTitle.trim() || !editDate || !editRegDeadline || !editRegDeadlineTime) {
+      toast({ title: "ข้อมูลไม่ครบถ้วน", description: "กรุณากรอกชื่อรายการ วันเริ่มแข่งขัน และกำหนดปิดรับสมัคร", variant: "destructive" });
+      return;
+    }
+
+    setIsSavingEvent(true);
+    try {
+      let bannerUrlToSave = editBannerUrl.trim();
+
+      if (editBannerFile) {
+        const formData = new FormData();
+        formData.append("file", editBannerFile);
+        formData.append("upload_preset", CLOUDINARY_UPLOAD_PRESET);
+
+        const response = await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`, {
+          method: "POST",
+          body: formData,
+        });
+
+        if (!response.ok) {
+          throw new Error("ไม่สามารถอัปโหลดรูปแบนเนอร์ได้");
+        }
+
+        const data = await response.json();
+        bannerUrlToSave = data.secure_url;
+      }
+
+      if (!bannerUrlToSave) {
+        bannerUrlToSave = gameBanners[editGame] || editingEvent.bannerUrl || "";
+      }
+
+      await updateDoc(doc(db, "events", editingEvent.id), {
+        title: editTitle.trim(),
+        game: editGame,
+        maxTeams: Number.parseInt(editMaxTeams, 10),
+        membersPerTeam: Number.parseInt(editMembers, 10),
+        maxSubstitutes: Number.parseInt(editSubs, 10),
+        date: editDate,
+        registrationDeadline: `${editRegDeadline}T${editRegDeadlineTime}:00+07:00`,
+        bannerUrl: bannerUrlToSave,
+        status: editStatus,
+        updatedAt: serverTimestamp(),
+      });
+
+      toast({ title: "บันทึกการแก้ไขรายการแข่งขันสำเร็จ" });
+      closeEventEditor();
+    } catch (error) {
+      toast({ title: "ไม่สามารถบันทึกการแก้ไขได้", description: (error as Error).message, variant: "destructive" });
+    } finally {
+      setIsSavingEvent(false);
     }
   };
 
@@ -833,6 +942,10 @@ export default function AdminDashboard() {
                         </div>
                           <div className="flex flex-col items-end gap-2">
                             <div className="flex items-center gap-2">
+                              <Button size="sm" variant="outline" className="gap-1" onClick={() => openEventEditor(event)} title="แก้ไขรายการแข่งขัน">
+                                <Pencil className="h-4 w-4" />
+                                <span className="hidden sm:inline">แก้ไข</span>
+                              </Button>
                               <Button size="sm" variant="outline" onClick={() => {
                                 setLiveStreamEventId(event.id);
                                 setLiveStreamUrl(event.liveStreamUrl || "");
@@ -1340,6 +1453,114 @@ export default function AdminDashboard() {
               </div>
               <DialogFooter>
                 <Button type="submit">บันทึก</Button>
+              </DialogFooter>
+            </form>
+          </DialogContent>
+        </Dialog>
+
+        <Dialog open={isEventEditDialogOpen} onOpenChange={(open) => { if (!open) closeEventEditor(); }}>
+          <DialogContent className="max-h-[90vh] max-w-3xl overflow-y-auto bg-zinc-950 text-white">
+            <DialogHeader>
+              <DialogTitle>แก้ไขรายการแข่งขัน</DialogTitle>
+              <DialogDescription>
+                ปรับชื่อรายการ รูปแบนเนอร์ วันเริ่มแข่งขัน เวลาปิดรับสมัคร และรายละเอียดการแข่งขันได้จากหน้านี้
+              </DialogDescription>
+            </DialogHeader>
+            <form onSubmit={handleUpdateEvent} className="space-y-5">
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                <div>
+                  <Label htmlFor="editTitle">ชื่อรายการแข่งขัน</Label>
+                  <Input id="editTitle" value={editTitle} onChange={(e) => setEditTitle(e.target.value)} required />
+                </div>
+                <div>
+                  <Label htmlFor="editGame">เกม</Label>
+                  <Select value={editGame} onValueChange={setEditGame}>
+                    <SelectTrigger id="editGame"><SelectValue placeholder="เลือกเกม" /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="Valorant">Valorant</SelectItem>
+                      <SelectItem value="RoV">RoV</SelectItem>
+                      <SelectItem value="Free Fire">Free Fire</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+                <div>
+                  <Label htmlFor="editMaxTeams">จำนวนทีมสูงสุด</Label>
+                  <Input id="editMaxTeams" type="number" min="1" value={editMaxTeams} onChange={(e) => setEditMaxTeams(e.target.value)} required />
+                </div>
+                <div>
+                  <Label htmlFor="editMembers">สมาชิกหลักต่อทีม</Label>
+                  <Input id="editMembers" type="number" min="1" value={editMembers} onChange={(e) => setEditMembers(e.target.value)} required />
+                </div>
+                <div>
+                  <Label htmlFor="editSubs">ตัวสำรองสูงสุด</Label>
+                  <Input id="editSubs" type="number" min="0" value={editSubs} onChange={(e) => setEditSubs(e.target.value)} required />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                <div>
+                  <Label htmlFor="editDate">วันเริ่มแข่งขัน</Label>
+                  <Input id="editDate" type="date" value={editDate} onChange={(e) => setEditDate(e.target.value)} required />
+                </div>
+                <div>
+                  <Label htmlFor="editStatus">สถานะการแข่งขัน</Label>
+                  <Select value={editStatus} onValueChange={setEditStatus}>
+                    <SelectTrigger id="editStatus"><SelectValue placeholder="เลือกสถานะ" /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="upcoming">กำลังเปิดรับสมัคร</SelectItem>
+                      <SelectItem value="open">เปิดรับสมัคร</SelectItem>
+                      <SelectItem value="closed">ปิดรับสมัคร</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                <div>
+                  <Label htmlFor="editDeadline">วันปิดรับสมัคร</Label>
+                  <Input id="editDeadline" type="date" value={editRegDeadline} onChange={(e) => setEditRegDeadline(e.target.value)} required />
+                </div>
+                <div>
+                  <Label htmlFor="editDeadlineTime">เวลาปิดรับสมัคร</Label>
+                  <Input id="editDeadlineTime" type="time" step="60" className="[color-scheme:dark]" value={editRegDeadlineTime} onChange={(e) => setEditRegDeadlineTime(e.target.value)} required />
+                </div>
+              </div>
+
+              <div className="space-y-3 border-t border-white/10 pt-5">
+                <div>
+                  <Label htmlFor="editBannerUrl">URL รูปแบนเนอร์</Label>
+                  <Input
+                    id="editBannerUrl"
+                    type="url"
+                    placeholder="https://example.com/banner.jpg"
+                    value={editBannerUrl}
+                    onChange={(e) => {
+                      setEditBannerUrl(e.target.value);
+                      if (e.target.value) {
+                        setEditBannerFile(null);
+                        setEditBannerPreview(null);
+                      }
+                    }}
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="editBannerFile">หรือเปลี่ยนรูปด้วยไฟล์ใหม่</Label>
+                  <Input id="editBannerFile" type="file" accept="image/*" onChange={handleEditBannerUpload} />
+                </div>
+                {(editBannerPreview || editBannerUrl) && (
+                  <img src={editBannerPreview || editBannerUrl} alt="ตัวอย่างแบนเนอร์การแข่งขัน" className="h-40 w-full rounded-lg border border-white/10 object-cover" />
+                )}
+              </div>
+
+              <DialogFooter className="gap-2 sm:gap-0">
+                <Button type="button" variant="outline" onClick={closeEventEditor} disabled={isSavingEvent}>ยกเลิก</Button>
+                <Button type="submit" disabled={isSavingEvent}>
+                  {isSavingEvent && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                  บันทึกการแก้ไข
+                </Button>
               </DialogFooter>
             </form>
           </DialogContent>
