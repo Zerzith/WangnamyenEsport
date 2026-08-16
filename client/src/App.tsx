@@ -25,6 +25,7 @@ const Privacy = lazy(() => import("@/pages/Privacy"));
 const Rules = lazy(() => import("@/pages/Rules"));
 const EditRegistration = lazy(() => import("@/pages/EditRegistration"));
 const MatchManagement = lazy(() => import("@/pages/MatchManagement"));
+const NewsDetail = lazy(() => import("@/pages/NewsDetail"));
 const NotFound = lazy(() => import("@/pages/not-found"));
 
 function LoadingFallback() {
@@ -66,6 +67,7 @@ function Router() {
       <RouteWithSuspense path="/rules" component={Rules} />
       <RouteWithSuspense path="/edit-registration/:registrationId" component={EditRegistration} />
       <RouteWithSuspense path="/match-management" component={MatchManagement} />
+      <RouteWithSuspense path="/news/:id" component={NewsDetail} />
       <RouteWithSuspense component={NotFound} />
     </Switch>
   );

@@ -1,9 +1,8 @@
 import { Link } from "wouter";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Card } from "@/components/ui/card";
-import { ArrowRight, Trophy, Loader2, X } from "lucide-react";
+import { ArrowRight, Trophy, Loader2 } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
 import { useEffect, useState, memo } from "react";
 import { collection, onSnapshot, query, where, orderBy, limit, getDocs } from "firebase/firestore";
@@ -162,7 +161,6 @@ export default function Home() {
   const { user } = useAuth();
   const [events, setEvents] = useState<Event[]>([]);
   const [news, setNews] = useState<News[]>([]);
-  const [selectedNews, setSelectedNews] = useState<News | null>(null);
   const [loading, setLoading] = useState(true);
   const [champions, setChampions] = useState<Event[]>([]);
   const [teamMap, setTeamMap] = useState<Record<string, { teamName: string; logoUrl?: string }>>({});
@@ -400,7 +398,8 @@ export default function Home() {
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               {news.map((item) => (
-                <Card key={item.id} className="group esports-panel esports-panel-interactive rounded-2xl border-white/[0.09] bg-card overflow-hidden cursor-pointer" onClick={() => setSelectedNews(item)}>
+                <Link href={`/news/${item.id}`}>
+                  <Card key={item.id} className="group esports-panel esports-panel-interactive h-full rounded-2xl border-white/[0.09] bg-card overflow-hidden cursor-pointer transition-all duration-150 hover:-translate-y-0.5 hover:border-primary/45">
                   {item.imageUrl && (
                     <div className="w-full aspect-[16/9] overflow-hidden">
                       <img src={item.imageUrl} alt={item.title} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
@@ -411,49 +410,21 @@ export default function Home() {
                     {item.createdAt?.toDate ? formatDate(item.createdAt.toDate().toISOString()) : "เมื่อเร็วๆ นี้"}
                   </div>
                   <h3 className="mb-3 line-clamp-2 font-display text-xl font-bold text-white transition-colors group-hover:text-primary">{item.title}</h3>
-                  {/* Content shown only in modal */}
                   <div className="flex items-center justify-between border-t border-white/[0.07] pt-4">
                     <span className="text-xs text-white/40">โดย {item.author || "Admin"}</span>
-                    <Button variant="ghost" size="sm" className="h-auto p-0 font-medium text-primary hover:bg-transparent hover:text-primary/80" onClick={() => setSelectedNews(item)}>
-                      อ่านต่อ
-                    </Button>
+                    <span className="flex items-center text-sm font-medium text-muted-foreground transition-colors group-hover:text-primary">
+                      อ่านต่อ <ArrowRight className="ml-1.5 h-4 w-4" />
+                    </span>
                   </div>
                   </div>
-                </Card>
+                  </Card>
+                </Link>
               ))}
             </div>
           </div>
         </section>
       )}
 
-      {/* News Detail Modal */}
-      <Dialog open={!!selectedNews} onOpenChange={(open) => { if (!open) setSelectedNews(null); }}>
-        <DialogContent className="max-w-2xl bg-card border-white/10 text-white p-0 overflow-hidden max-h-[85vh] overflow-y-auto custom-scrollbar">
-          {selectedNews && (
-            <>
-              {selectedNews.imageUrl && (
-                <div className="w-full aspect-[16/7] overflow-hidden">
-                  <img src={selectedNews.imageUrl} alt={selectedNews.title} className="w-full h-full object-cover" />
-                </div>
-              )}
-              <div className="p-6">
-                <div className="mb-3 text-xs font-bold uppercase tracking-[0.16em] text-primary">
-                  {selectedNews.createdAt?.toDate ? formatDate(selectedNews.createdAt.toDate().toISOString()) : "เมื่อเร็วๆ นี้"}
-                </div>
-                <DialogTitle className="text-2xl font-display font-bold text-white mb-3">
-                  {selectedNews.title}
-                </DialogTitle>
-                <DialogDescription className="text-white/70 text-base leading-relaxed whitespace-pre-wrap">
-                  {selectedNews.content}
-                </DialogDescription>
-                <div className="mt-4 pt-4 border-t border-white/10 text-xs text-white/40">
-                  โดย {selectedNews.author || "Admin"}
-                </div>
-              </div>
-            </>
-          )}
-        </DialogContent>
-      </Dialog>
     </div>
   );
 }
