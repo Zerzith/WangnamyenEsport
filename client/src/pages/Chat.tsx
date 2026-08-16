@@ -428,7 +428,7 @@ export default function Chat() {
         </div>
 
         {/* Chat Section */}
-        <div className="order-2 h-[min(26rem,45vh)] w-full flex-none border-t border-white/10 bg-zinc-950 lg:order-none lg:h-auto lg:w-[380px] lg:border-l lg:border-t-0 lg:flex lg:flex-col lg:overflow-hidden">
+        <div className="order-2 w-full flex-1 lg:h-auto lg:w-[380px] lg:flex-none border-t border-white/10 bg-zinc-950 lg:order-none lg:h-auto lg:w-[380px] lg:border-l lg:border-t-0 lg:flex lg:flex-col lg:overflow-hidden">
           {/* Chat Header */}
           <div className="p-3 border-b border-white/10 flex items-center justify-between bg-zinc-900/50">
             <div className="flex items-center gap-2">
@@ -442,7 +442,7 @@ export default function Chat() {
           </div>
 
           {/* Messages */}
-          <div ref={scrollRef} className="flex-1 overflow-y-auto p-3 space-y-3 scrollbar-hide">
+          <div ref={scrollRef} className="flex-1 min-h-0 overflow-y-auto p-3 space-y-3 scrollbar-hide">
             {messages.map((msg) => (
               <div key={msg.id} className={`flex gap-2.5 ${msg.userId === user.uid ? 'flex-row-reverse' : ''}`}>
                 <AvatarCustom src={msg.userPhotoURL} name={msg.displayName} size="sm" />
@@ -459,7 +459,7 @@ export default function Chat() {
           </div>
 
           {/* Input */}
-          <div className="p-3 border-t border-white/10 bg-zinc-900/50 relative">
+          <div className="flex-none p-3 border-t border-white/10 bg-zinc-900/50 relative">
             {showEmoji && (
               <div className="absolute bottom-full right-0 mb-2 z-50">
                 <EmojiPicker onEmojiClick={(emoji) => setNewMessage(prev => prev + emoji.emoji)} theme={Theme.DARK} />
