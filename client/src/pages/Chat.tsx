@@ -9,7 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { AvatarCustom } from "@/components/ui/avatar-custom";
-import { Send, Smile, Edit2, Users, Eye, Plus, MessageCircle, MonitorPlay, Radio } from "lucide-react";
+import { Send, Smile, Edit2, Users, Eye, Plus, MessageCircle, MonitorPlay, Radio, Maximize2, Minimize2 } from "lucide-react";
 import EmojiPicker, { Theme } from 'emoji-picker-react';
 import { useLocation } from "wouter";
 import { censorText } from "@/lib/filter";
@@ -47,6 +47,7 @@ export default function Chat() {
   const [liveStream, setLiveStream] = useState<LiveStreamConfig | null>(null);
   const [isEditingStream, setIsEditingStream] = useState(false);
   const [editStreamUrl, setEditStreamUrl] = useState("");
+  const [videoExpanded, setVideoExpanded] = useState(false);
   const [editStreamTitle, setEditStreamTitle] = useState("");
   const [viewerCount, setViewerCount] = useState(0);
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -292,11 +293,11 @@ export default function Chat() {
       {/* Main Content */}
       <div className="flex-1 flex flex-col lg:flex-row gap-0 overflow-hidden min-h-0">
         {/* Video Section */}
-        <div className="order-1 flex-none lg:order-none lg:flex-1 lg:flex lg:flex-col lg:overflow-hidden">
+        <div className={`order-1 flex-none lg:order-none lg:flex-1 lg:flex lg:flex-col lg:overflow-hidden ${videoExpanded ? 'flex-none' : ''}`}>
           {liveStream?.isActive && liveStream?.liveUrl ? (
             <div className="bg-black lg:relative lg:flex lg:h-full lg:flex-1 lg:flex-col">
-              {/* Video Container: keep a visible 16:9 player above chat on phones */}
-              <div className="relative aspect-video w-full lg:min-h-0 lg:flex-1 lg:aspect-auto">
+              {/* Video Container: visible 16:9 player above chat on phones; expandable */}
+              <div className={`relative w-full ${videoExpanded ? 'flex-1 lg:flex-1' : 'aspect-video'} lg:min-h-0 ${!videoExpanded ? 'lg:flex-1 lg:aspect-auto' : ''}`}>
                 <iframe
                   className="absolute inset-0 w-full h-full"
                   src={`${getYoutubeEmbedUrl(liveStream.liveUrl)}?autoplay=1&mute=0`}
@@ -320,10 +321,20 @@ export default function Chat() {
                     <span className="font-semibold">{viewerCount}</span> ผู้ชม
                   </div>
                 </div>
+                {/* Mobile focus toggle — never covers chat */}
+                <Button
+                  size="icon"
+                  variant="secondary"
+                  className="pointer-events-auto bg-black/60 backdrop-blur-sm text-white hover:bg-black/80 h-9 w-9 lg:hidden"
+                  onClick={() => setVideoExpanded(!videoExpanded)}
+                  title={videoExpanded ? "แสดงแชท" : "ขยายวิดีโอ"}
+                >
+                  {videoExpanded ? <Minimize2 className="w-4 h-4" /> : <Maximize2 className="w-4 h-4" />}
+                </Button>
               </div>
 
-              {/* Bottom Info Bar */}
-              <div className="bg-gradient-to-t from-black/90 to-transparent p-4">
+              {/* Bottom Info Bar (hidden while video is expanded on mobile) */}
+              <div className={`bg-gradient-to-t from-black/90 to-transparent p-4 ${videoExpanded ? 'hidden lg:block' : ''}`}>
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
                     <MonitorPlay className="w-5 h-5 text-red-500" />
@@ -428,7 +439,7 @@ export default function Chat() {
         </div>
 
         {/* Chat Section */}
-        <div className="order-2 w-full flex-1 lg:h-auto lg:w-[380px] lg:flex-none border-t border-white/10 bg-zinc-950 lg:order-none lg:h-auto lg:w-[380px] lg:border-l lg:border-t-0 lg:flex lg:flex-col lg:overflow-hidden">
+        <div className={`order-2 w-full lg:h-auto lg:w-[380px] lg:flex-none border-t border-white/10 bg-zinc-950 lg:order-none lg:h-auto lg:w-[380px] lg:border-l lg:border-t-0 lg:flex lg:flex-col lg:overflow-hidden ${videoExpanded ? 'hidden lg:flex' : 'flex flex-col min-h-0 flex-1 lg:flex-none'} ${videoExpanded ? 'hidden lg:flex' : ''}`}>
           {/* Chat Header */}
           <div className="p-3 border-b border-white/10 flex items-center justify-between bg-zinc-900/50">
             <div className="flex items-center gap-2">
