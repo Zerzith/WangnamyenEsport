@@ -292,11 +292,11 @@ export default function Chat() {
       {/* Main Content */}
       <div className="flex-1 flex flex-col lg:flex-row gap-0 overflow-hidden">
         {/* Video Section */}
-        <div className="flex-1 flex flex-col overflow-hidden">
+        <div className="order-1 flex-none lg:order-none lg:flex-1 lg:flex lg:flex-col lg:overflow-hidden">
           {liveStream?.isActive && liveStream?.liveUrl ? (
-            <div className="flex-1 flex flex-col bg-black relative">
-              {/* Video Container */}
-              <div className="relative flex-1 min-h-0">
+            <div className="bg-black lg:relative lg:flex lg:h-full lg:flex-1 lg:flex-col">
+              {/* Video Container: keep a visible 16:9 player above chat on phones */}
+              <div className="relative aspect-video w-full lg:min-h-0 lg:flex-1 lg:aspect-auto">
                 <iframe
                   className="absolute inset-0 w-full h-full"
                   src={`${getYoutubeEmbedUrl(liveStream.liveUrl)}?autoplay=1&mute=0`}
@@ -374,7 +374,7 @@ export default function Chat() {
               </div>
             </div>
           ) : (
-            <div className="flex-1 flex items-center justify-center bg-gradient-to-br from-zinc-950 via-zinc-900 to-zinc-950 relative overflow-hidden">
+            <div className="relative flex min-h-[18rem] items-center justify-center overflow-hidden bg-gradient-to-br from-zinc-950 via-zinc-900 to-zinc-950 lg:min-h-0 lg:flex-1">
               {/* Background Pattern */}
               <div className="absolute inset-0 opacity-5">
                 <div className="absolute inset-0" style={{
@@ -428,7 +428,7 @@ export default function Chat() {
         </div>
 
         {/* Chat Section */}
-        <div className="w-full lg:w-[380px] flex flex-col border-l border-white/10 bg-zinc-950 overflow-hidden">
+        <div className="order-2 h-[min(26rem,45vh)] w-full flex-none border-t border-white/10 bg-zinc-950 lg:order-none lg:h-auto lg:w-[380px] lg:border-l lg:border-t-0 lg:flex lg:flex-col lg:overflow-hidden">
           {/* Chat Header */}
           <div className="p-3 border-b border-white/10 flex items-center justify-between bg-zinc-900/50">
             <div className="flex items-center gap-2">
