@@ -209,10 +209,6 @@ export default function HallOfFame() {
                               <p className="text-primary font-semibold">{member.gameName}</p>
                             </div>
                             <div>
-                              <p className="text-xs text-muted-foreground">รหัสนักเรียน</p>
-                              <p className="text-white">{member.studentId}</p>
-                            </div>
-                            <div>
                               <p className="text-xs text-muted-foreground">ชั้นปี</p>
                               <p className="text-white">{member.grade || "-"}</p>
                             </div>

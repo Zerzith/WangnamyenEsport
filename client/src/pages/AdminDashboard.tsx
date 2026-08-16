@@ -1185,13 +1185,29 @@ export default function AdminDashboard() {
 
           <TabsContent value="teams" className="mt-0 space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-300">
             <Card className="admin-surface overflow-hidden">
-              <CardHeader>
-                <CardTitle className="text-xl">ทีมที่ได้รับการอนุมัติ</CardTitle>
+              <CardHeader className="flex flex-col gap-3 border-b border-white/[0.06] pb-5 sm:flex-row sm:items-center sm:justify-between">
+                <div>
+                  <CardTitle className="text-xl">ทีมที่ได้รับการอนุมัติ</CardTitle>
+                  <CardDescription className="mt-1">เลือกการแข่งขันเพื่อดูและจัดการเฉพาะทีมในรายการนั้น</CardDescription>
+                </div>
+                <Select value={selectedTeamEvent} onValueChange={setSelectedTeamEvent}>
+                  <SelectTrigger className="h-10 w-full border-white/10 bg-black/20 text-sm sm:w-[250px]">
+                    <SelectValue placeholder="เลือกการแข่งขัน" />
+                  </SelectTrigger>
+                  <SelectContent className="border-white/10 bg-card">
+                    <SelectItem value="all">ทั้งหมด</SelectItem>
+                    {events.map((event) => (
+                      <SelectItem key={event.id} value={event.id}>{event.title}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
                   {filteredTeams.length === 0 ? (
-                    <p className="text-muted-foreground">ไม่มีทีมที่ได้รับการอนุมัติ</p>
+                    <div className="rounded-lg border border-dashed border-white/10 bg-black/10 px-4 py-10 text-center text-sm text-muted-foreground">
+                      ยังไม่มีทีมที่ได้รับการอนุมัติสำหรับรายการที่เลือก
+                    </div>
                   ) : (
                     filteredTeams.map((team) => (
                       <Card key={team.id} className="bg-card/70 border-white/10">
@@ -1607,6 +1623,7 @@ export default function AdminDashboard() {
             teamName={selectedTeam.teamName || selectedTeam.name}
             teamLogo={selectedTeam.logoUrl}
             members={selectedTeam.members}
+            showStudentId
           />
         )}
       </div>

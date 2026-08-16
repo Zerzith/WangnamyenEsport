@@ -18,6 +18,7 @@ interface TeamMembersModalProps {
   teamName: string;
   teamLogo?: string;
   members: TeamMember[];
+  showStudentId?: boolean;
 }
 
 export function TeamMembersModal({
@@ -26,6 +27,7 @@ export function TeamMembersModal({
   teamName,
   teamLogo,
   members,
+  showStudentId = false,
 }: TeamMembersModalProps) {
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -78,10 +80,12 @@ export function TeamMembersModal({
                     <p className="text-xs text-muted-foreground mb-1">ชื่อเกม (IGN)</p>
                     <p className="text-primary font-semibold">{member.gameName}</p>
                   </div>
-                  <div>
-                    <p className="text-xs text-muted-foreground mb-1">รหัสนักเรียน</p>
-                    <p className="text-white">{member.studentId || "-"}</p>
-                  </div>
+                  {showStudentId && (
+                    <div>
+                      <p className="text-xs text-muted-foreground mb-1">รหัสนักเรียน</p>
+                      <p className="text-white">{member.studentId || "-"}</p>
+                    </div>
+                  )}
                   <div>
                     <p className="text-xs text-muted-foreground mb-1">ชั้นปี</p>
                     <p className="text-white">{member.grade || "-"}</p>
