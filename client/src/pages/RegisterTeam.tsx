@@ -4,6 +4,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useLocation } from "wouter";
 import { collection, query, where, onSnapshot, addDoc, serverTimestamp, getDocs, orderBy } from "firebase/firestore";
 import { db } from "@/lib/firebase";
+import { formatThaiDate } from "@/lib/date";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
@@ -319,7 +320,7 @@ export default function RegisterTeam() {
             <option value="" style={{ backgroundColor: '#0f172a', color: 'white' }}>-- เลือกรายการแข่งขัน --</option>
             {allEvents.map((e) => (
               <option key={e.id} value={e.id}>
-                {e.title} ({e.game}) - {e.date}
+                {e.title} ({e.game}) - เริ่มแข่งขัน {formatThaiDate(e.date)}
               </option>
             ))}
           </select>

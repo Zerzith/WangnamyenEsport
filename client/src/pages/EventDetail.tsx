@@ -11,34 +11,7 @@ import { Card } from "@/components/ui/card";
 import { Loader2, ArrowLeft, X, Upload, User, BookOpen, Fingerprint, Gamepad2, GraduationCap } from "lucide-react";
 import { motion } from "framer-motion";
 import { TeamMembersModal } from "@/components/TeamMembersModal";
-
-// Format deadline with 24-hour Thai time (Asia/Bangkok)
-const formatDeadline = (deadlineStr?: string): string => {
-  if (!deadlineStr) return "";
-  try {
-    const date = new Date(deadlineStr);
-    const options: Intl.DateTimeFormatOptions = {
-      timeZone: "Asia/Bangkok",
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-      hour12: false,
-    };
-    const formatter = new Intl.DateTimeFormat("th-TH", options);
-    const parts = formatter.formatToParts(date);
-    const dateParts = parts
-      .filter((p) => p.type !== "hour" && p.type !== "minute" && p.type !== "literal" && p.type !== "dayPeriod")
-      .map((p) => p.value)
-      .join("");
-    const hour = parts.find((p) => p.type === "hour")?.value ?? "";
-    const minute = parts.find((p) => p.type === "minute")?.value ?? "";
-    return `${dateParts} เวลา ${hour}:${minute} น.`;
-  } catch {
-    return deadlineStr;
-  }
-};
+import { formatThaiDate, formatThaiDateTime } from "@/lib/date";
 
 interface Event {
   id: string;
@@ -142,14 +115,14 @@ const EventListItem = ({ item, index }: { item: Event, index: number }) => {
           <div className="p-6">
             <h3 className="text-xl font-bold text-white mb-2 group-hover:text-primary transition-colors">{item.title}</h3>
             <div className="flex items-center gap-4 text-sm text-muted-foreground mb-4">
-              <span>{item.date}</span>
+              <span>เริ่มแข่งขัน: {formatThaiDate(item.date)}</span>
               <span className={isFull ? "text-red-400 font-bold" : ""}>
                 {registeredCount} / {item.maxTeams || 16} ทีม
               </span>
             </div>
             {item.registrationDeadline && (
               <div className="text-sm text-white/60 mb-4">
-                ปิดรับสมัคร: {formatDeadline(item.registrationDeadline)}
+                ปิดรับสมัคร: {formatThaiDateTime(item.registrationDeadline)}
               </div>
             )}
             {item.maxSubstitutes !== undefined && item.maxSubstitutes > 0 && (
@@ -582,8 +555,8 @@ export default function EventDetail() {
             <h2 className="text-2xl font-bold text-white mb-6">รายละเอียดการแข่งขัน</h2>       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
               <div className="p-4 rounded-xl bg-zinc-900 border border-white/5">
                 <div>
-                  <p className="text-xs text-muted-foreground uppercase font-bold tracking-wider">วันที่แข่งขัน</p>
-                  <p className="text-white font-medium">{event.date}</p>
+                  <p className="text-xs text-muted-foreground uppercase font-bold tracking-wider">วันเริ่มแข่งขัน</p>
+                  <p className="text-white font-medium">{formatThaiDate(event.date)}</p>
                 </div>
               </div>
               <div className="p-4 rounded-xl bg-zinc-900 border border-white/5">
@@ -907,7 +880,7 @@ export default function EventDetail() {
                   </div>
                   <div>
                     <p className="text-[10px] text-muted-foreground uppercase tracking-wider">ปิดสมัคร</p>
-                    <p className="text-sm text-white font-medium">{formatDeadline(event.registrationDeadline)}</p>
+                    <p className="text-sm text-white font-medium">{formatThaiDateTime(event.registrationDeadline)}</p>
                   </div>
                 </div>
               )}

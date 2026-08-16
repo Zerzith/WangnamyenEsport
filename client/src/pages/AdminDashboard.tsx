@@ -21,6 +21,7 @@ import {
 } from "lucide-react";
 import { collection, onSnapshot, addDoc, deleteDoc, doc, updateDoc, query, orderBy, where, serverTimestamp, getDoc, getDocs } from "firebase/firestore";
 import { db } from "@/lib/firebase";
+import { formatThaiDate } from "@/lib/date";
 import { Cloudinary as CloudinaryCore } from "@cloudinary/url-gen";
 
 // Cloudinary Configuration (Replace with your actual Cloudinary credentials)
@@ -828,7 +829,7 @@ export default function AdminDashboard() {
                       <CardContent className="p-4 flex items-center justify-between">
                         <div>
                           <p className="font-semibold text-lg">{event.title}</p>
-                          <p className="text-sm text-muted-foreground">{event.game} | <Calendar className="inline-block h-4 w-4 mr-1" /> {event.date}</p>
+                          <p className="text-sm text-muted-foreground">{event.game} | <Calendar className="inline-block h-4 w-4 mr-1" /> วันเริ่มแข่งขัน: {formatThaiDate(event.date)}</p>
                         </div>
                           <div className="flex flex-col items-end gap-2">
                             <div className="flex items-center gap-2">

@@ -8,6 +8,7 @@ import { useAuth } from "@/hooks/use-auth";
 import { useEffect, useState, memo } from "react";
 import { collection, onSnapshot, query, where, orderBy, limit, getDocs } from "firebase/firestore";
 import { db } from "@/lib/firebase";
+import { formatThaiDate, formatThaiDateTime } from "@/lib/date";
 
 const HERO_BG = "https://images.unsplash.com/photo-1552820728-8ac41f1ce891?q=80&w=2070&auto=format&fit=crop";
 
@@ -108,18 +109,12 @@ const EventCard = memo(({ event, index, registeredCount, user }: {
           <span className="rounded-md border border-primary/25 bg-primary/15 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.14em] text-primary">
             {event.game}
           </span>
-          <span className="text-[10px] text-white/80 font-bold uppercase tracking-wider">
-            {event.date}
+          <span className="text-[10px] text-white/80 font-bold tracking-wider">
+            เริ่มแข่งขัน: {formatThaiDate(event.date)}
           </span>
           {event.registrationDeadline && (
             <span className="text-[10px] text-red-400 font-medium">
-              ปิด {(() => {
-                try {
-                  const d = new Date(event.registrationDeadline);
-                  const opts: Intl.DateTimeFormatOptions = { timeZone: "Asia/Bangkok", day: "numeric", month: "short", hour: "2-digit", minute: "2-digit", hour12: false };
-                  return new Intl.DateTimeFormat("th-TH", opts).format(d);
-                } catch { return ""; }
-              })()}
+              ปิดรับสมัคร: {formatThaiDateTime(event.registrationDeadline)}
             </span>
           )}
         </div>
