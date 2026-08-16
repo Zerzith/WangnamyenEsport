@@ -12,6 +12,8 @@ import { formatThaiDate, formatThaiDateTime } from "@/lib/date";
 
 const HERO_BG = "https://images.unsplash.com/photo-1552820728-8ac41f1ce891?q=80&w=2070&auto=format&fit=crop";
 
+const DEFAULT_BANNER = "https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=2070&auto=format&fit=crop";
+
 interface Event {
   id: string;
   title: string;
@@ -163,6 +165,7 @@ export default function Home() {
   const [selectedNews, setSelectedNews] = useState<News | null>(null);
   const [loading, setLoading] = useState(true);
   const [champions, setChampions] = useState<Event[]>([]);
+  const [teamMap, setTeamMap] = useState<Record<string, { teamName: string; logoUrl?: string }>>({});
   // เก็บ registeredCount ทุก event ไว้ใน map เดียว แทนที่จะสร้าง listener แยกทุกการ์ด
   const [registrationCounts, setRegistrationCounts] = useState<Record<string, number>>({});
 
@@ -193,13 +196,20 @@ export default function Home() {
     );
     const unsubRegs = onSnapshot(qRegs, (snapshot) => {
       const counts: Record<string, number> = {};
+      const teams: Record<string, { teamName: string; logoUrl?: string }> = {};
       snapshot.docs.forEach(doc => {
-        const eventId = doc.data().eventId;
+        const data = doc.data() as any;
+        const eventId = data.eventId;
         if (eventId) {
           counts[eventId] = (counts[eventId] || 0) + 1;
         }
+        teams[doc.id] = {
+          teamName: data.teamName || data.name || "ทีมไม่ทราบชื่อ",
+          logoUrl: data.logoUrl,
+        };
       });
       setRegistrationCounts(counts);
+      setTeamMap(teams);
     });
 
     return () => {
@@ -227,9 +237,6 @@ export default function Home() {
         
         <div className="relative z-10 w-full px-4 sm:px-8 lg:px-12">
           <div className="max-w-3xl">
-            <div className="mb-4 sm:mb-5 inline-flex items-center gap-2 rounded-md border border-primary/25 bg-slate-950/70 px-3 sm:px-4 py-1.5 sm:py-2 text-[10px] sm:text-xs font-bold tracking-[0.13em] text-primary">
-              WANGNAMYEN ESPORTS
-            </div>
             <motion.h1
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -271,30 +278,75 @@ export default function Home() {
 
       {/* Champions Section */}
       {champions.length > 0 && (
-          <section className="border-y border-white/[0.06] bg-black/15 py-20">
+          <section className="border-y border-white/[0.06] bg-black/15 py-24">
           <div className="w-full px-2 sm:px-4 lg:px-6">
-            <div className="mb-12">
-              <h2 className="text-3xl font-bold text-white">ทำเนียบแชมป์เปี้ยน</h2>
+            <div className="mb-12 flex flex-col md:flex-row md:items-end justify-between gap-6">
+              <div>
+                <div className="mb-3 inline-flex items-center gap-2">
+                  <Trophy className="w-5 h-5 text-amber-300/90" />
+                  <span className="text-xs font-bold uppercase tracking-[0.2em] text-amber-200/80">Hall of Fame</span>
+                </div>
+                <h2 className="text-3xl md:text-4xl font-display font-bold text-white">ทำเนียบแชมเปี้ยน</h2>
+                <p className="text-muted-foreground mt-2">เกียรติของทีมชนะเลิศประจำรายการ แข่งขันทุกสนามของเรา</p>
+              </div>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {champions.map((event, index) => (
+              {champions.map((event, index) => {
+                const champion = event.championTeamId ? teamMap[event.championTeamId] : undefined;
+                return (
                 <motion.div
                   key={event.id}
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ delay: Math.min(index * 0.08, 0.4) }}
+                  initial={{ opacity: 0, y: 24 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: Math.min(index * 0.08, 0.4), duration: 0.3 }}
                 >
                   <Link href={`/event/${event.id}`}>
-                    <Card className="group cursor-pointer rounded-2xl border-accent/25 bg-card p-8 text-center transition-all duration-150 hover:border-accent/45">
-                      <h3 className="text-xl font-bold text-white mb-2">{event.title}</h3>
-                      <p className="text-accent font-bold text-xl uppercase tracking-[0.08em]">CHAMPION</p>
-                      <div className="mt-4 inline-flex items-center text-sm text-muted-foreground group-hover:text-white transition-colors">
-                        ดูรายละเอียด <ArrowRight className="ml-2 w-4 h-4" />
+                    <div className="group relative h-full overflow-hidden rounded-2xl border border-white/[0.09] bg-zinc-900/60 shadow-[0_18px_38px_-30px_rgb(0_0_0_/_0.95)] transition-all duration-150 hover:-translate-y-0.5 hover:border-amber-300/35">
+                      <div className="relative h-36 overflow-hidden">
+                        <img
+                          src={event.bannerUrl || DEFAULT_BANNER}
+                          alt={event.title}
+                          loading="lazy"
+                          className="absolute inset-0 h-full w-full object-cover opacity-75 transition-transform duration-300 group-hover:scale-105"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-zinc-900 via-zinc-900/40 to-transparent" />
+                        <div className="absolute top-3 left-3 flex items-center gap-1.5 rounded-md border border-amber-300/35 bg-zinc-950/80 px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.14em] text-amber-200">
+                          <Trophy className="w-3 h-3" />
+                          แชมป์
+                        </div>
+                        {champion?.logoUrl && (
+                          <img
+                            src={champion.logoUrl}
+                            alt={champion.teamName}
+                            className="absolute bottom-3 right-3 h-12 w-12 rounded-lg border-2 border-amber-300/60 bg-zinc-900 object-cover shadow-lg"
+                          />
+                        )}
                       </div>
-                    </Card>
+                      <div className="p-5 pt-4">
+                        <span className="rounded-md border border-primary/25 bg-slate-950/70 px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.12em] text-primary">
+                          {event.game}
+                        </span>
+                        <h3 className="mt-3 font-display text-xl font-bold text-white line-clamp-2 transition-colors group-hover:text-primary">
+                          {event.title}
+                        </h3>
+                        {champion ? (
+                          <p className="mt-1.5 text-sm text-slate-300">โดย <span className="font-bold text-amber-100">{champion.teamName}</span></p>
+                        ) : (
+                          <p className="mt-1.5 text-sm text-muted-foreground">ชิงแชมป์ประจำรายการนี้</p>
+                        )}
+                        {event.date && (
+                          <p className="mt-1 text-xs text-white/50">ปิดสนามเมื่อ {formatThaiDate(event.date)}</p>
+                        )}
+                        <div className="mt-4 flex items-center text-sm font-medium text-muted-foreground transition-colors group-hover:text-primary">
+                          ดูรายละเอียด <ArrowRight className="ml-1.5 h-4 w-4" />
+                        </div>
+                      </div>
+                    </div>
                   </Link>
                 </motion.div>
-              ))}
+                );
+              })}
             </div>
           </div>
         </section>

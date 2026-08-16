@@ -3,7 +3,7 @@ import { collection, query, where, onSnapshot, orderBy, getDocs, getDoc, doc } f
 import { TeamMembersModal } from "@/components/TeamMembersModal";
 import { db } from "@/lib/firebase";
 import { Card } from "@/components/ui/card";
-import { Loader2, Trophy, Swords, LayoutGrid } from "lucide-react";
+import { Loader2, Trophy, LayoutGrid } from "lucide-react";
 import { motion } from "framer-motion";
 import { censorText } from "@/lib/filter";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -170,14 +170,6 @@ export default function Bracket() {
     <div className="min-h-screen bg-transparent">
       <div className="w-full px-2 sm:px-4 lg:px-6 py-14">
         <div className="mb-12 text-center">
-          <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="mb-5 inline-flex items-center gap-2 rounded-md border border-primary/25 bg-primary/[0.09] px-4 py-2 text-xs font-bold tracking-[0.14em] text-primary  "
-          >
-            <Swords className="w-4 h-4" />
-            REAL-TIME TOURNAMENT BRACKET
-          </motion.div>
           <h1 className="mb-4 font-display text-4xl font-bold uppercase tracking-tight text-white md:text-6xl">
             สายการแข่งขัน
           </h1>
