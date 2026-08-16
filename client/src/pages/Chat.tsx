@@ -288,9 +288,9 @@ export default function Chat() {
   }
 
   return (
-    <div className="h-[calc(100vh-4rem)] flex flex-col overflow-hidden">
+    <div className="h-[100dvh] sm:h-[calc(100dvh-4.5rem)] flex flex-col overflow-hidden">
       {/* Main Content */}
-      <div className="flex-1 flex flex-col lg:flex-row gap-0 overflow-hidden">
+      <div className="flex-1 flex flex-col lg:flex-row gap-0 overflow-hidden min-h-0">
         {/* Video Section */}
         <div className="order-1 flex-none lg:order-none lg:flex-1 lg:flex lg:flex-col lg:overflow-hidden">
           {liveStream?.isActive && liveStream?.liveUrl ? (
@@ -459,7 +459,7 @@ export default function Chat() {
           </div>
 
           {/* Input */}
-          <div className="flex-none p-3 border-t border-white/10 bg-zinc-900/50 relative">
+          <div className="flex-none p-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))] border-t border-white/10 bg-zinc-900/50 relative">
             {showEmoji && (
               <div className="absolute bottom-full right-0 mb-2 z-50">
                 <EmojiPicker onEmojiClick={(emoji) => setNewMessage(prev => prev + emoji.emoji)} theme={Theme.DARK} />
