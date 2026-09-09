@@ -4,7 +4,7 @@ export default function Privacy() {
   return (
     <div className="min-h-screen py-12 px-2 sm:px-4">
       <div className="w-full max-w-4xl mx-auto px-2 sm:px-4 lg:px-6">
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           className="text-center mb-16"
@@ -40,7 +40,7 @@ export default function Privacy() {
           <section>
             <h2 className="text-2xl font-bold text-white mb-4">3. การเปิดเผยข้อมูล</h2>
             <p>
-              ข้อมูลบางส่วน เช่น ชื่อทีม และชื่อผู้เล่น จะถูกแสดงต่อสาธารณะในหน้าตารางคะแนนและทำเนียบทีม 
+              ข้อมูลบางส่วน เช่น ชื่อทีม และชื่อผู้เล่น จะถูกแสดงต่อสาธารณะในหน้าตารางคะแนนและทำเนียบทีม
               อย่างไรก็ตาม ข้อมูลส่วนตัวอื่นๆ เช่น อีเมล หรือรหัสนักศึกษา จะถูกเก็บเป็นความลับและเข้าถึงได้เฉพาะแอดมินผู้ดูแลระบบเท่านั้น
             </p>
           </section>
@@ -48,7 +48,7 @@ export default function Privacy() {
           <section>
             <h2 className="text-2xl font-bold text-white mb-4">4. ความปลอดภัยของข้อมูล</h2>
             <p>
-              เราใช้ระบบรักษาความปลอดภัยที่ได้มาตรฐาน (Firebase Authentication & Firestore Security Rules) 
+              เราใช้ระบบรักษาความปลอดภัยที่ได้มาตรฐาน (Firebase Authentication & Firestore Security Rules)
               เพื่อป้องกันการเข้าถึงข้อมูลโดยไม่ได้รับอนุญาต การแก้ไข หรือการเปิดเผยข้อมูลส่วนบุคคลของคุณ
             </p>
           </section>
@@ -56,7 +56,7 @@ export default function Privacy() {
           <section>
             <h2 className="text-2xl font-bold text-white mb-4">5. สิทธิ์ของคุณ</h2>
             <p>
-              คุณมีสิทธิ์ในการเข้าถึง แก้ไข หรือขอลบข้อมูลส่วนบุคคลของคุณออกจากระบบได้ทุกเมื่อ 
+              คุณมีสิทธิ์ในการเข้าถึง แก้ไข หรือขอลบข้อมูลส่วนบุคคลของคุณออกจากระบบได้ทุกเมื่อ
               โดยสามารถดำเนินการผ่านหน้าโปรไฟล์หรือติดต่อแอดมินผ่านช่องทางที่ระบุไว้ในหน้าติดต่อเรา
             </p>
           </section>

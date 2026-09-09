@@ -1,7 +1,4 @@
-/*
-  WNY Esports Championship - Custom Styles
-  Human-made design: solid backgrounds, no glow, minimal decoration
-*/
+
 
 @tailwind base;
 @tailwind components;
@@ -15,7 +12,7 @@
   --font-serif: 'IBM Plex Sans Thai', sans-serif;
   --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
 
-  /* Charcoal surfaces and a deliberately muted steel-blue accent. */
+
   --background: 220 18% 7%;
   --foreground: 210 20% 96%;
 
@@ -107,10 +104,7 @@
 }
 
 @layer components {
-  /*
-   * esports-panel: Solid dark background, no glass/glow
-   * Human-made look: simple borders, solid fills
-   */
+
   .esports-panel {
     @apply relative overflow-hidden rounded-xl border border-white/[0.08] bg-card;
     box-shadow: 0 12px 30px -24px rgb(0 0 0 / 0.9);

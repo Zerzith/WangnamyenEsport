@@ -9,7 +9,7 @@ import { Card } from "@/components/ui/card";
 import { AvatarCustom } from "@/components/ui/avatar-custom";
 import { Camera, Check, X, Loader2 } from "lucide-react";
 
-// Cloudinary config
+
 const CLOUDINARY_URL = `https://api.cloudinary.com/v1_1/djubsqri6/image/upload`;
 const UPLOAD_PRESET = "wangnamyenesport";
 
@@ -26,14 +26,14 @@ export default function Profile() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
 
-  // Redirect if not logged in
+
   useEffect(() => {
     if (!user) {
       setLocation("/login");
     }
   }, [user, setLocation]);
 
-  // Load user profile
+
   useEffect(() => {
     if (user) {
       const loadProfile = async () => {
@@ -108,13 +108,11 @@ export default function Profile() {
 
     setIsSaving(true);
     try {
-      // Update Firebase Auth display name
       await updateProfile(user, {
         displayName: displayName.trim() || null,
         photoURL: photoURL || null,
       });
 
-      // Update Firestore
       const firestoreData: any = {
         displayName: displayName.trim() || "",
         photoURL: photoURL || "",
@@ -166,13 +164,13 @@ export default function Profile() {
         )}
 
         <Card className="bg-zinc-900 border border-white/5 p-8">
-          {/* Profile Photo Section */}
+
           <div className="flex flex-col items-center mb-8">
             <div className="relative group">
-              <AvatarCustom 
-                src={photoPreview || profile.photoURL} 
-                name={profile.displayName || "Gamer"} 
-                size="xl" 
+              <AvatarCustom
+                src={photoPreview || profile.photoURL}
+                name={profile.displayName || "Gamer"}
+                size="xl"
               />
               {isEditing && (
                 <button
@@ -201,7 +199,7 @@ export default function Profile() {
             )}
           </div>
 
-          {/* Display Name */}
+
           <div className="space-y-2">
             <label className="text-sm font-medium text-muted-foreground">ชื่อ</label>
             <input
@@ -214,7 +212,7 @@ export default function Profile() {
             />
           </div>
 
-          {/* Action Buttons */}
+
           <div className="flex gap-3 mt-8">
             {!isEditing ? (
               <Button

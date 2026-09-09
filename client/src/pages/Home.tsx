@@ -48,7 +48,7 @@ const formatDate = (dateString?: string) => {
   }
 };
 
-// ย้าย EventCard ออกมาเป็น top-level component เพื่อป้องกัน re-mount ทุกครั้งที่ parent re-render
+
 const EventCard = memo(({ event, index, registeredCount, user }: {
   event: Event;
   index: number;
@@ -168,11 +168,9 @@ export default function Home() {
   const [loading, setLoading] = useState(true);
   const [champions, setChampions] = useState<Event[]>([]);
   const [teamMap, setTeamMap] = useState<Record<string, { teamName: string; logoUrl?: string }>>({});
-  // เก็บ registeredCount ทุก event ไว้ใน map เดียว แทนที่จะสร้าง listener แยกทุกการ์ด
   const [registrationCounts, setRegistrationCounts] = useState<Record<string, number>>({});
 
   useEffect(() => {
-    // ดึงข้อมูลการแข่งขัน
     const qEvents = query(
       collection(db, "events"),
       orderBy("createdAt", "desc")
@@ -185,13 +183,11 @@ export default function Home() {
       setLoading(false);
     });
 
-    // ดึงข้อมูลข่าวสาร
     const qNews = query(collection(db, "news"), orderBy("createdAt", "desc"), limit(5));
     const unsubNews = onSnapshot(qNews, (snapshot) => {
       setNews(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as any)));
     });
 
-    // ดึง registration counts ทั้งหมดในครั้งเดียว (1 listener แทน N listeners)
     const qRegs = query(
       collection(db, "registrations"),
       where("status", "==", "approved")
@@ -223,20 +219,20 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-transparent">
-      {/* Hero Section */}
+
       <section className="relative flex min-h-[calc(86vh-4.5rem)] items-center border-b border-white/[0.06] overflow-hidden">
-        {/* Background Image */}
+
         <div className="absolute inset-0 z-0">
-          <img 
-            src="/assets/nebula-bg.png" 
-            alt="Background" 
+          <img
+            src="/assets/nebula-bg.png"
+            alt="Background"
             className="h-full w-full object-cover"
           />
-          {/* Dark overlay */}
+
           <div className="absolute inset-0 bg-slate-950/80" />
           <div className="absolute inset-0 bg-gradient-to-r from-slate-950/70 via-transparent to-transparent" />
         </div>
-        
+
         <div className="relative z-10 w-full px-4 sm:px-8 lg:px-12">
           <div className="max-w-3xl">
             <motion.h1
@@ -278,7 +274,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Champions Section */}
+
       {champions.length > 0 && (
           <section className="border-y border-white/[0.06] bg-black/15 py-24">
           <div className="w-full px-2 sm:px-4 lg:px-6">
@@ -358,7 +354,7 @@ export default function Home() {
         </section>
       )}
 
-      {/* Events Section */}
+
       <section className="py-24">
         <div className="w-full px-2 sm:px-4 lg:px-6">
           <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-4">
@@ -396,7 +392,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* News Section */}
+
       {news.length > 0 && (
         <section className="border-y border-white/[0.06] bg-black/15 py-24">
           <div className="w-full px-2 sm:px-4 lg:px-6">

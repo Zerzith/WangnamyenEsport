@@ -24,9 +24,9 @@ import { db } from "@/lib/firebase";
 import { formatThaiDate } from "@/lib/date";
 import { Cloudinary as CloudinaryCore } from "@cloudinary/url-gen";
 
-// Cloudinary Configuration (Replace with your actual Cloudinary credentials)
-const CLOUDINARY_CLOUD_NAME = "djubsqri6"; // Replace with your Cloudinary Cloud Name
-const CLOUDINARY_UPLOAD_PRESET = "wangnamyenesport"; // Replace with your Cloudinary Upload Preset
+
+const CLOUDINARY_CLOUD_NAME = "djubsqri6";
+const CLOUDINARY_UPLOAD_PRESET = "wangnamyenesport";
 const DEFAULT_EVENT_BANNER = "/assets/nebula-bg.png";
 
 const isExternalHttpUrl = (value: string) => {
@@ -38,7 +38,7 @@ const isExternalHttpUrl = (value: string) => {
   }
 };
 
-/** Store remote images on our own CDN so expiring URLs and hotlink protection do not break the site. */
+
 const uploadImageSourceToCloudinary = async (source: File | string): Promise<string> => {
   if (typeof source === "string" && !isExternalHttpUrl(source.trim())) {
     return source.trim();
@@ -84,12 +84,10 @@ export default function AdminDashboard() {
   const [selectedTeam, setSelectedTeam] = useState<any | null>(null);
   const [showTeamModal, setShowTeamModal] = useState(false);
 
-  // User Management State
   const [authUsers, setAuthUsers] = useState<any[]>([]);
   const [loadingUsers, setLoadingUsers] = useState(false);
 
 
-  // News state
   const [newsTitle, setNewNewsTitle] = useState("");
   const [newsContent, setNewNewsContent] = useState("");
   const [newsImageFile, setNewsImageFile] = useState<File | null>(null);
@@ -97,7 +95,6 @@ export default function AdminDashboard() {
   const [newsImageUrl, setNewsImageUrl] = useState("");
   const [isUploadingNewsImage, setIsUploadingNewsImage] = useState(false);
 
-  // Form states for new event
   const [newTitle, setNewTitle] = useState("");
   const [newGame, setNewGame] = useState("Valorant");
   const [newMaxTeams, setNewMaxTeams] = useState("16");
@@ -111,7 +108,6 @@ export default function AdminDashboard() {
   const [bannerPreview, setBannerPreview] = useState<string | null>(null);
   const [isCreatingEvent, setIsCreatingEvent] = useState(false);
 
-  // Event editing state
   const [isEventEditDialogOpen, setIsEventEditDialogOpen] = useState(false);
   const [editingEvent, setEditingEvent] = useState<any | null>(null);
   const [editTitle, setEditTitle] = useState("");
@@ -183,7 +179,6 @@ export default function AdminDashboard() {
     setEditBannerUrl("");
   };
 
-  // Match Management State
   const [selectedEventId, setSelectedEventId] = useState<string>("");
   const [newMatchRound, setNewMatchRound] = useState("1");
   const [newMatchGroup, setNewMatchGroup] = useState("A");
@@ -193,7 +188,6 @@ export default function AdminDashboard() {
 
 
 
-  // Live Stream Dialog State
   const [isLiveStreamDialogOpen, setIsLiveStreamDialogOpen] = useState(false);
   const [liveStreamEventId, setLiveStreamEventId] = useState<string>("");
   const [liveStreamUrl, setLiveStreamUrl] = useState<string>("");
@@ -225,7 +219,6 @@ export default function AdminDashboard() {
       setEvents(snap.docs.map(d => ({ id: d.id, ...d.data() })));
     });
 
-    // ดึงทีมจาก registrations ที่มี status approved เพื่อให้ได้ข้อมูลที่ถูกต้อง
     const qTeams = query(collection(db, "registrations"), where("status", "==", "approved"), orderBy("createdAt", "desc"));
     const unsubTeams = onSnapshot(qTeams, (snap) => {
       const teamsData = snap.docs.map(d => {
@@ -247,7 +240,6 @@ export default function AdminDashboard() {
       setTeams(teamsData);
     });
 
-    // Cache ข้อมูล user เพื่อไม่ต้อง fetch ซ้ำทุกครั้งที่ snapshot เปลี่ยน
     const userCache: Record<string, { displayName: string; email: string }> = {};
 
     const qRegs = query(collection(db, "registrations"), orderBy("createdAt", "desc"));
@@ -313,7 +305,6 @@ export default function AdminDashboard() {
       return;
     }
 
-    // ดึงทีมจาก collection "registrations" ที่มี status "approved" สำหรับการแข่งขันนี้
     const qApprovedTeams = query(
       collection(db, "registrations"),
       where("eventId", "==", selectedEventId),
@@ -372,8 +363,7 @@ export default function AdminDashboard() {
       toast({ title: "ข้อมูลไม่ครบถ้วน", description: "กรุณากรอก ชื่องาน, วันที่เริ่ม, และวันปิดรับสมัคร", variant: "destructive" });
       return;
     }
-    
-    // Combine deadline date and time with Bangkok timezone offset (+07:00)
+
     const registrationDeadlineWithTime = `${newRegDeadline}T${newRegDeadlineTime}:00+07:00`;
     setIsCreatingEvent(true);
     try {
@@ -529,10 +519,8 @@ export default function AdminDashboard() {
   const handleDeleteTeam = async (teamId: string) => {
     if (!confirm("ยืนยันการลบทีมนี้? การกระทำนี้ไม่สามารถยกเลิกได้")) return;
     try {
-      // ลบทีมจาก registrations
       await deleteDoc(doc(db, "registrations", teamId));
-      
-      // ลบแมตช์ที่เกี่ยวข้องของทีมนี้
+
       const matchesQuery = query(
         collection(db, "matches"),
         where("teamA", "==", teamId)
@@ -574,7 +562,6 @@ export default function AdminDashboard() {
     e.preventDefault();
     try {
       let imageUrlToSave = newsImageUrl.trim();
-      // Upload image to Cloudinary if a file was selected
       if (newsImageFile) {
         setIsUploadingNewsImage(true);
         imageUrlToSave = await uploadImageSourceToCloudinary(newsImageFile);
@@ -584,7 +571,7 @@ export default function AdminDashboard() {
         imageUrlToSave = await uploadImageSourceToCloudinary(imageUrlToSave);
         setIsUploadingNewsImage(false);
       }
-      
+
       await addDoc(collection(db, "news"), {
         title: newsTitle,
         content: newsContent,
@@ -748,7 +735,6 @@ export default function AdminDashboard() {
     }
   };
 
-  // User Management Functions
   const fetchAuthUsers = async () => {
     if (!user) return;
     setLoadingUsers(true);
@@ -1393,7 +1379,7 @@ export default function AdminDashboard() {
                           {(match.winsA !== undefined || match.winsB !== undefined) && (
                             <div className="mt-4 space-y-3">
                               <div className="grid grid-cols-2 gap-4">
-                                {/* Team A Result */}
+
                                 <div>
                                   <Label className="text-xs font-semibold mb-2 block">ผลลัพธ์ {teamA?.name || 'ทีม A'}</Label>
                                   <div className="flex gap-2">
@@ -1424,7 +1410,7 @@ export default function AdminDashboard() {
                                   </div>
                                 </div>
 
-                                {/* Team B Result */}
+
                                 <div>
                                   <Label className="text-xs font-semibold mb-2 block">ผลลัพธ์ {teamB?.name || 'ทีม B'}</Label>
                                   <div className="flex gap-2">
@@ -1620,7 +1606,7 @@ export default function AdminDashboard() {
           </DialogContent>
         </Dialog>
 
-        {/* Team Members Modal */}
+
         {selectedTeam && (
           <TeamMembersModal
             isOpen={showTeamModal}

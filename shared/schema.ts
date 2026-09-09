@@ -2,11 +2,11 @@ import { pgTable, text, serial, integer, boolean, timestamp, jsonb } from "drizz
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
-// NOTE: This schema is primarily for type definition and validation.
-// The actual data persistence is handled by Firebase Firestore on the client-side.
-// However, we define these structures here to ensure consistency across the app.
 
-// === DATA MODELS ===
+
+
+
+
 
 export const users = pgTable("users", {
   id: serial("id").primaryKey(),
@@ -15,18 +15,18 @@ export const users = pgTable("users", {
   email: text("email").notNull(),
   displayName: text("display_name").notNull(),
   photoUrl: text("photo_url"),
-  role: text("role").default("user"), // 'admin' | 'user'
+  role: text("role").default("user"),
   createdAt: timestamp("created_at").defaultNow(),
 });
 
 export const teams = pgTable("teams", {
   id: serial("id").primaryKey(),
   name: text("name").notNull(),
-  game: text("game").notNull(), // 'Valorant', 'RoV', 'Free Fire', etc.
-  gameMode: text("game_mode"), // 'CS-MODE', 'BR-MODE'
+  game: text("game").notNull(),
+  gameMode: text("game_mode"),
   logoUrl: text("logo_url"),
   members: jsonb("members").$type<{ name: string; gameName: string; grade: string; department: string; isSubstitute?: boolean }[]>(),
-  status: text("status").default("pending"), // 'pending' | 'approved' | 'rejected'
+  status: text("status").default("pending"),
   createdAt: timestamp("created_at").defaultNow(),
 });
 
@@ -35,7 +35,7 @@ export const events = pgTable("events", {
   title: text("title").notNull(),
   game: text("game").notNull(),
   date: timestamp("date").notNull(),
-  status: text("status").default("upcoming"), // 'upcoming' | 'live' | 'completed'
+  status: text("status").default("upcoming"),
   posterUrl: text("poster_url"),
   maxTeams: integer("max_teams").default(16),
   membersPerTeam: integer("members_per_team").default(5),
@@ -46,11 +46,11 @@ export const events = pgTable("events", {
 export const matches = pgTable("matches", {
   id: serial("id").primaryKey(),
   eventId: integer("event_id").notNull(),
-  teamA: text("team_a").notNull(), // Team Name or ID
+  teamA: text("team_a").notNull(),
   teamB: text("team_b").notNull(),
   scoreA: integer("score_a").default(0),
   scoreB: integer("score_b").default(0),
-  status: text("status").default("scheduled"), // 'scheduled' | 'live' | 'finished'
+  status: text("status").default("scheduled"),
   game: text("game"),
   round: text("round"),
   winner: text("winner"),
@@ -64,10 +64,10 @@ export const liveChat = pgTable("live_chat", {
   displayName: text("display_name").notNull(),
   text: text("text").notNull(),
   timestamp: timestamp("timestamp").defaultNow(),
-  reactions: jsonb("reactions").$type<Record<string, string[]>>(), // { '👍': ['uid1', 'uid2'] }
+  reactions: jsonb("reactions").$type<Record<string, string[]>>(),
 });
 
-// === SCHEMAS ===
+
 
 export const insertUserSchema = createInsertSchema(users).omit({ id: true, createdAt: true });
 export const insertTeamSchema = createInsertSchema(teams).omit({ id: true, createdAt: true });
@@ -75,7 +75,7 @@ export const insertEventSchema = createInsertSchema(events).omit({ id: true, cre
 export const insertMatchSchema = createInsertSchema(matches).omit({ id: true });
 export const insertChatSchema = createInsertSchema(liveChat).omit({ id: true });
 
-// === TYPES ===
+
 
 export type User = typeof users.$inferSelect;
 export type InsertUser = z.infer<typeof insertUserSchema>;

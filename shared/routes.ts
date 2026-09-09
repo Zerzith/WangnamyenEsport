@@ -20,7 +20,7 @@ export const api = {
       method: 'GET' as const,
       path: '/api/teams/export',
       responses: {
-        200: z.any(), // Returns a file download
+        200: z.any(),
       },
     },
     create: {
@@ -33,7 +33,7 @@ export const api = {
       },
     }
   },
-  // Most other operations are handled client-side via Firebase
+
 };
 
 export function buildUrl(path: string, params?: Record<string, string | number>): string {

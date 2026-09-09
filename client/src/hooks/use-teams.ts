@@ -11,8 +11,8 @@ export function useCreateTeam() {
 
   return useMutation({
     mutationFn: async (data: InsertTeam) => {
-      // In a real Firebase app, we'd write to Firestore directly for most things,
-      // but requirements mention a shared routes API for teams
+
+
       const res = await fetch(api.teams.create.path, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -31,8 +31,8 @@ export function useCreateTeam() {
         description: "ทีมของคุณได้รับการลงทะเบียนเรียบร้อยแล้ว",
         variant: "default",
       });
-      // Invalidate relevant queries if we were fetching teams via API
-      // queryClient.invalidateQueries({ queryKey: [api.teams.list.path] });
+
+
       setLocation("/hall-of-fame");
     },
     onError: (error: Error) => {

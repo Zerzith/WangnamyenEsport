@@ -9,7 +9,7 @@ export default function Contact() {
   return (
     <div className="min-h-screen py-12 px-2 sm:px-4">
       <div className="w-full max-w-6xl mx-auto px-2 sm:px-4 lg:px-6">
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           className="text-center mb-16"
@@ -19,7 +19,7 @@ export default function Contact() {
         </motion.div>
 
         <div className="grid md:grid-cols-3 gap-8">
-          {/* Contact Info */}
+          {}
           <div className="space-y-6">
             <Card className="bg-card/50 border-white/10 p-6">
               <div className="flex items-start gap-4">
@@ -61,7 +61,7 @@ export default function Contact() {
             </div>
           </div>
 
-          {/* Contact Form */}
+          {}
           <div className="md:col-span-2">
             <Card className="bg-card/50 border-white/10 p-8">
               <form className="space-y-6">

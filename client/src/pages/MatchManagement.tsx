@@ -62,7 +62,7 @@ export default function MatchManagement() {
     { href: "/register-team", label: "ลงทะเบียนทีม", icon: "Edit2" },
   ];
 
-  // Fetch approved teams for current user
+
   useEffect(() => {
     if (!user) {
       setLocation("/login");
@@ -84,7 +84,7 @@ export default function MatchManagement() {
       setApprovedTeams(teams);
       setLoading(false);
 
-      // Auto-select first team if available
+
       if (teams.length > 0 && !selectedTeamId) {
         setSelectedTeamId(teams[0].id);
       }
@@ -93,7 +93,7 @@ export default function MatchManagement() {
     return () => unsubscribe();
   }, [user, setLocation, selectedTeamId]);
 
-  // Fetch matches for selected team
+
   useEffect(() => {
     if (!selectedTeamId) return;
 
@@ -110,7 +110,7 @@ export default function MatchManagement() {
         ...doc.data(),
       })) as Match[];
 
-      // Also get matches where team is teamB
+
       const q2 = query(
         collection(db, "matches"),
         where("teamB", "in", [selectedTeamId]),
@@ -124,14 +124,14 @@ export default function MatchManagement() {
 
       matchesData = [...matchesData, ...matchesData2];
 
-      // Fetch team names and event titles โดยใช้ getDoc แทน getDocs+query เพื่อประสิทธิภาพ
+
       const enrichedMatches = await Promise.all(
         matchesData.map(async (match) => {
           let teamAName = match.teamA;
           let teamBName = match.teamB;
           let eventTitle = "";
 
-          // Fetch team A name from registrations (direct doc lookup)
+
           try {
             const teamADoc = await getDoc(doc(db, "registrations", match.teamA));
             if (teamADoc.exists()) {
@@ -142,7 +142,7 @@ export default function MatchManagement() {
             console.error("Error fetching team A:", error);
           }
 
-          // Fetch team B name from registrations (direct doc lookup)
+
           try {
             const teamBDoc = await getDoc(doc(db, "registrations", match.teamB));
             if (teamBDoc.exists()) {
@@ -153,7 +153,7 @@ export default function MatchManagement() {
             console.error("Error fetching team B:", error);
           }
 
-          // Fetch event title (direct doc lookup)
+
           try {
             if (match.eventId) {
               const eventDoc = await getDoc(doc(db, "events", match.eventId));
@@ -181,7 +181,7 @@ export default function MatchManagement() {
     return () => unsubscribe();
   }, [selectedTeamId]);
 
-  // Fetch events for filter dropdown
+
   useEffect(() => {
     if (!selectedTeamId) return;
     const fetchEvents = async () => {
@@ -278,7 +278,7 @@ export default function MatchManagement() {
           </div>
         </div>
 
-        {/* Team Selection */}
+        {}
         <Card className="bg-zinc-900 border-white/10 p-6 rounded-xl mb-8">
           <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
             <Users className="w-5 h-5 text-primary" />
@@ -303,7 +303,7 @@ export default function MatchManagement() {
           </div>
         </Card>
 
-        {/* Matches List */}
+
         <div className="space-y-6">
           <div className="flex items-center justify-between flex-wrap gap-4">
           <h3 className="text-2xl font-bold text-white flex items-center gap-2">
@@ -421,7 +421,7 @@ export default function MatchManagement() {
         </div>
       </div>
 
-      {/* Sidebar for User Menu */}
+
       {sidebarOpen && (
         <motion.div
           initial={{ opacity: 0, x: -300 }}
@@ -449,8 +449,8 @@ export default function MatchManagement() {
                     onClick={() => setSidebarOpen(false)}
                     className={`
                       w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all
-                      ${location === item.href 
-                        ? 'bg-primary/20 text-primary border border-primary/50' 
+                      ${location === item.href
+                        ? 'bg-primary/20 text-primary border border-primary/50'
                         : 'text-muted-foreground hover:text-white hover:bg-zinc-900'}
                     `}
                   >
@@ -463,7 +463,7 @@ export default function MatchManagement() {
         </motion.div>
       )}
 
-      {/* Overlay */}
+
       {sidebarOpen && (
         <div
           className="fixed inset-0 z-30 bg-zinc-900/50  top-16"

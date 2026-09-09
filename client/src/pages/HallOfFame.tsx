@@ -35,7 +35,7 @@ export default function HallOfFame() {
   const [selectedGame, setSelectedGame] = useState<string>("All");
   const [selectedTeam, setSelectedTeam] = useState<ApprovedTeam | null>(null);
   const [showTeamModal, setShowTeamModal] = useState(false);
-  // Cache event titles เพื่อไม่ต้อง fetch ซ้ำ
+
   const [eventTitleCache, setEventTitleCache] = useState<Record<string, string>>({});
   const games = ["All", "Valorant", "RoV", "Free Fire"];
 
@@ -47,7 +47,7 @@ export default function HallOfFame() {
     );
 
     const unsubscribe = onSnapshot(q, async (snapshot) => {
-      // รวบรวม eventId ที่ยังไม่มีใน cache
+
       const missingEventIds = new Set<string>();
       snapshot.docs.forEach(doc => {
         const data = doc.data();
@@ -56,7 +56,7 @@ export default function HallOfFame() {
         }
       });
 
-      // Fetch event titles ที่ยังขาดอยู่ (batch)
+
       const newTitles: Record<string, string> = { ...eventTitleCache };
       await Promise.all(
         Array.from(missingEventIds).map(async (eventId) => {
@@ -123,7 +123,7 @@ export default function HallOfFame() {
         </p>
       </div>
 
-      {/* Game Filter */}
+      {}
       <div className="flex flex-wrap gap-2 mb-8">
         {games.map((game) => (
           <button
@@ -234,7 +234,7 @@ export default function HallOfFame() {
         </div>
       )}
 
-      {/* Team Members Modal */}
+
       {selectedTeam && (
         <TeamMembersModal
           isOpen={showTeamModal}

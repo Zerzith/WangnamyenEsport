@@ -9,9 +9,9 @@ import { useToast } from "@/hooks/use-toast";
 import { Loader2, LogIn, UserPlus } from "lucide-react";
 import { FcGoogle } from "react-icons/fc";
 import { auth, db } from "@/lib/firebase";
-import { 
-  signInWithEmailAndPassword, 
-  createUserWithEmailAndPassword, 
+import {
+  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
   updateProfile,
   signInWithPopup,
   GoogleAuthProvider
@@ -23,11 +23,11 @@ export default function Login() {
   const { user, signInWithGoogle } = useAuth();
   const [, setLocation] = useLocation();
   const { toast } = useToast();
-  
+
   const [isRegister, setIsRegister] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
-  
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [displayName, setDisplayName] = useState("");
@@ -46,8 +46,8 @@ export default function Login() {
       if (isRegister) {
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
         await updateProfile(userCredential.user, { displayName });
-        
-        // Save extra user info to Firestore
+
+
         await setDoc(doc(db, "users", userCredential.user.uid), {
           displayName,
           studentId,
@@ -63,10 +63,10 @@ export default function Login() {
       }
       setLocation("/");
     } catch (error: any) {
-      toast({ 
-        title: isRegister ? "สมัครสมาชิกไม่สำเร็จ" : "เข้าสู่ระบบไม่สำเร็จ", 
+      toast({
+        title: isRegister ? "สมัครสมาชิกไม่สำเร็จ" : "เข้าสู่ระบบไม่สำเร็จ",
         description: "อีเมลหรือรหัสผ่านไม่ถูกต้อง",
-        variant: "destructive" 
+        variant: "destructive"
       });
     } finally {
       setIsLoading(false);
@@ -79,10 +79,10 @@ export default function Login() {
       await signInWithGoogle();
       toast({ title: "เข้าสู่ระบบด้วย Google สำเร็จ" });
     } catch (error: any) {
-      toast({ 
-        title: "เข้าสู่ระบบด้วย Google ไม่สำเร็จ", 
+      toast({
+        title: "เข้าสู่ระบบด้วย Google ไม่สำเร็จ",
         description: error.message || "เกิดข้อผิดพลาด",
-        variant: "destructive" 
+        variant: "destructive"
       });
     } finally {
       setIsGoogleLoading(false);
@@ -106,42 +106,42 @@ export default function Login() {
               <>
                 <div className="space-y-2">
                   <Label>ชื่อ-นามสกุล</Label>
-                  <Input 
-                    value={displayName} 
-                    onChange={(e) => setDisplayName(e.target.value)} 
-                    placeholder="นาย/นางสาวเกมเมอร์ วังน้ำเย็น" 
-                    required 
+                  <Input
+                    value={displayName}
+                    onChange={(e) => setDisplayName(e.target.value)}
+                    placeholder="นาย/นางสาวเกมเมอร์ วังน้ำเย็น"
+                    required
                   />
                 </div>
                 <div className="space-y-2">
                   <Label>รหัสบัตรนักศึกษา</Label>
-                  <Input 
-                    value={studentId} 
-                    onChange={(e) => setStudentId(e.target.value)} 
-                    placeholder="รหัสบัตรนักเรียน นักศึกษา" 
-                    required 
+                  <Input
+                    value={studentId}
+                    onChange={(e) => setStudentId(e.target.value)}
+                    placeholder="รหัสบัตรนักเรียน นักศึกษา"
+                    required
                   />
                 </div>
               </>
             )}
             <div className="space-y-2">
               <Label>อีเมล</Label>
-              <Input 
-                type="email" 
-                value={email} 
-                onChange={(e) => setEmail(e.target.value)} 
-                placeholder="noname@email.com" 
-                required 
+              <Input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="noname@email.com"
+                required
               />
             </div>
             <div className="space-y-2">
               <Label>รหัสผ่าน</Label>
-              <Input 
-                type="password" 
-                value={password} 
-                onChange={(e) => setPassword(e.target.value)} 
-                placeholder="••••••••" 
-                required 
+              <Input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="••••••••"
+                required
               />
             </div>
             <Button type="submit" className="h-11 w-full border-primary/45 bg-primary text-primary-foreground shadow-[0_14px_30px_-14px_rgb(34_211_238_/_0.9)] hover:bg-primary" disabled={isLoading || isGoogleLoading}>
@@ -153,7 +153,7 @@ export default function Login() {
               )}
             </Button>
           </form>
-          
+
           {!isRegister && (
             <>
               <div className="relative my-6">
@@ -164,10 +164,10 @@ export default function Login() {
                   <span className="rounded-full border border-white/[0.08] bg-zinc-900 px-3 py-0.5 text-xs text-muted-foreground">หรือ</span>
                 </div>
               </div>
-              
-              <Button 
-                type="button" 
-                variant="outline" 
+
+              <Button
+                type="button"
+                variant="outline"
                 className="h-11 w-full border-white/15 bg-white/[0.025] hover:border-primary/35 hover:bg-primary/10"
                 onClick={handleGoogleSignIn}
                 disabled={isLoading || isGoogleLoading}
@@ -183,8 +183,8 @@ export default function Login() {
           )}
         </CardContent>
         <CardFooter className="flex justify-center border-t border-white/[0.07] pt-6">
-          <Button 
-            variant="ghost" 
+          <Button
+            variant="ghost"
             className="text-muted-foreground hover:bg-primary/10 hover:text-primary"
             onClick={() => setIsRegister(!isRegister)}
             disabled={isLoading || isGoogleLoading}

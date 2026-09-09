@@ -39,7 +39,7 @@ interface Tournament {
   status: string;
 }
 
-// Cache สำหรับเก็บข้อมูลทีมเพื่อไม่ต้อง fetch ซ้ำ
+
 const teamDataCache: Record<string, { teamName: string; logoUrl?: string }> = {};
 
 export default function Bracket() {
@@ -52,16 +52,16 @@ export default function Bracket() {
   const [showTeamModal, setShowTeamModal] = useState(false);
   const [registrations, setRegistrations] = useState<any[]>([]);
 
-  // Fetch registrations
+
   useEffect(() => {
     if (!selectedTournament) return;
-    
+
     const q = query(
       collection(db, "registrations"),
       where("eventId", "==", selectedTournament.id),
       where("status", "==", "approved")
     );
-    
+
     const unsubscribe = onSnapshot(q, (snapshot) => {
       const regs = snapshot.docs.map((doc) => ({
         id: doc.id,
@@ -69,11 +69,11 @@ export default function Bracket() {
       } as any));
       setRegistrations(regs);
     });
-    
+
     return () => unsubscribe();
   }, [selectedTournament]);
 
-  // Fetch tournaments
+
   useEffect(() => {
     const q = query(collection(db, "events"), orderBy("createdAt", "desc"));
     const unsubscribe = onSnapshot(q, (snapshot) => {
@@ -91,7 +91,7 @@ export default function Bracket() {
     return () => unsubscribe();
   }, []);
 
-  // Fetch matches for selected tournament with logos
+
   useEffect(() => {
     if (!selectedTournament) return;
 
@@ -105,14 +105,14 @@ export default function Bracket() {
         ...doc.data(),
       } as any));
 
-      // Sort matches client-side by createdAt
+
       matchesData.sort((a, b) => {
         const timeA = a.createdAt?.seconds || 0;
         const timeB = b.createdAt?.seconds || 0;
         return timeA - timeB;
       });
-      
-      // Fetch team names and logos โดยใช้ cache เพื่อลด Firestore reads
+
+
       const fetchTeamData = async (teamId: string) => {
         if (!teamId) return null;
         if (teamDataCache[teamId]) return teamDataCache[teamId];
@@ -144,10 +144,10 @@ export default function Bracket() {
           };
         })
       );
-      
+
       setMatches(matchesWithLogos);
-      
-      // ดึงรายชื่อกลุ่มที่มีทั้งหมด
+
+
       const uniqueGroups = Array.from(new Set(matchesWithLogos.map(m => m.group || "General")));
       setGroups(["All", ...uniqueGroups]);
     }, (error) => {
@@ -178,7 +178,7 @@ export default function Bracket() {
           </p>
         </div>
 
-        {/* Tournament Selector */}
+        {}
         <div className="mb-12 flex flex-wrap justify-center gap-2.5">
           {tournaments.map((tournament) => (
             <button
@@ -214,8 +214,7 @@ export default function Bracket() {
 
             {groups.map(group => {
               const filteredMatches = matches.filter(m => group === "All" || (m.group || "General") === group);
-              
-              // Group matches by round for this group
+
               const matchesByRound = filteredMatches.reduce((acc, match) => {
                 const roundKey = match.round || "1";
                 if (!acc[roundKey]) {
@@ -225,7 +224,6 @@ export default function Bracket() {
                 return acc;
               }, {} as Record<string, Match[]>);
 
-              // Get unique rounds in order of appearance
               const rounds = Array.from(new Set(filteredMatches.map(m => m.round || "1")));
 
               return (
@@ -249,9 +247,9 @@ export default function Bracket() {
                             </div>
                             <div className="flex flex-col gap-8">
                               {matchesByRound[round].map((match) => (
-                                <BracketMatch 
-                                  key={match.id} 
-                                  match={match} 
+                                <BracketMatch
+                                  key={match.id}
+                                  match={match}
                                   tournamentGame={selectedTournament?.game}
                                   registrations={registrations}
                                   onTeamClick={(team) => {
@@ -273,7 +271,7 @@ export default function Bracket() {
         )}
       </div>
 
-      {/* Team Members Modal */}
+
       {selectedTeam && (
         <TeamMembersModal
           isOpen={showTeamModal}
@@ -298,23 +296,19 @@ function BracketMatch({ match, tournamentGame, registrations = [], onTeamClick }
   const isCompleted = match.status === "completed";
   const isOngoing = match.status === "ongoing";
   const isPending = match.status === "pending";
-  
-  // Check if this match has W-D-L data (works for any game: ROV, Free Fire, Valorant, etc.)
+
   const hasWLDData = match.winsA !== undefined && match.winsB !== undefined;
-  
-  // (debug logging removed for production performance)
-  
-  // Determine winner: if W-D-L data exists, use wins; otherwise use score
+
+
   const wldWinnerA = isCompleted && hasWLDData && (match.winsA || 0) > (match.winsB || 0);
   const wldWinnerB = isCompleted && hasWLDData && (match.winsB || 0) > (match.winsA || 0);
-  
-  // For games without W-D-L data: determine winner based on score
+
   const regularWinnerA = isCompleted && !hasWLDData && match.scoreA > match.scoreB;
   const regularWinnerB = isCompleted && !hasWLDData && match.scoreB > match.scoreA;
-  
+
   const winnerA = hasWLDData ? wldWinnerA : regularWinnerA;
   const winnerB = hasWLDData ? wldWinnerB : regularWinnerB;
-  
+
   const getStatusBadge = () => {
     if (isOngoing) {
       return {
@@ -339,7 +333,7 @@ function BracketMatch({ match, tournamentGame, registrations = [], onTeamClick }
       animate: ""
     };
   };
-  
+
   const statusBadge = getStatusBadge();
 
   return (
@@ -353,14 +347,14 @@ function BracketMatch({ match, tournamentGame, registrations = [], onTeamClick }
           isOngoing ? "border-red-500/45 ring-1 ring-red-500/45 shadow-[0_0_16px_-10px_rgb(239_68_68_/_0.8)]" : ""
         } ${isCompleted ? "shadow-[0_18px_45px_-30px_rgb(0_0_0_/_0.9)]" : ""}`}
       >
-        {/* Match Status Badge - Inline at top of card */}
+
         <div className="flex justify-center pt-3 pb-1">
           <div className={`rounded-full border border-white/15 ${statusBadge.bgColor} ${statusBadge.textColor} px-3 py-1 text-[9px] font-black uppercase tracking-[0.12em] shadow-lg  ${statusBadge.animate}`}>
             {statusBadge.text}
           </div>
         </div>
 
-        {/* Team A */}
+
         <div
           className={`flex items-center justify-between border-b border-white/[0.07] p-4 transition-colors ${
             winnerA ? "border-b-primary/35 bg-primary/[0.12]" : ""
@@ -414,7 +408,7 @@ function BracketMatch({ match, tournamentGame, registrations = [], onTeamClick }
           </div>
         </div>
 
-        {/* Team B */}
+
         <div
           className={`flex items-center justify-between p-4 transition-colors ${
             winnerB ? "border-t-primary/35 bg-primary/[0.12]" : ""

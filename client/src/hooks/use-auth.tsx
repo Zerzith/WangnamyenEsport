@@ -24,8 +24,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<(FirebaseUser & { role?: string }) | null>(null);
   const [loading, setLoading] = useState(true);
   const [, setLocation] = useLocation();
-  
-  // Configure Google Auth Provider
+
+
   if (typeof window !== "undefined") {
     googleProvider.setCustomParameters({
       prompt: "select_account"
@@ -35,10 +35,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
       if (currentUser) {
-        // Fetch additional user data (role) from Firestore
+
         const userDoc = await getDoc(doc(db, "users", currentUser.uid));
         const userData = userDoc.exists() ? userDoc.data() : {};
-        // Preserve the Firebase user prototype (getIdToken, etc.) by using Object.assign
+
         setUser(Object.assign(currentUser, { role: userData.role || "user" }));
       } else {
         setUser(null);
@@ -47,7 +47,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     });
     return () => unsubscribe();
   }, []);
-  
+
 
 
   const signOut = async () => {
@@ -58,11 +58,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const signInWithGoogle = async () => {
     try {
       const result = await signInWithPopup(auth, googleProvider);
-      
-      // Check if user exists in Firestore
+
+
       const userDoc = await getDoc(doc(db, "users", result.user.uid));
-      
-      // If user doesn't exist, create a new user record
+
+
       if (!userDoc.exists()) {
         await setDoc(doc(db, "users", result.user.uid), {
           displayName: result.user.displayName || "",
@@ -71,7 +71,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           createdAt: new Date().toISOString()
         });
       }
-      
+
       setLocation("/");
     } catch (error) {
       console.error("Google Sign-In Error:", error);

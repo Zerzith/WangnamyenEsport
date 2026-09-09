@@ -1,12 +1,12 @@
 const badWords = [
-  "หำ", "ควย", "เย็ด", "เหี้ย", "สัส", "ระยำ", "จู๋", "แตด", "มึง", "กู", 
+  "หำ", "ควย", "เย็ด", "เหี้ย", "สัส", "ระยำ", "จู๋", "แตด", "มึง", "กู",
   "fuck", "shit", "dick", "pussy", "asshole", "bitch"
 ];
 
 export function censorText(text: string): string {
   if (!text) return "";
   let censored = text;
-  
+
   badWords.forEach(word => {
     const regex = new RegExp(word, "gi");
     censored = censored.replace(regex, (match) => {
@@ -14,12 +14,12 @@ export function censorText(text: string): string {
       return match[0] + "*".repeat(match.length - 1);
     });
   });
-  
+
   return censored;
 }
 
 export function isInappropriateImage(url: string): boolean {
-  // ในระดับ Client-side เราทำได้เพียงตรวจสอบเบื้องต้น หรือใช้ AI API ในอนาคต
-  // ตอนนี้จะเน้นที่การเซนเซอร์ข้อความก่อน
+
+
   return false;
 }

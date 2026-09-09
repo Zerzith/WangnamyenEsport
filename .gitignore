@@ -5,3 +5,5 @@ server/public
 vite.config.ts.*
 *.tar.gzserver/firebase-adminsdk.json
 server/firebase-adminsdk.json
+
+.env

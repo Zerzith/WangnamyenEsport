@@ -1,8 +1,8 @@
 import { users, type User, type InsertUser } from "@shared/schema";
 
-// This interface matches the schema but is implemented in memory
-// for any server-side operations that might be needed.
-// Most data is handled client-side with Firebase.
+
+
+
 
 export interface IStorage {
   getUser(id: number): Promise<User | undefined>;
@@ -25,7 +25,7 @@ export class MemStorage implements IStorage {
 
   async getUserByUsername(username: string): Promise<User | undefined> {
     return Array.from(this.users.values()).find(
-      (user) => user.email === username, // Mapping username to email for simplicity
+      (user) => user.email === username,
     );
   }
 

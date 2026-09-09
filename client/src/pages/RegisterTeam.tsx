@@ -11,7 +11,7 @@ import { Card } from "@/components/ui/card";
 import { Loader2, Menu, X, Trophy, Upload, ImageIcon, User, Gamepad2, GraduationCap, BookOpen, Fingerprint, Users } from "lucide-react";
 import { motion } from "framer-motion";
 
-// Add global styles for select options
+
 const selectStyles = `
   select {
     background-color: rgba(255, 255, 255, 0.05) !important;
@@ -67,7 +67,7 @@ interface Registration {
   createdAt: any;
 }
 
-// Inject styles
+
 if (typeof document !== 'undefined') {
   const style = document.createElement('style');
   style.textContent = selectStyles;
@@ -113,7 +113,7 @@ export default function RegisterTeam() {
     { href: "/register-team", label: "ลงทะเบียนทีม", icon: "Edit2" },
   ];
 
-  // Load all events
+
   useEffect(() => {
     const loadEvents = async () => {
       try {
@@ -130,7 +130,7 @@ export default function RegisterTeam() {
     loadEvents();
   }, []);
 
-  // Load event details when selected
+
   useEffect(() => {
     if (!selectedEventId) return;
 
@@ -140,7 +140,7 @@ export default function RegisterTeam() {
     }
   }, [selectedEventId, allEvents]);
 
-  // Load registrations for selected event
+
   useEffect(() => {
     if (!selectedEventId || !authUser.user) return;
 
@@ -156,7 +156,7 @@ export default function RegisterTeam() {
       })) as Registration[];
       setRegistrations(regs);
 
-      // Check if current user has registered
+
       const userReg = regs.find((reg) => reg.userId === authUser.user?.uid);
       setUserRegistration(userReg || null);
     });
@@ -173,7 +173,7 @@ export default function RegisterTeam() {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    // Validate file type
+
     if (!file.type.startsWith('image/')) {
       setMessage({ type: "error", text: "กรุณาอัปโหลดไฟล์รูปภาพเท่านั้น" });
       return;
@@ -203,7 +203,7 @@ export default function RegisterTeam() {
       const filteredMembers = formData.members.filter((m) => m.name.trim());
 
       if (isEditing && userRegistration) {
-        // Update existing registration
+
         const { updateDoc, doc } = await import("firebase/firestore");
         await updateDoc(doc(db, "registrations", userRegistration.id), {
           teamName: formData.teamName,
@@ -213,7 +213,7 @@ export default function RegisterTeam() {
         });
         setMessage({ type: "success", text: "แก้ไขข้อมูลทีมเรียบร้อยแล้ว!" });
       } else {
-        // Create new registration
+
         await addDoc(collection(db, "registrations"), {
           eventId: selectedEventId,
           userId: authUser.user.uid,
@@ -239,7 +239,7 @@ export default function RegisterTeam() {
   const handleEditRegistration = () => {
     if (!userRegistration) return;
 
-    // Map existing members to the correct format with all fields
+
     const currentMembers = userRegistration.members.map(m => {
       if (typeof m === 'string') {
         return { ...initialMember, name: m };
@@ -247,7 +247,7 @@ export default function RegisterTeam() {
       return { ...initialMember, ...m };
     });
 
-    // Ensure we have at least 3 members fields
+
     while (currentMembers.length < 3) {
       currentMembers.push({ ...initialMember });
     }
@@ -290,7 +290,7 @@ export default function RegisterTeam() {
           </div>
         </div>
 
-        {/* Message Alert */}
+        {}
         {message && (
           <motion.div
             initial={{ opacity: 0, y: -20 }}
@@ -306,7 +306,7 @@ export default function RegisterTeam() {
           </motion.div>
         )}
 
-        {/* Event Selection */}
+
         <Card className="bg-zinc-900 border-white/10 p-8 rounded-xl mb-8 ">
           <h2 className="text-2xl font-bold text-white mb-6 flex items-center gap-2">
             <div className="w-1 h-6 bg-primary rounded-full" />
@@ -328,7 +328,7 @@ export default function RegisterTeam() {
 
         {selectedEventId && event && (
           <div className="space-y-8">
-            {/* Event Details */}
+
             <Card className="bg-zinc-900 border-white/10 p-8 rounded-xl  shadow-xl ">
               <h2 className="text-2xl font-bold text-white mb-6 flex items-center gap-2">
                 <div className="w-1 h-6 bg-primary rounded-full" />
@@ -357,7 +357,7 @@ export default function RegisterTeam() {
               )}
             </Card>
 
-            {/* Registration Section */}
+
             {!userRegistration ? (
               showRegistrationForm ? (
                 <Card className="bg-zinc-900 border-white/10 p-8 rounded-xl  shadow-xl ">
@@ -365,7 +365,7 @@ export default function RegisterTeam() {
                     <Trophy className="w-6 h-6 text-primary" /> ฟอร์มลงสมัครเข้าแข่งขัน
                   </h2>
                   <form onSubmit={handleRegister} className="space-y-8">
-                    {/* Logo Upload Section */}
+
                     <div className="flex flex-col items-center justify-center p-8 border-2 border-dashed border-white/10 rounded-xl bg-zinc-900 hover:bg-zinc-800 transition-all group relative overflow-hidden">
                       <input
                         type="file"
@@ -619,7 +619,7 @@ export default function RegisterTeam() {
         )}
       </div>
 
-      {/* Sidebar for User Menu */}
+
       {sidebarOpen && (
         <motion.div
           initial={{ opacity: 0, x: -300 }}
@@ -661,7 +661,7 @@ export default function RegisterTeam() {
         </motion.div>
       )}
 
-      {/* Overlay */}
+
       {sidebarOpen && (
         <div
           className="fixed inset-0 z-30 bg-zinc-900/50  top-16"

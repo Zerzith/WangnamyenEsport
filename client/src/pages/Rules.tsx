@@ -31,7 +31,7 @@ export default function Rules() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Fetch rules from Firestore
+
     const rulesQuery = query(collection(db, "rules"), orderBy("order", "asc"));
     const rulesUnsubscribe = onSnapshot(rulesQuery, (snapshot) => {
       const rulesData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Rule));
@@ -40,7 +40,7 @@ export default function Rules() {
       console.error("Error fetching rules:", error);
     });
 
-    // Fetch approved teams
+
     const teamsQuery = query(
       collection(db, "registrations"),
       where("status", "==", "approved"),
@@ -71,7 +71,7 @@ export default function Rules() {
     };
   }, []);
 
-  // Default rules if database is empty
+
   const defaultRules = [
     {
       category: "คุณสมบัติผู้เข้าแข่งขัน",
@@ -128,10 +128,10 @@ export default function Rules() {
           </TabsTrigger>
         </TabsList>
 
-        {/* Rules Tab */}
+        {}
         <TabsContent value="rules" className="space-y-12">
           {rules.length > 0 ? (
-            // Display rules from Database if available
+
             <div className="grid grid-cols-1 gap-8">
               {rules.map((rule, index) => (
                 <motion.div
@@ -158,7 +158,7 @@ export default function Rules() {
               ))}
             </div>
           ) : (
-            // Display Default Rules if Database is empty
+
             <div className="space-y-12">
               {defaultRules.map((cat, catIndex) => (
                 <div key={catIndex} className="space-y-6">
@@ -195,19 +195,19 @@ export default function Rules() {
             </div>
           )}
 
-          {/* Important Notice */}
+          {}
           <div className="bg-yellow-500/10 border border-yellow-500/20 rounded-xl p-8">
             <div>
               <h3 className="text-2xl font-bold text-yellow-300 mb-3">ประกาศสำคัญจากคณะกรรมการ</h3>
               <p className="text-yellow-100/70 leading-relaxed text-lg">
-                ผู้จัดการแข่งขันขอสงวนสิทธิ์ในการเปลี่ยนแปลงกฎกติกาตามความเหมาะสม โดยไม่ต้องแจ้งให้ทราบล่วงหน้า 
+                ผู้จัดการแข่งขันขอสงวนสิทธิ์ในการเปลี่ยนแปลงกฎกติกาตามความเหมาะสม โดยไม่ต้องแจ้งให้ทราบล่วงหน้า
                 การตัดสินของคณะกรรมการถือเป็นที่สิ้นสุดในทุกกรณี หากมีการประท้วงต้องทำภายใน 15 นาทีหลังจบแมตช์นั้นๆ พร้อมหลักฐานที่ชัดเจน
               </p>
             </div>
           </div>
         </TabsContent>
 
-        {/* Approved Teams Tab */}
+        {}
         <TabsContent value="approved" className="space-y-8">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
             <div>
@@ -244,9 +244,9 @@ export default function Rules() {
                       </div>
                       <div className="flex items-center gap-4 mb-6">
                         <div className="relative">
-                          <AvatarCustom 
-                            src={team.logoUrl} 
-                            alt={team.name} 
+                          <AvatarCustom
+                            src={team.logoUrl}
+                            alt={team.name}
                             className="w-20 h-20 border-2 border-primary/20"
                           />
                         </div>

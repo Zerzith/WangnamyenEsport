@@ -57,7 +57,6 @@ export default function MyTeams() {
       where("userId", "==", user.uid)
     );
 
-    // ดึง event titles ครั้งเดียวด้วย getDocs แทนการสร้าง onSnapshot ซ้อน
     const fetchEventTitles = async (): Promise<Record<string, string>> => {
       try {
         const eventsSnapshot = await getDocs(collection(db, "events"));
@@ -75,7 +74,6 @@ export default function MyTeams() {
     fetchEventTitles().then(m => { eventMap = m; });
 
     const unsubscribe = onSnapshot(q, async (snapshot) => {
-      // Refresh event map if needed
       if (Object.keys(eventMap).length === 0) {
         eventMap = await fetchEventTitles();
       }
@@ -141,9 +139,9 @@ export default function MyTeams() {
       toast({ title: "อัปเดตโลโก้สำเร็จ" });
     } catch (error: any) {
       console.error("Upload error:", error);
-      toast({ 
-        title: "เกิดข้อผิดพลาดในการอัปเดตโลโก้", 
-        variant: "destructive" 
+      toast({
+        title: "เกิดข้อผิดพลาดในการอัปเดตโลโก้",
+        variant: "destructive"
       });
     } finally {
       setUploadingTeamId(null);
@@ -160,9 +158,9 @@ export default function MyTeams() {
       toast({ title: "ยกเลิกการสมัครสำเร็จ" });
     } catch (error: any) {
       console.error("Delete error:", error);
-      toast({ 
-        title: "เกิดข้อผิดพลาดในการยกเลิกการสมัคร", 
-        variant: "destructive" 
+      toast({
+        title: "เกิดข้อผิดพลาดในการยกเลิกการสมัคร",
+        variant: "destructive"
       });
     }
   };
@@ -214,25 +212,25 @@ export default function MyTeams() {
             {teams.map(team => (
               <Card key={team.id} className="bg-zinc-900 border-white/10 overflow-hidden">
                 <CardContent className="p-6">
-                  {/* Logo Section */}
+
                   <div className="mb-4 relative">
                     <div className="w-full aspect-square rounded-lg bg-zinc-900 border border-white/10 flex items-center justify-center overflow-hidden">
                       {editingTeamId === team.id && logoPreview[team.id] ? (
-                        <img 
-                          src={logoPreview[team.id]} 
-                          alt="Preview" 
+                        <img
+                          src={logoPreview[team.id]}
+                          alt="Preview"
                           className="w-full h-full object-cover"
                         />
                       ) : (
-                        <AvatarCustom 
-                          src={team.logoUrl} 
-                          name={team.teamName} 
+                        <AvatarCustom
+                          src={team.logoUrl}
+                          name={team.teamName}
                           size="lg"
                         />
                       )}
                     </div>
 
-                    {/* Edit Logo Button */}
+
                     {editingTeamId === team.id ? (
                       <div className="mt-3 flex gap-2">
                         <input
@@ -301,7 +299,7 @@ export default function MyTeams() {
                     )}
                   </div>
 
-                  {/* Team Info */}
+
                   <div className="space-y-3">
                     <div>
                       <p className="text-xs text-muted-foreground">ชื่อทีม</p>
@@ -340,7 +338,7 @@ export default function MyTeams() {
                     </div>
                   </div>
 
-                  {/* Action Buttons */}
+
                   <div className="mt-6 flex gap-2">
                     <Button
                       size="sm"
@@ -368,7 +366,7 @@ export default function MyTeams() {
         )}
       </div>
 
-      {/* Sidebar for User Menu */}
+
       {sidebarOpen && (
         <motion.div
           initial={{ opacity: 0, x: -300 }}
@@ -396,8 +394,8 @@ export default function MyTeams() {
                     onClick={() => setSidebarOpen(false)}
                     className={`
                       w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all
-                      ${location === item.href 
-                        ? 'bg-primary/20 text-primary border border-primary/50' 
+                      ${location === item.href
+                        ? 'bg-primary/20 text-primary border border-primary/50'
                         : 'text-muted-foreground hover:text-white hover:bg-zinc-900'}
                     `}
                   >
@@ -410,7 +408,7 @@ export default function MyTeams() {
         </motion.div>
       )}
 
-      {/* Overlay */}
+
       {sidebarOpen && (
         <div
           className="fixed inset-0 z-30 bg-zinc-900/50  top-16"

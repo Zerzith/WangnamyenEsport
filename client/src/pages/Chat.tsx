@@ -55,7 +55,7 @@ export default function Chat() {
 
   const isAdmin = user?.role === 'admin';
 
-  // Load live stream config
+
   useEffect(() => {
     const unsubscribe = onSnapshot(doc(db, "config", "live_stream"), (doc) => {
       if (doc.exists()) {
@@ -68,7 +68,7 @@ export default function Chat() {
     return () => unsubscribe();
   }, []);
 
-  // Load chat messages
+
   useEffect(() => {
     const q = query(
       collection(db, "live_chat"),
@@ -87,14 +87,13 @@ export default function Chat() {
     return () => unsubscribe();
   }, []);
 
-  // Real-time viewer presence tracking using Firestore
+
   useEffect(() => {
     if (!user) return;
 
     const presenceDocId = `viewer_${user.uid}`;
     presenceDocRef.current = presenceDocId;
 
-    // Create presence document (set, not add — so it overwrites on reconnect)
     const markPresence = async () => {
       try {
         await setDoc(doc(db, "live_viewers", presenceDocId), {
@@ -110,7 +109,6 @@ export default function Chat() {
       }
     };
 
-    // Remove presence when leaving
     const removePresence = async () => {
       try {
         if (presenceDocRef.current) {
@@ -121,36 +119,25 @@ export default function Chat() {
       }
     };
 
-    // Listen to all viewers
     const viewersRef = collection(db, "live_viewers");
     const unsubViewers = onSnapshot(viewersRef, (snapshot) => {
-      // Filter to only viewers on this page
       const activeViewers = snapshot.docs.filter(doc => doc.data().page === "chat");
       setViewerCount(activeViewers.length);
     });
 
-    // Mark presence immediately
     markPresence();
 
-    // Heartbeat: update every 10 seconds to show user is still active
     const heartbeatInterval = setInterval(markPresence, 10000);
 
-    // Cleanup on unmount or page leave
     const handleBeforeUnload = () => {
-      // Use navigator.sendBeacon for reliable cleanup on page close
-      // But since we can't do async operations in beforeunload,
-      // we'll rely on the timestamp check below
     };
 
     window.addEventListener('beforeunload', handleBeforeUnload);
 
-    // Cleanup on visibility change (user switches tabs)
     const handleVisibilityChange = () => {
       if (document.hidden) {
-        // User left the tab - remove presence
         removePresence();
       } else {
-        // User came back - mark presence
         markPresence();
       }
     };
@@ -166,7 +153,6 @@ export default function Chat() {
     };
   }, [user]);
 
-  // Auto-cleanup stale viewers (older than 30 seconds without heartbeat)
   useEffect(() => {
     if (!isAdmin) return;
 
@@ -176,7 +162,6 @@ export default function Chat() {
         const q = query(viewersRef);
         const snapshot = await getDoc(doc(db, "config", "last_cleanup"));
 
-        // Get all viewers
         const allViewers = (await new Promise((resolve, reject) => {
           onSnapshot(q, (snap) => resolve(snap.docs), reject);
         })) as any[];
@@ -186,13 +171,11 @@ export default function Chat() {
 
         allViewers.forEach(viewerDoc => {
           const data = viewerDoc.data();
-          // If updatedAt is missing or very old, consider stale
           if (!data.updatedAt || data.updatedAt.toMillis() < thirtySecondsAgo) {
             staleDocs.push(viewerDoc.id);
           }
         });
 
-        // Delete stale viewers
         if (staleDocs.length > 0) {
           const batch = writeBatch(db);
           staleDocs.forEach(id => {
@@ -205,7 +188,6 @@ export default function Chat() {
       }
     };
 
-    // Run cleanup every 15 seconds (admin only)
     const cleanupInterval = setInterval(cleanupStaleViewers, 15000);
     return () => clearInterval(cleanupInterval);
   }, [isAdmin]);
@@ -290,13 +272,13 @@ export default function Chat() {
 
   return (
     <div className="h-[100dvh] sm:h-[calc(100dvh-4.5rem)] flex flex-col overflow-hidden">
-      {/* Main Content */}
+
       <div className="flex-1 flex flex-col lg:flex-row gap-0 overflow-hidden min-h-0">
-        {/* Video Section */}
+
         <div className={`order-1 flex-none lg:order-none lg:flex-1 lg:flex lg:flex-col lg:overflow-hidden ${videoExpanded ? 'flex-none' : ''}`}>
           {liveStream?.isActive && liveStream?.liveUrl ? (
             <div className="bg-black lg:relative lg:flex lg:h-full lg:flex-1 lg:flex-col">
-              {/* Video Container: visible 16:9 player above chat on phones; expandable */}
+
               <div className={`relative w-full ${videoExpanded ? 'flex-1 lg:flex-1' : 'aspect-video'} lg:min-h-0 ${!videoExpanded ? 'lg:flex-1 lg:aspect-auto' : ''}`}>
                 <iframe
                   className="absolute inset-0 w-full h-full"
@@ -308,9 +290,9 @@ export default function Chat() {
                 />
               </div>
 
-              {/* Overlay Info Bar */}
+
               <div className="absolute top-0 left-0 right-0 flex items-start justify-between p-4 pointer-events-none z-10">
-                {/* LIVE Badge */}
+
                 <div className="flex items-center gap-2">
                   <div className="bg-red-600 text-white px-3 py-1.5 rounded-md text-xs font-bold flex items-center gap-2 shadow-lg backdrop-blur-sm">
                     <span className="w-2 h-2 bg-white rounded-full animate-pulse"></span>
@@ -321,7 +303,7 @@ export default function Chat() {
                     <span className="font-semibold">{viewerCount}</span> ผู้ชม
                   </div>
                 </div>
-                {/* Mobile focus toggle — never covers chat */}
+
                 <Button
                   size="icon"
                   variant="secondary"
@@ -333,7 +315,7 @@ export default function Chat() {
                 </Button>
               </div>
 
-              {/* Bottom Info Bar (hidden while video is expanded on mobile) */}
+
               <div className={`bg-gradient-to-t from-black/90 to-transparent p-4 ${videoExpanded ? 'hidden lg:block' : ''}`}>
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
@@ -386,7 +368,7 @@ export default function Chat() {
             </div>
           ) : (
             <div className="relative flex min-h-[18rem] items-center justify-center overflow-hidden bg-gradient-to-br from-zinc-950 via-zinc-900 to-zinc-950 lg:min-h-0 lg:flex-1">
-              {/* Background Pattern */}
+
               <div className="absolute inset-0 opacity-5">
                 <div className="absolute inset-0" style={{
                   backgroundImage: `radial-gradient(circle at 2px 2px, white 1px, transparent 0)`,
@@ -438,9 +420,9 @@ export default function Chat() {
           )}
         </div>
 
-        {/* Chat Section */}
+
         <div className={`order-2 w-full lg:h-auto lg:w-[380px] lg:flex-none border-t border-white/10 bg-zinc-950 lg:order-none lg:h-auto lg:w-[380px] lg:border-l lg:border-t-0 lg:flex lg:flex-col lg:overflow-hidden ${videoExpanded ? 'hidden lg:flex' : 'flex flex-col min-h-0 flex-1 lg:flex-none'} ${videoExpanded ? 'hidden lg:flex' : ''}`}>
-          {/* Chat Header */}
+
           <div className="p-3 border-b border-white/10 flex items-center justify-between bg-zinc-900/50">
             <div className="flex items-center gap-2">
               <MessageCircle className="w-4 h-4 text-primary" />
@@ -452,7 +434,7 @@ export default function Chat() {
             </div>
           </div>
 
-          {/* Messages */}
+
           <div ref={scrollRef} className="flex-1 min-h-0 overflow-y-auto p-3 space-y-3 scrollbar-hide">
             {messages.map((msg) => (
               <div key={msg.id} className={`flex gap-2.5 ${msg.userId === user.uid ? 'flex-row-reverse' : ''}`}>
@@ -469,7 +451,7 @@ export default function Chat() {
             ))}
           </div>
 
-          {/* Input */}
+
           <div className="flex-none p-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))] border-t border-white/10 bg-zinc-900/50 relative">
             {showEmoji && (
               <div className="absolute bottom-full right-0 mb-2 z-50">

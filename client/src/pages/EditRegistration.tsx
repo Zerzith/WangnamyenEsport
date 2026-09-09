@@ -83,7 +83,7 @@ export default function EditRegistration() {
 
         const data = docSnap.data() as Registration;
 
-        // Check if user is the one who registered
+
         if (data.userId !== user.uid) {
           toast({ title: "คุณไม่มีสิทธิ์แก้ไขข้อมูลนี้", variant: "destructive" });
           setLocation("/my-teams");
@@ -92,7 +92,7 @@ export default function EditRegistration() {
 
         setRegistration({ ...data, id: registrationId });
 
-        // Map existing members to the correct format with all fields
+
         const currentMembers = data.members.map(m => {
           if (typeof m === 'string') {
             return { ...initialMember, name: m };
@@ -100,7 +100,7 @@ export default function EditRegistration() {
           return { ...initialMember, ...m };
         });
 
-        // Ensure we have at least 3 members fields
+
         while (currentMembers.length < 3) {
           currentMembers.push({ ...initialMember });
         }
@@ -125,7 +125,7 @@ export default function EditRegistration() {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    // Validate file type
+
     if (!file.type.startsWith('image/')) {
       setMessage({ type: "error", text: "กรุณาอัปโหลดไฟล์รูปภาพเท่านั้น" });
       return;
@@ -225,7 +225,7 @@ export default function EditRegistration() {
           </Button>
         </div>
 
-        {/* Message Alert */}
+        {}
         {message && (
           <motion.div
             initial={{ opacity: 0, y: -20 }}
@@ -242,7 +242,7 @@ export default function EditRegistration() {
         )}
 
         <form onSubmit={handleUpdate} className="space-y-8">
-          {/* Logo Upload Section */}
+
           <Card className="bg-zinc-900 border-white/10 p-8 rounded-xl  shadow-xl ">
             <h2 className="text-2xl font-bold text-white mb-6 flex items-center gap-3">
               <Edit2 className="w-6 h-6 text-primary" /> แก้ไขรายละเอียดทีม
@@ -457,7 +457,7 @@ export default function EditRegistration() {
         </form>
       </div>
 
-      {/* Sidebar for User Menu */}
+
       {sidebarOpen && (
         <motion.div
           initial={{ opacity: 0, x: -300 }}
@@ -499,7 +499,7 @@ export default function EditRegistration() {
         </motion.div>
       )}
 
-      {/* Overlay */}
+
       {sidebarOpen && (
         <div
           className="fixed inset-0 z-30 bg-zinc-900/50  top-16"

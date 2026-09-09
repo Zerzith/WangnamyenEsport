@@ -8,7 +8,7 @@ import { AuthProvider } from "@/hooks/use-auth";
 import { Navigation } from "@/components/Navigation";
 import { Footer } from "@/components/Footer";
 
-// Lazy-loaded pages
+
 const Home = lazy(() => import("@/pages/Home"));
 const Login = lazy(() => import("@/pages/Login"));
 const RegisterTeam = lazy(() => import("@/pages/RegisterTeam"));

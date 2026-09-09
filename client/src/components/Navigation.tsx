@@ -20,7 +20,7 @@ export function Navigation() {
   return (
     <nav className="sticky top-0 z-50 w-full border-b border-white/[0.08] bg-zinc-950/95">
       <div className="flex min-h-[4rem] sm:min-h-[4.5rem] items-center gap-2 px-2 sm:px-4 lg:px-6">
-        {/* Logo - always visible on all screen sizes */}
+        {}
         <Link href="/" className="flex flex-shrink-0 items-center gap-2">
           <img
             src="/logo.png"
@@ -32,7 +32,7 @@ export function Navigation() {
           </span>
         </Link>
 
-        {/* Navigation Items - always visible, horizontally scrollable on small screens */}
+        {}
         <div className="scrollbar-hide flex flex-1 items-center gap-0.5 sm:gap-1 overflow-x-auto ml-1 sm:ml-2">
           {navItems.map((item) => {
             const isActive = location === item.href;
@@ -49,7 +49,7 @@ export function Navigation() {
               </Link>
             );
           })}
-          
+
           {user?.role === "admin" && (
             <Link href={adminItem.href}>
               <span
@@ -64,7 +64,7 @@ export function Navigation() {
           )}
         </div>
 
-        {/* User Actions - always visible */}
+
         <div className="flex flex-shrink-0 items-center gap-1 sm:gap-3">
           {user ? (
             <>
@@ -73,17 +73,17 @@ export function Navigation() {
               </span>
               <Link href="/profile">
                 <div className="cursor-pointer transition-transform duration-200 hover:scale-105">
-                  <AvatarCustom 
-                    src={user.photoURL} 
-                    name={user.displayName || "Gamer"} 
-                    size="sm" 
+                  <AvatarCustom
+                    src={user.photoURL}
+                    name={user.displayName || "Gamer"}
+                    size="sm"
                     className="h-8 w-8"
                   />
                 </div>
               </Link>
-              <Button 
-                variant="ghost" 
-                size="icon" 
+              <Button
+                variant="ghost"
+                size="icon"
                 onClick={signOut}
                 className="h-8 w-8 text-muted-foreground hover:text-destructive sm:h-10 sm:w-10"
               >

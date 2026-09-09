@@ -7,7 +7,7 @@ export async function registerRoutes(
   httpServer: Server,
   app: Express
 ): Promise<Server> {
-  // Initialize Firebase Admin
+
   try {
     initializeFirebaseAdmin();
     log("Firebase Admin SDK initialized");
@@ -15,12 +15,12 @@ export async function registerRoutes(
     log("Warning: Firebase Admin SDK not available", "firebase");
   }
 
-  // Health check endpoint
+
   app.get("/api/health", (req, res) => {
     res.json({ status: "ok" });
   });
 
-  // Get all users
+
   app.get("/api/users", async (req, res) => {
     try {
       const snapshot = await db().collection("users").get();
@@ -34,7 +34,7 @@ export async function registerRoutes(
     }
   });
 
-  // Get user by ID
+
   app.get("/api/users/:id", async (req, res) => {
     try {
       const doc = await db().collection("users").doc(req.params.id).get();
@@ -47,7 +47,7 @@ export async function registerRoutes(
     }
   });
 
-  // Update user role (admin only)
+
   app.put("/api/users/:id/role", async (req, res) => {
     try {
       const { role } = req.body;
@@ -57,17 +57,17 @@ export async function registerRoutes(
         return res.status(401).json({ error: "Unauthorized" });
       }
 
-      // Verify token
+
       const token = authHeader.split("Bearer ")[1];
       const decodedToken = await auth().verifyIdToken(token);
 
-      // Check if user is admin
+
       const adminDoc = await db().collection("users").doc(decodedToken.uid).get();
       if (adminDoc.data()?.role !== "admin") {
         return res.status(403).json({ error: "Forbidden" });
       }
 
-      // Update role
+
       await db().collection("users").doc(req.params.id).update({ role });
       res.json({ success: true, message: "Role updated" });
     } catch (error: any) {
@@ -75,7 +75,7 @@ export async function registerRoutes(
     }
   });
 
-  // Get all teams
+
   app.get("/api/teams", async (req, res) => {
     try {
       const snapshot = await db().collection("teams").get();
@@ -89,7 +89,7 @@ export async function registerRoutes(
     }
   });
 
-  // Get team by ID
+
   app.get("/api/teams/:id", async (req, res) => {
     try {
       const doc = await db().collection("teams").doc(req.params.id).get();
@@ -102,7 +102,7 @@ export async function registerRoutes(
     }
   });
 
-  // Approve team (admin only)
+
   app.put("/api/teams/:id/approve", async (req, res) => {
     try {
       const authHeader = req.headers.authorization;
@@ -111,18 +111,18 @@ export async function registerRoutes(
         return res.status(401).json({ error: "Unauthorized" });
       }
 
-      // Verify token
+
       const token = authHeader.split("Bearer ")[1];
       const decodedToken = await auth().verifyIdToken(token);
 
-      // Check if user is admin
+
       const adminDoc = await db().collection("users").doc(decodedToken.uid).get();
       if (adminDoc.data()?.role !== "admin") {
         return res.status(403).json({ error: "Forbidden" });
       }
 
-      // Update team status
-      await db().collection("teams").doc(req.params.id).update({ 
+
+      await db().collection("teams").doc(req.params.id).update({
         status: "approved",
         approvedAt: new Date().toISOString()
       });
@@ -132,7 +132,7 @@ export async function registerRoutes(
     }
   });
 
-  // Reject team (admin only)
+
   app.put("/api/teams/:id/reject", async (req, res) => {
     try {
       const { reason } = req.body;
@@ -142,18 +142,18 @@ export async function registerRoutes(
         return res.status(401).json({ error: "Unauthorized" });
       }
 
-      // Verify token
+
       const token = authHeader.split("Bearer ")[1];
       const decodedToken = await auth().verifyIdToken(token);
 
-      // Check if user is admin
+
       const adminDoc = await db().collection("users").doc(decodedToken.uid).get();
       if (adminDoc.data()?.role !== "admin") {
         return res.status(403).json({ error: "Forbidden" });
       }
 
-      // Update team status
-      await db().collection("teams").doc(req.params.id).update({ 
+
+      await db().collection("teams").doc(req.params.id).update({
         status: "rejected",
         rejectionReason: reason,
         rejectedAt: new Date().toISOString()
@@ -164,7 +164,7 @@ export async function registerRoutes(
     }
   });
 
-  // Get all events
+
   app.get("/api/events", async (req, res) => {
     try {
       const snapshot = await db().collection("events").get();
@@ -178,7 +178,7 @@ export async function registerRoutes(
     }
   });
 
-  // Get all matches
+
   app.get("/api/matches", async (req, res) => {
     try {
       const snapshot = await db().collection("matches").get();
@@ -192,7 +192,7 @@ export async function registerRoutes(
     }
   });
 
-  // Update match score (admin only)
+
   app.put("/api/matches/:id/score", async (req, res) => {
     try {
       const { scoreA, scoreB, status } = req.body;
@@ -202,17 +202,17 @@ export async function registerRoutes(
         return res.status(401).json({ error: "Unauthorized" });
       }
 
-      // Verify token
+
       const token = authHeader.split("Bearer ")[1];
       const decodedToken = await auth().verifyIdToken(token);
 
-      // Check if user is admin
+
       const adminDoc = await db().collection("users").doc(decodedToken.uid).get();
       if (adminDoc.data()?.role !== "admin") {
         return res.status(403).json({ error: "Forbidden" });
       }
 
-      // Update match
+
       const updateData: any = {};
       if (scoreA !== undefined) updateData.scoreA = scoreA;
       if (scoreB !== undefined) updateData.scoreB = scoreB;
@@ -225,7 +225,7 @@ export async function registerRoutes(
     }
   });
 
-  // Delete user from Firebase Auth (admin only)
+
   app.delete("/api/admin/users/:id", async (req, res) => {
     res.setHeader("Content-Type", "application/json");
     try {
@@ -239,9 +239,9 @@ export async function registerRoutes(
       if (adminDoc.data()?.role !== "admin") {
         return res.status(403).json({ error: "Forbidden" });
       }
-      // Delete from Firebase Auth
+
       await auth().deleteUser(req.params.id);
-      // Delete from Firestore
+
       await db().collection("users").doc(req.params.id).delete();
       res.json({ success: true, message: "User deleted" });
     } catch (error: any) {
@@ -249,7 +249,7 @@ export async function registerRoutes(
     }
   });
 
-  // Get all Firebase Auth users (admin only)
+
   app.get("/api/admin/auth-users", async (req, res) => {
     try {
     res.setHeader("Content-Type", "application/json");
@@ -279,7 +279,7 @@ export async function registerRoutes(
     }
   });
 
-  // Disable/Enable user in Firebase Auth (admin only)
+
   app.put("/api/admin/users/:id/disable", async (req, res) => {
     try {
       const { disabled } = req.body;
@@ -301,7 +301,6 @@ export async function registerRoutes(
     }
   });
 
-  // Delete chat message (admin only)
   app.delete("/api/chat/:id", async (req, res) => {
     try {
       const authHeader = req.headers.authorization;
@@ -310,17 +309,14 @@ export async function registerRoutes(
         return res.status(401).json({ error: "Unauthorized" });
       }
 
-      // Verify token
       const token = authHeader.split("Bearer ")[1];
       const decodedToken = await auth().verifyIdToken(token);
 
-      // Check if user is admin
       const adminDoc = await db().collection("users").doc(decodedToken.uid).get();
       if (adminDoc.data()?.role !== "admin") {
         return res.status(403).json({ error: "Forbidden" });
       }
 
-      // Delete message
       await db().collection("live_chat").doc(req.params.id).delete();
       res.json({ success: true, message: "Message deleted" });
     } catch (error: any) {

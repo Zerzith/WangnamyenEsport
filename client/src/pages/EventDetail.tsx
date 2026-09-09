@@ -49,18 +49,18 @@ interface Registration {
   createdAt: any;
 }
 
-// Sub-component for individual event card in list view to handle real-time registration count
+
 const EventListItem = ({ item, index }: { item: Event, index: number }) => {
   const [registeredCount, setRegisteredCount] = useState(item.registeredTeams || 0);
 
   useEffect(() => {
-    // Listen to approved registrations for this specific event
+
     const qRegs = query(
       collection(db, "registrations"),
       where("eventId", "==", item.id),
       where("status", "==", "approved")
     );
-    
+
     const unsubRegs = onSnapshot(qRegs, (snapshot) => {
       setRegisteredCount(snapshot.docs.length);
     });
@@ -69,12 +69,12 @@ const EventListItem = ({ item, index }: { item: Event, index: number }) => {
   }, [item.id]);
 
   const isFull = item.maxTeams ? registeredCount >= item.maxTeams : false;
-  
-  // Improved logic: Only consider expired if status is not explicitly 'open'
-  // registrationDeadline can be in format: YYYY-MM-DD or YYYY-MM-DDTHH:mm
+
+
+
   const isExpired = item.registrationDeadline ? (() => {
     const deadline = new Date(item.registrationDeadline);
-    // If time is not specified, set to end of day (23:59:59)
+
     if (!item.registrationDeadline.includes('T')) {
       deadline.setHours(23, 59, 59, 999);
     }
@@ -151,13 +151,12 @@ export default function EventDetail() {
   const [isRegistering, setIsRegistering] = useState(false);
   const [showRegistrationForm, setShowRegistrationForm] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
-  
+
   const initialMember = { name: "", gameName: "", grade: "", department: "", studentId: "", phone: "", email: "" };
-  
-  // Determine required members count from event settings (default to 3)
+
   const membersPerTeam = event?.membersPerTeam ?? 3;
   const maxReserves = event?.maxSubstitutes ?? 2;
-  
+
   const [formData, setFormData] = useState({
     teamName: "",
     members: [
@@ -172,7 +171,7 @@ export default function EventDetail() {
   const [loading, setLoading] = useState(true);
   const [isAdmin, setIsAdmin] = useState(false);
   const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
-  
+
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [uploading, setUploading] = useState(false);
   const [selectedTeam, setSelectedTeam] = useState<Registration | null>(null);
@@ -180,7 +179,6 @@ export default function EventDetail() {
 
   const eventId = params?.id;
 
-  // Load event data
   useEffect(() => {
     const loadData = async () => {
       setLoading(true);
@@ -212,7 +210,6 @@ export default function EventDetail() {
     loadData();
   }, [eventId]);
 
-  // Check if user is admin
   useEffect(() => {
     if (user) {
       const checkAdmin = async () => {
@@ -227,7 +224,6 @@ export default function EventDetail() {
     }
   }, [user]);
 
-  // Load registrations for single event view
   useEffect(() => {
     if (!eventId) return;
 
@@ -257,7 +253,6 @@ export default function EventDetail() {
       }));
       setRegistrations(regs);
 
-      // Check if current user has registered
       const userReg = regs.find((reg) => reg.userId === user?.uid);
       setUserRegistration(userReg || null);
     });
@@ -269,7 +264,6 @@ export default function EventDetail() {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    // Validate file type
     if (!file.type.startsWith('image/')) {
       setMessage({ type: "error", text: "กรุณาอัปโหลดไฟล์รูปภาพเท่านั้น" });
       return;
@@ -297,7 +291,7 @@ export default function EventDetail() {
     setIsRegistering(true);
     try {
       const filteredMembers = formData.members.filter((m) => m.name.trim());
-      
+
       if (isEditing && userRegistration) {
         await updateDoc(doc(db, "registrations", userRegistration.id), {
           teamName: formData.teamName,
@@ -344,8 +338,7 @@ export default function EventDetail() {
 
   const handleEditRegistration = () => {
     if (!userRegistration) return;
-    
-    // Map existing members to the correct format with all fields
+
     const currentMembers = userRegistration.members.map(m => {
       if (typeof m === 'string') {
         return { ...initialMember, name: m };
@@ -353,12 +346,11 @@ export default function EventDetail() {
       return { ...initialMember, ...m };
     });
 
-    // Ensure we have at least requiredMembers fields
     const minMembers = event?.membersPerTeam ?? 3;
     while (currentMembers.length < minMembers) {
       currentMembers.push({ ...initialMember });
     }
-    
+
     setFormData({
       teamName: userRegistration.teamName,
       members: currentMembers,
@@ -405,7 +397,6 @@ export default function EventDetail() {
     );
   }
 
-  // List View (When no eventId is provided)
   if (!eventId) {
     return (
       <div className="w-full px-2 sm:px-4 lg:px-6 py-12">
@@ -441,7 +432,6 @@ export default function EventDetail() {
     );
   }
 
-  // Detail View (When eventId is provided)
   if (!event) {
     return (
       <div className="w-full px-2 sm:px-4 lg:px-6 py-12">
@@ -459,12 +449,9 @@ export default function EventDetail() {
   const approvedCount = registrations.filter((r) => r.status === "approved").length;
   const pendingCount = registrations.filter((r) => r.status === "pending").length;
   const isFull = event.maxTeams ? approvedCount >= event.maxTeams : false;
-  
-  // Improved logic: Only consider expired if status is not explicitly 'open'
-  // registrationDeadline can be in format: YYYY-MM-DD or YYYY-MM-DDTHH:mm
+
   const isExpired = event.registrationDeadline ? (() => {
     const deadline = new Date(event.registrationDeadline);
-    // If time is not specified, set to end of day (23:59:59)
     if (!event.registrationDeadline.includes('T')) {
       deadline.setHours(23, 59, 59, 999);
     }
@@ -474,7 +461,7 @@ export default function EventDetail() {
 
   return (
     <div className="w-full px-2 sm:px-4 lg:px-6 py-12">
-      {/* Header */}
+
       <Button
         onClick={() => setLocation("/events")}
         variant="ghost"
@@ -497,7 +484,7 @@ export default function EventDetail() {
         </div>
       )}
 
-      {/* Event Banner */}
+
       <div className="relative h-80 rounded-xl overflow-hidden mb-8 border border-white/10 shadow-xl">
         <img
           src={event.bannerUrl || "https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=2070&auto=format&fit=crop"}
@@ -521,7 +508,7 @@ export default function EventDetail() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Main Content */}
+
         <div className="lg:col-span-2 space-y-8">
               {event.championTeamId && (
             <motion.div
@@ -536,9 +523,9 @@ export default function EventDetail() {
                 <div className="flex flex-col items-center gap-4 mt-6">
                   {registrations.find(r => r.id === event.championTeamId)?.logoUrl && (
                     <div className="w-24 h-24 rounded-xl overflow-hidden border-2 border-yellow-500/30">
-                      <img 
-                        src={registrations.find(r => r.id === event.championTeamId)?.logoUrl} 
-                        alt="Champion Logo" 
+                      <img
+                        src={registrations.find(r => r.id === event.championTeamId)?.logoUrl}
+                        alt="Champion Logo"
                         className="w-full h-full object-cover"
                       />
                     </div>
@@ -575,7 +562,7 @@ export default function EventDetail() {
             )}
           </Card>
 
-          {/* Registration Section */}
+
           {!userRegistration ? (
             isOpen && !isFull && !showRegistrationForm ? (
               <Button
@@ -618,15 +605,15 @@ export default function EventDetail() {
                   </div>
                 </div>
                 <div className="flex flex-col gap-2 shrink-0 w-full md:w-auto">
-                  <Button 
-                    variant="outline" 
+                  <Button
+                    variant="outline"
                     className="border-white/10 hover:bg-zinc-900 text-white gap-2 rounded-xl h-11"
                     onClick={handleEditRegistration}
                   >
 แก้ไขข้อมูล
                   </Button>
-                  <Button 
-                    variant="ghost" 
+                  <Button
+                    variant="ghost"
                     className="text-red-400 hover:bg-red-500/10 hover:text-red-300 gap-2 rounded-xl h-11"
                     onClick={handleCancelRegistration}
                   >
@@ -647,7 +634,7 @@ export default function EventDetail() {
                 )}
               </h2>
               <form onSubmit={handleRegister} className="space-y-8">
-                {/* Logo Upload Section */}
+
                 <div className="flex flex-col items-center justify-center p-8 border-2 border-dashed border-white/10 rounded-xl bg-zinc-900 hover:bg-zinc-800 transition-all group relative overflow-hidden">
                   <input
                     type="file"
@@ -656,17 +643,17 @@ export default function EventDetail() {
                     accept="image/*"
                     className="hidden"
                   />
-                  
+
                   {formData.logoUrl ? (
                     <div className="relative w-32 h-32 mb-4 group/logo">
                       <img src={formData.logoUrl} alt="Team Logo Preview" className="w-full h-full object-cover rounded-xl ring-4 ring-primary/20" />
-                      <div 
+                      <div
                         onClick={() => fileInputRef.current?.click()}
                         className="absolute inset-0 bg-zinc-900 rounded-xl flex items-center justify-center opacity-0 group-hover/logo:opacity-100 transition-opacity cursor-pointer"
                       >
                         <Upload className="w-8 h-8 text-white" />
                       </div>
-                      <button 
+                      <button
                         type="button"
                         onClick={() => setFormData(prev => ({ ...prev, logoUrl: "" }))}
                         className="absolute -top-2 -right-2 p-1.5 bg-red-500 text-white rounded-full shadow-lg hover:bg-red-600 transition-colors"
@@ -675,7 +662,7 @@ export default function EventDetail() {
                       </button>
                     </div>
                   ) : (
-                    <div 
+                    <div
                       onClick={() => fileInputRef.current?.click()}
                       className="flex flex-col items-center cursor-pointer"
                     >
@@ -718,7 +705,7 @@ export default function EventDetail() {
                           <div className="absolute -left-3 top-6 w-8 h-8 rounded-full bg-primary flex items-center justify-center text-xs font-bold text-white shadow-lg ring-4 ring-background">
                             {index + 1}
                           </div>
-                          
+
                           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div>
                               <label className="block text-[10px] font-bold text-white/40 uppercase tracking-widest mb-1 ml-1 flex items-center gap-1">
@@ -823,10 +810,10 @@ export default function EventDetail() {
                       ))}
                     </div>
                     {formData.members.length < membersPerTeam + maxReserves && (
-                      <Button 
-                        type="button" 
-                        variant="ghost" 
-                        size="sm" 
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
                         className="mt-6 text-xs text-primary hover:text-primary/80 hover:bg-primary/5 rounded-xl border border-dashed border-primary/30 w-full py-6"
                         onClick={() => setFormData({ ...formData, members: [...formData.members, { ...initialMember }] })}
                       >
@@ -843,9 +830,9 @@ export default function EventDetail() {
                     onClick={() => {
                       setShowRegistrationForm(false);
                       setIsEditing(false);
-                      setFormData({ 
-                        teamName: "", 
-                        members: Array.from({ length: membersPerTeam }, () => ({ ...initialMember })), 
+                      setFormData({
+                        teamName: "",
+                        members: Array.from({ length: membersPerTeam }, () => ({ ...initialMember })),
                         logoUrl: ""
                       });
                     }}
@@ -853,9 +840,9 @@ export default function EventDetail() {
                   >
                     ยกเลิก
                   </Button>
-                  <Button 
-                    type="submit" 
-                    disabled={isRegistering || uploading} 
+                  <Button
+                    type="submit"
+                    disabled={isRegistering || uploading}
                     className="bg-primary hover:bg-primary/80 h-14 px-10 rounded-xl font-bold shadow-lg shadow-primary/20 text-lg"
                   >
                     {isRegistering && <Loader2 className="w-5 h-5 mr-2 animate-spin" />}
@@ -867,9 +854,9 @@ export default function EventDetail() {
           )}
         </div>
 
-        {/* Sidebar */}
+
         <div className="space-y-8">
-          {/* Event Info */}
+
           <Card className="bg-zinc-900 border-white/10 p-6 rounded-xl">
             <h3 className="text-xl font-bold text-white mb-4">ข้อมูลการแข่งขัน</h3>
             <div className="space-y-3">
@@ -907,7 +894,7 @@ export default function EventDetail() {
             </div>
           </Card>
 
-          {/* Approved Teams */}
+
           <Card className="bg-zinc-900 border-white/10 p-6 rounded-xl">
             <h3 className="text-xl font-bold text-white mb-6">
               ทีมที่เข้าร่วม ({approvedCount})
@@ -943,7 +930,7 @@ export default function EventDetail() {
             </div>
           </Card>
 
-          {/* Pending Teams (Admin only) */}
+
           {isAdmin && pendingCount > 0 && (
             <Card className="bg-zinc-900 border-white/10 p-6 rounded-xl border-yellow-500/20 ">
               <h3 className="text-xl font-bold text-white mb-6 flex items-center gap-2">
@@ -981,7 +968,7 @@ export default function EventDetail() {
         </div>
       </div>
 
-      {/* Team Members Modal */}
+
       {selectedTeam && (
         <TeamMembersModal
           isOpen={showTeamModal}
