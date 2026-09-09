@@ -12,6 +12,7 @@ import { Loader2, ArrowLeft, X, Upload, User, BookOpen, Fingerprint, Gamepad2, G
 import { motion } from "framer-motion";
 import { TeamMembersModal } from "@/components/TeamMembersModal";
 import { formatThaiDate, formatThaiDateTime } from "@/lib/date";
+import { uploadImageToCloudinary } from "@/lib/cloudinary";
 
 interface Event {
   id: string;
@@ -271,15 +272,13 @@ export default function EventDetail() {
 
     setUploading(true);
     try {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setFormData(prev => ({ ...prev, logoUrl: reader.result as string }));
-        setUploading(false);
-      };
-      reader.readAsDataURL(file);
+      const logoUrl = await uploadImageToCloudinary(file);
+      setFormData(prev => ({ ...prev, logoUrl }));
     } catch (error) {
       console.error("Error uploading file:", error);
-      setMessage({ type: "error", text: "เกิดข้อผิดพลาดในการอัปโหลด" });
+      const uploadError = error as { message?: string };
+      setMessage({ type: "error", text: uploadError.message || "เกิดข้อผิดพลาดในการอัปโหลด" });
+    } finally {
       setUploading(false);
     }
   };

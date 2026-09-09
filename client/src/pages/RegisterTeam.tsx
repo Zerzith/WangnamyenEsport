@@ -5,6 +5,7 @@ import { useLocation } from "wouter";
 import { collection, query, where, onSnapshot, addDoc, serverTimestamp, getDocs, orderBy } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { formatThaiDate } from "@/lib/date";
+import { uploadImageToCloudinary } from "@/lib/cloudinary";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
@@ -169,7 +170,7 @@ export default function RegisterTeam() {
     return null;
   }
 
-  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
@@ -181,15 +182,13 @@ export default function RegisterTeam() {
 
     setUploading(true);
     try {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setFormData(prev => ({ ...prev, logoUrl: reader.result as string }));
-        setUploading(false);
-      };
-      reader.readAsDataURL(file);
+      const logoUrl = await uploadImageToCloudinary(file);
+      setFormData(prev => ({ ...prev, logoUrl }));
     } catch (error) {
       console.error("Error uploading file:", error);
-      setMessage({ type: "error", text: "เกิดข้อผิดพลาดในการอัปโหลด" });
+      const uploadError = error as { message?: string };
+      setMessage({ type: "error", text: uploadError.message || "เกิดข้อผิดพลาดในการอัปโหลด" });
+    } finally {
       setUploading(false);
     }
   };

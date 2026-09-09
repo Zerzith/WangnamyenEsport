@@ -22,11 +22,9 @@ import {
 import { collection, onSnapshot, addDoc, deleteDoc, doc, updateDoc, query, orderBy, where, serverTimestamp, getDoc, getDocs } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { formatThaiDate } from "@/lib/date";
-import { Cloudinary as CloudinaryCore } from "@cloudinary/url-gen";
+import { uploadImageToCloudinary } from "@/lib/cloudinary";
 
 
-const CLOUDINARY_CLOUD_NAME = "djubsqri6";
-const CLOUDINARY_UPLOAD_PRESET = "wangnamyenesport";
 const DEFAULT_EVENT_BANNER = "/assets/nebula-bg.png";
 
 const isExternalHttpUrl = (value: string) => {
@@ -38,31 +36,6 @@ const isExternalHttpUrl = (value: string) => {
   }
 };
 
-
-const uploadImageSourceToCloudinary = async (source: File | string): Promise<string> => {
-  if (typeof source === "string" && !isExternalHttpUrl(source.trim())) {
-    return source.trim();
-  }
-
-  const formData = new FormData();
-  formData.append("file", source instanceof File ? source : source.trim());
-  formData.append("upload_preset", CLOUDINARY_UPLOAD_PRESET);
-
-  const response = await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`, {
-    method: "POST",
-    body: formData,
-  });
-
-  if (!response.ok) {
-    throw new Error("ไม่สามารถนำเข้ารูปภาพจาก URL นี้ได้ กรุณาใช้ลิงก์รูปสาธารณะ หรือลองอัปโหลดไฟล์แทน");
-  }
-
-  const data = await response.json();
-  if (!data.secure_url) {
-    throw new Error("Cloudinary ไม่ได้ส่ง URL รูปภาพกลับมา");
-  }
-  return data.secure_url;
-};
 
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 import { TeamMembersModal } from "@/components/TeamMembersModal";
@@ -370,9 +343,9 @@ export default function AdminDashboard() {
       let bannerUrlToSave = newBannerUrl.trim();
 
       if (newBannerFile) {
-        bannerUrlToSave = await uploadImageSourceToCloudinary(newBannerFile);
+        bannerUrlToSave = await uploadImageToCloudinary(newBannerFile);
       } else if (isExternalHttpUrl(bannerUrlToSave)) {
-        bannerUrlToSave = await uploadImageSourceToCloudinary(bannerUrlToSave);
+        bannerUrlToSave = await uploadImageToCloudinary(bannerUrlToSave);
       } else if (!bannerUrlToSave) {
         bannerUrlToSave = gameBanners[newGame] || DEFAULT_EVENT_BANNER;
       }
@@ -415,9 +388,9 @@ export default function AdminDashboard() {
       let bannerUrlToSave = editBannerUrl.trim();
 
       if (editBannerFile) {
-        bannerUrlToSave = await uploadImageSourceToCloudinary(editBannerFile);
+        bannerUrlToSave = await uploadImageToCloudinary(editBannerFile);
       } else if (isExternalHttpUrl(bannerUrlToSave)) {
-        bannerUrlToSave = await uploadImageSourceToCloudinary(bannerUrlToSave);
+        bannerUrlToSave = await uploadImageToCloudinary(bannerUrlToSave);
       }
 
       if (!bannerUrlToSave) {
@@ -564,11 +537,11 @@ export default function AdminDashboard() {
       let imageUrlToSave = newsImageUrl.trim();
       if (newsImageFile) {
         setIsUploadingNewsImage(true);
-        imageUrlToSave = await uploadImageSourceToCloudinary(newsImageFile);
+        imageUrlToSave = await uploadImageToCloudinary(newsImageFile);
         setIsUploadingNewsImage(false);
       } else if (isExternalHttpUrl(imageUrlToSave)) {
         setIsUploadingNewsImage(true);
-        imageUrlToSave = await uploadImageSourceToCloudinary(imageUrlToSave);
+        imageUrlToSave = await uploadImageToCloudinary(imageUrlToSave);
         setIsUploadingNewsImage(false);
       }
 
