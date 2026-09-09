@@ -178,7 +178,7 @@ export default function EventDetail() {
   const [selectedTeam, setSelectedTeam] = useState<Registration | null>(null);
   const [showTeamModal, setShowTeamModal] = useState(false);
 
-  const eventId = params?.id;
+  const eventId = (params as { id?: string } | null)?.id;
 
   useEffect(() => {
     const loadData = async () => {

@@ -9,7 +9,7 @@ import { uploadImageToCloudinary } from "@/lib/cloudinary";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
-import { Loader2, Menu, X, Trophy, Upload, ImageIcon, User, Gamepad2, GraduationCap, BookOpen, Fingerprint, Users } from "lucide-react";
+import { Loader2, Menu, X, Trophy, Upload, ImageIcon, User, Gamepad2, GraduationCap, BookOpen, Fingerprint, Users, Check } from "lucide-react";
 import { motion } from "framer-motion";
 
 
@@ -76,8 +76,7 @@ if (typeof document !== 'undefined') {
 }
 
 export default function RegisterTeam() {
-  const { user } = useLocation();
-  const [, setLocation] = useLocation();
+  const [location, setLocation] = useLocation();
   const { toast } = useToast();
   const authUser = useAuth();
 

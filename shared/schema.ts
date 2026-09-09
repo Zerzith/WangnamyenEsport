@@ -69,11 +69,11 @@ export const liveChat = pgTable("live_chat", {
 
 
 
-export const insertUserSchema = createInsertSchema(users).omit({ id: true, createdAt: true });
-export const insertTeamSchema = createInsertSchema(teams).omit({ id: true, createdAt: true });
-export const insertEventSchema = createInsertSchema(events).omit({ id: true, createdAt: true });
-export const insertMatchSchema = createInsertSchema(matches).omit({ id: true });
-export const insertChatSchema = createInsertSchema(liveChat).omit({ id: true });
+export const insertUserSchema = createInsertSchema(users).omit({ id: true, createdAt: true } as any);
+export const insertTeamSchema = createInsertSchema(teams).omit({ id: true, createdAt: true } as any);
+export const insertEventSchema = createInsertSchema(events).omit({ id: true, createdAt: true } as any);
+export const insertMatchSchema = createInsertSchema(matches).omit({ id: true } as any);
+export const insertChatSchema = createInsertSchema(liveChat).omit({ id: true } as any);
 
 
 

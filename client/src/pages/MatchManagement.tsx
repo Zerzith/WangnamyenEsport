@@ -186,7 +186,7 @@ export default function MatchManagement() {
     if (!selectedTeamId) return;
     const fetchEvents = async () => {
       try {
-        const eventIds = [...new Set(matches.map(m => m.eventId).filter(Boolean))];
+        const eventIds = Array.from(new Set(matches.map(m => m.eventId).filter(Boolean)));
         const eventsData = await Promise.all(
           eventIds.map(async (eventId) => {
             try {
@@ -278,7 +278,6 @@ export default function MatchManagement() {
           </div>
         </div>
 
-        {}
         <Card className="bg-zinc-900 border-white/10 p-6 rounded-xl mb-8">
           <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
             <Users className="w-5 h-5 text-primary" />

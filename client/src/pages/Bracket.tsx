@@ -148,7 +148,11 @@ export default function Bracket() {
       setMatches(matchesWithLogos);
 
 
-      const uniqueGroups = Array.from(new Set(matchesWithLogos.map(m => m.group || "General")));
+      const uniqueGroups = Array.from(new Set(
+        matchesWithLogos
+          .map((match) => String(match.group || "General").trim())
+          .filter((group) => group && group !== "All")
+      ));
       setGroups(["All", ...uniqueGroups]);
     }, (error) => {
       console.error("Error fetching matches:", error);
@@ -178,7 +182,6 @@ export default function Bracket() {
           </p>
         </div>
 
-        {}
         <div className="mb-12 flex flex-wrap justify-center gap-2.5">
           {tournaments.map((tournament) => (
             <button

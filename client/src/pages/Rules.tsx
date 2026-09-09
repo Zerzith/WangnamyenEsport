@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { collection, onSnapshot, query, orderBy, where } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Loader2 } from "lucide-react";
+import { Loader2, Trophy } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { motion } from "framer-motion";
 import { AvatarCustom } from "@/components/ui/avatar-custom";
@@ -246,7 +246,7 @@ export default function Rules() {
                         <div className="relative">
                           <AvatarCustom
                             src={team.logoUrl}
-                            alt={team.name}
+                            name={team.name}
                             className="w-20 h-20 border-2 border-primary/20"
                           />
                         </div>

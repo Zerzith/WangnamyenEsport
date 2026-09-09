@@ -954,7 +954,7 @@ export default function AdminDashboard() {
                                 <Badge className="border border-accent/25 bg-accent/15 font-bold text-accent">
                                   แชมป์เปี้ยน: {teams.find(t => t.id === event.championTeamId)?.name || "แชมป์เปี้ยน"}
                                 </Badge>
-                                <Button size="xs" variant="ghost" className="h-6 w-6 p-0 text-muted-foreground hover:text-red-500" onClick={() => handleRemoveChampion(event.id)}>
+                                <Button size="sm" variant="ghost" className="h-6 w-6 p-0 text-muted-foreground hover:text-red-500" onClick={() => handleRemoveChampion(event.id)}>
                                   <X className="h-3 w-3" />
                                 </Button>
                               </div>
@@ -1106,7 +1106,7 @@ export default function AdminDashboard() {
                       <Card key={reg.id} className="bg-card/70 border-white/10">
                         <CardHeader>
                           <CardTitle className="flex items-center gap-3">
-                            {reg.logoUrl && <AvatarCustom src={reg.logoUrl} alt={reg.teamName} className="w-10 h-10" />}
+                            {reg.logoUrl && <AvatarCustom src={reg.logoUrl} name={reg.teamName} className="w-10 h-10" />}
                             {reg.teamName}
                           </CardTitle>
                           <CardDescription>สมัครสำหรับ: {events.find(e => e.id === reg.eventId)?.title || 'N/A'}</CardDescription>
@@ -1185,7 +1185,7 @@ export default function AdminDashboard() {
                                 }}
                                 className="cursor-pointer hover:opacity-80 transition-opacity"
                               >
-                                {team.logoUrl && <AvatarCustom src={team.logoUrl} alt={team.name} className="w-10 h-10" />}
+                                {team.logoUrl && <AvatarCustom src={team.logoUrl} name={team.name} className="w-10 h-10" />}
                               </button>
                               {team.name}
                             </CardTitle>
@@ -1272,7 +1272,7 @@ export default function AdminDashboard() {
                             approvedTeams.map(team => (
                               <SelectItem key={team.id} value={team.id}>
                                 <div className="flex items-center gap-2">
-                                  {team.logoUrl && <AvatarCustom src={team.logoUrl} alt={team.name} className="w-6 h-6" />}
+                                  {team.logoUrl && <AvatarCustom src={team.logoUrl} name={team.name} className="w-6 h-6" />}
                                   {team.name}
                                 </div>
                               </SelectItem>
@@ -1296,7 +1296,7 @@ export default function AdminDashboard() {
                             approvedTeams.map(team => (
                               <SelectItem key={team.id} value={team.id}>
                                 <div className="flex items-center gap-2">
-                                  {team.logoUrl && <AvatarCustom src={team.logoUrl} alt={team.name} className="w-6 h-6" />}
+                                  {team.logoUrl && <AvatarCustom src={team.logoUrl} name={team.name} className="w-6 h-6" />}
                                   {team.name}
                                 </div>
                               </SelectItem>
@@ -1320,7 +1320,7 @@ export default function AdminDashboard() {
                           <p className="font-semibold">รอบ {match.round} | กลุ่ม {match.group}</p>
                           <div className="flex items-center justify-between mt-2">
                             <div className="flex items-center gap-2">
-                              {teamA?.logoUrl && <AvatarCustom src={teamA.logoUrl} alt={teamA.name} className="w-6 h-6" />}
+                              {teamA?.logoUrl && <AvatarCustom src={teamA.logoUrl} name={teamA.name} className="w-6 h-6" />}
                               <span>{teamA?.name || "N/A"}</span>
                             </div>
                             <div className="flex items-center gap-1">
@@ -1346,7 +1346,7 @@ export default function AdminDashboard() {
                             </div>
                             <div className="flex items-center gap-2">
                               <span>{teamB?.name || "N/A"}</span>
-                              {teamB?.logoUrl && <AvatarCustom src={teamB.logoUrl} alt={teamB.name} className="w-6 h-6" />}
+                              {teamB?.logoUrl && <AvatarCustom src={teamB.logoUrl} name={teamB.name} className="w-6 h-6" />}
                             </div>
                           </div>
                           {(match.winsA !== undefined || match.winsB !== undefined) && (
