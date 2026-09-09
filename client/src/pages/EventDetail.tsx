@@ -12,7 +12,6 @@ import { Loader2, ArrowLeft, X, Upload, User, BookOpen, Fingerprint, Gamepad2, G
 import { motion } from "framer-motion";
 import { TeamMembersModal } from "@/components/TeamMembersModal";
 import { formatThaiDate, formatThaiDateTime } from "@/lib/date";
-import { uploadImageToCloudinary } from "@/lib/cloudinary";
 
 interface Event {
   id: string;
@@ -178,7 +177,7 @@ export default function EventDetail() {
   const [selectedTeam, setSelectedTeam] = useState<Registration | null>(null);
   const [showTeamModal, setShowTeamModal] = useState(false);
 
-  const eventId = (params as { id?: string } | null)?.id;
+  const eventId = params?.id;
 
   useEffect(() => {
     const loadData = async () => {
@@ -272,13 +271,15 @@ export default function EventDetail() {
 
     setUploading(true);
     try {
-      const logoUrl = await uploadImageToCloudinary(file);
-      setFormData(prev => ({ ...prev, logoUrl }));
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setFormData(prev => ({ ...prev, logoUrl: reader.result as string }));
+        setUploading(false);
+      };
+      reader.readAsDataURL(file);
     } catch (error) {
       console.error("Error uploading file:", error);
-      const uploadError = error as { message?: string };
-      setMessage({ type: "error", text: uploadError.message || "เกิดข้อผิดพลาดในการอัปโหลด" });
-    } finally {
+      setMessage({ type: "error", text: "เกิดข้อผิดพลาดในการอัปโหลด" });
       setUploading(false);
     }
   };
@@ -289,37 +290,26 @@ export default function EventDetail() {
 
     setIsRegistering(true);
     try {
-      const filteredMembers = formData.members
-        .filter((member) => member.name.trim())
-        .map((member) => ({
-          name: member.name.trim(),
-          gameName: member.gameName.trim(),
-          grade: member.grade.trim(),
-          department: member.department.trim(),
-          studentId: member.studentId.trim(),
-          phone: member.phone.trim(),
-          email: member.email.trim(),
-        }));
-      const registrationData = {
-        eventId,
-        userId: user.uid,
-        teamName: formData.teamName.trim(),
-        members: filteredMembers,
-        logoUrl: formData.logoUrl || "",
-        status: "pending",
-        createdAt: serverTimestamp(),
-      };
+      const filteredMembers = formData.members.filter((m) => m.name.trim());
 
       if (isEditing && userRegistration) {
         await updateDoc(doc(db, "registrations", userRegistration.id), {
-          teamName: registrationData.teamName,
+          teamName: formData.teamName,
           members: filteredMembers,
-          logoUrl: registrationData.logoUrl,
+          logoUrl: formData.logoUrl,
           updatedAt: serverTimestamp(),
         });
         setMessage({ type: "success", text: "แก้ไขข้อมูลทีมเรียบร้อยแล้ว!" });
       } else {
-        await addDoc(collection(db, "registrations"), registrationData);
+        await addDoc(collection(db, "registrations"), {
+          eventId: eventId,
+          userId: user.uid,
+          teamName: formData.teamName,
+          members: filteredMembers,
+          logoUrl: formData.logoUrl,
+          status: "pending",
+          createdAt: serverTimestamp(),
+        });
         setMessage({ type: "success", text: "ลงสมัครเข้าแข่งขันเรียบร้อยแล้ว!" });
       }
       setShowRegistrationForm(false);
@@ -327,11 +317,7 @@ export default function EventDetail() {
       setTimeout(() => setMessage(null), 3000);
     } catch (error) {
       console.error("Error registering/updating:", error);
-      const firebaseError = error as { code?: string; message?: string };
-      const reason = firebaseError.code === "permission-denied"
-        ? "ไม่มีสิทธิ์บันทึกข้อมูล กรุณาเข้าสู่ระบบใหม่หรือติดต่อผู้ดูแล"
-        : firebaseError.message || "กรุณาตรวจสอบข้อมูลแล้วลองใหม่อีกครั้ง";
-      setMessage({ type: "error", text: `ไม่สามารถดำเนินการได้: ${reason}` });
+      setMessage({ type: "error", text: "ไม่สามารถดำเนินการได้" });
     } finally {
       setIsRegistering(false);
     }

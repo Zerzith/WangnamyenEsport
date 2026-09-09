@@ -4,12 +4,14 @@ import { useLocation } from "wouter";
 import { doc, getDoc, updateDoc, serverTimestamp } from "firebase/firestore";
 import { updateProfile } from "firebase/auth";
 import { db } from "@/lib/firebase";
-import { uploadImageToCloudinary } from "@/lib/cloudinary";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { AvatarCustom } from "@/components/ui/avatar-custom";
 import { Camera, Check, X, Loader2 } from "lucide-react";
 
+
+const CLOUDINARY_URL = `https://api.cloudinary.com/v1_1/djubsqri6/image/upload`;
+const UPLOAD_PRESET = "wangnamyenesport";
 
 export default function Profile() {
   const { user } = useAuth();
@@ -62,12 +64,29 @@ export default function Profile() {
       return;
     }
 
-    const previewUrl = URL.createObjectURL(file);
-    setPhotoPreview(previewUrl);
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setPhotoPreview(reader.result as string);
+    };
+    reader.readAsDataURL(file);
 
     setIsUploadingPhoto(true);
     try {
-      const cloudinaryUrl = await uploadImageToCloudinary(file);
+      const uploadFormData = new FormData();
+      uploadFormData.append("file", file);
+      uploadFormData.append("upload_preset", UPLOAD_PRESET);
+
+      const response = await fetch(CLOUDINARY_URL, {
+        method: "POST",
+        body: uploadFormData,
+      });
+
+      if (!response.ok) {
+        throw new Error(`Upload failed with status ${response.status}`);
+      }
+
+      const data = await response.json();
+      const cloudinaryUrl = data.secure_url;
 
       setPhotoURL(cloudinaryUrl);
       setMessage({ type: "success", text: "อัปโหลดรูปภาพสำเร็จ" });

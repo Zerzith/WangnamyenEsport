@@ -3,14 +3,18 @@ import { useAuth } from "@/hooks/use-auth";
 import { useLocation } from "wouter";
 import { collection, query, where, onSnapshot, updateDoc, doc, getDocs } from "firebase/firestore";
 import { db } from "@/lib/firebase";
-import { uploadImageToCloudinary } from "@/lib/cloudinary";
 import { useToast } from "@/hooks/use-toast";
 import { Card, CardHeader, CardContent, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { AvatarCustom } from "@/components/ui/avatar-custom";
 import { Loader2, Upload, Edit2, Check, X, Trash2, Menu, ArrowLeft } from "lucide-react";
+import axios from "axios";
 import { deleteDoc } from "firebase/firestore";
 import { motion } from "framer-motion";
+
+const CLOUD_NAME = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME || "djubsqri6";
+const UPLOAD_PRESET = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET || "wangnamyenesport";
+const CLOUDINARY_URL = `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`;
 
 interface TeamRegistration {
   id: string;
@@ -99,10 +103,14 @@ export default function MyTeams() {
       return;
     }
 
-    setLogoPreview(prev => ({
-      ...prev,
-      [teamId]: URL.createObjectURL(file),
-    }));
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setLogoPreview(prev => ({
+        ...prev,
+        [teamId]: reader.result as string,
+      }));
+    };
+    reader.readAsDataURL(file);
   };
 
   const handleUploadLogo = async (teamId: string, file: File | null) => {
@@ -110,7 +118,12 @@ export default function MyTeams() {
 
     try {
       setUploadingTeamId(teamId);
-      const logoUrl = await uploadImageToCloudinary(file);
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("upload_preset", UPLOAD_PRESET);
+
+      const res = await axios.post(CLOUDINARY_URL, formData);
+      const logoUrl = res.data.secure_url;
 
       await updateDoc(doc(db, "registrations", teamId), {
         logoUrl,

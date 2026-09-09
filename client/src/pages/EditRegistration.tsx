@@ -3,7 +3,6 @@ import { useAuth } from "@/hooks/use-auth";
 import { useLocation, useParams } from "wouter";
 import { doc, getDoc, updateDoc, deleteDoc, serverTimestamp } from "firebase/firestore";
 import { db } from "@/lib/firebase";
-import { uploadImageToCloudinary } from "@/lib/cloudinary";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -34,8 +33,8 @@ interface Registration {
 
 export default function EditRegistration() {
   const { user } = useAuth();
-  const [location, setLocation] = useLocation();
-  const { registrationId } = useParams<{ registrationId: string }>();
+  const [, setLocation] = useLocation();
+  const { registrationId } = useParams();
   const { toast } = useToast();
 
   const [registration, setRegistration] = useState<Registration | null>(null);
@@ -122,7 +121,7 @@ export default function EditRegistration() {
     fetchRegistration();
   }, [user, registrationId, setLocation, toast]);
 
-  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
@@ -134,13 +133,15 @@ export default function EditRegistration() {
 
     setUploading(true);
     try {
-      const logoUrl = await uploadImageToCloudinary(file);
-      setFormData(prev => ({ ...prev, logoUrl }));
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setFormData(prev => ({ ...prev, logoUrl: reader.result as string }));
+        setUploading(false);
+      };
+      reader.readAsDataURL(file);
     } catch (error) {
       console.error("Error uploading file:", error);
-      const uploadError = error as { message?: string };
-      setMessage({ type: "error", text: uploadError.message || "เกิดข้อผิดพลาดในการอัปโหลด" });
-    } finally {
+      setMessage({ type: "error", text: "เกิดข้อผิดพลาดในการอัปโหลด" });
       setUploading(false);
     }
   };
