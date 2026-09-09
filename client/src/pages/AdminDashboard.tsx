@@ -27,6 +27,43 @@ import { Cloudinary as CloudinaryCore } from "@cloudinary/url-gen";
 // Cloudinary Configuration (Replace with your actual Cloudinary credentials)
 const CLOUDINARY_CLOUD_NAME = "djubsqri6"; // Replace with your Cloudinary Cloud Name
 const CLOUDINARY_UPLOAD_PRESET = "wangnamyenesport"; // Replace with your Cloudinary Upload Preset
+const DEFAULT_EVENT_BANNER = "/assets/nebula-bg.png";
+
+const isExternalHttpUrl = (value: string) => {
+  try {
+    const url = new URL(value);
+    return url.protocol === "http:" || url.protocol === "https:";
+  } catch {
+    return false;
+  }
+};
+
+/** Store remote images on our own CDN so expiring URLs and hotlink protection do not break the site. */
+const uploadImageSourceToCloudinary = async (source: File | string): Promise<string> => {
+  if (typeof source === "string" && !isExternalHttpUrl(source.trim())) {
+    return source.trim();
+  }
+
+  const formData = new FormData();
+  formData.append("file", source instanceof File ? source : source.trim());
+  formData.append("upload_preset", CLOUDINARY_UPLOAD_PRESET);
+
+  const response = await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`, {
+    method: "POST",
+    body: formData,
+  });
+
+  if (!response.ok) {
+    throw new Error("ไม่สามารถนำเข้ารูปภาพจาก URL นี้ได้ กรุณาใช้ลิงก์รูปสาธารณะ หรือลองอัปโหลดไฟล์แทน");
+  }
+
+  const data = await response.json();
+  if (!data.secure_url) {
+    throw new Error("Cloudinary ไม่ได้ส่ง URL รูปภาพกลับมา");
+  }
+  return data.secure_url;
+};
+
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 import { TeamMembersModal } from "@/components/TeamMembersModal";
 
@@ -104,9 +141,9 @@ export default function AdminDashboard() {
   };
 
   const gameBanners: { [key: string]: string } = {
-    "RoV": "https://files.manuscdn.com/user_upload_by_module/session_file/310519663358539715/NASojnuaGInFLzYF.png",
-    "Free Fire": "https://files.manuscdn.com/user_upload_by_module/session_file/310519663358539715/rUDJhrjRVtqbAmGZ.png",
-    "Valorant": "https://files.manuscdn.com/user_upload_by_module/session_file/310519663358539715/PBMkCQUSRSaFncUQ.png",
+    "RoV": DEFAULT_EVENT_BANNER,
+    "Free Fire": DEFAULT_EVENT_BANNER,
+    "Valorant": DEFAULT_EVENT_BANNER,
   };
 
   const closeEventEditor = () => {
@@ -340,26 +377,14 @@ export default function AdminDashboard() {
     const registrationDeadlineWithTime = `${newRegDeadline}T${newRegDeadlineTime}:00+07:00`;
     setIsCreatingEvent(true);
     try {
-      let bannerUrlToSave = newBannerUrl;
+      let bannerUrlToSave = newBannerUrl.trim();
 
       if (newBannerFile) {
-        const formData = new FormData();
-        formData.append("file", newBannerFile);
-        formData.append("upload_preset", CLOUDINARY_UPLOAD_PRESET);
-
-        const response = await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`, {
-          method: "POST",
-          body: formData,
-        });
-
-        if (!response.ok) {
-          throw new Error("Failed to upload banner to Cloudinary");
-        }
-
-        const data = await response.json();
-        bannerUrlToSave = data.secure_url;
+        bannerUrlToSave = await uploadImageSourceToCloudinary(newBannerFile);
+      } else if (isExternalHttpUrl(bannerUrlToSave)) {
+        bannerUrlToSave = await uploadImageSourceToCloudinary(bannerUrlToSave);
       } else if (!bannerUrlToSave) {
-        bannerUrlToSave = gameBanners[newGame] || "";
+        bannerUrlToSave = gameBanners[newGame] || DEFAULT_EVENT_BANNER;
       }
 
       await addDoc(collection(db, "events"), {
@@ -400,25 +425,13 @@ export default function AdminDashboard() {
       let bannerUrlToSave = editBannerUrl.trim();
 
       if (editBannerFile) {
-        const formData = new FormData();
-        formData.append("file", editBannerFile);
-        formData.append("upload_preset", CLOUDINARY_UPLOAD_PRESET);
-
-        const response = await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`, {
-          method: "POST",
-          body: formData,
-        });
-
-        if (!response.ok) {
-          throw new Error("ไม่สามารถอัปโหลดรูปแบนเนอร์ได้");
-        }
-
-        const data = await response.json();
-        bannerUrlToSave = data.secure_url;
+        bannerUrlToSave = await uploadImageSourceToCloudinary(editBannerFile);
+      } else if (isExternalHttpUrl(bannerUrlToSave)) {
+        bannerUrlToSave = await uploadImageSourceToCloudinary(bannerUrlToSave);
       }
 
       if (!bannerUrlToSave) {
-        bannerUrlToSave = gameBanners[editGame] || editingEvent.bannerUrl || "";
+        bannerUrlToSave = gameBanners[editGame] || editingEvent.bannerUrl || DEFAULT_EVENT_BANNER;
       }
 
       await updateDoc(doc(db, "events", editingEvent.id), {
@@ -560,23 +573,15 @@ export default function AdminDashboard() {
   const handleCreateNews = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      let imageUrlToSave = newsImageUrl;
+      let imageUrlToSave = newsImageUrl.trim();
       // Upload image to Cloudinary if a file was selected
       if (newsImageFile) {
         setIsUploadingNewsImage(true);
-        const formData = new FormData();
-        formData.append("file", newsImageFile);
-        formData.append("upload_preset", CLOUDINARY_UPLOAD_PRESET);
-        const response = await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`, {
-          method: "POST",
-          body: formData,
-        });
-        if (!response.ok) {
-          setIsUploadingNewsImage(false);
-          throw new Error("Failed to upload news image to Cloudinary");
-        }
-        const data = await response.json();
-        imageUrlToSave = data.secure_url;
+        imageUrlToSave = await uploadImageSourceToCloudinary(newsImageFile);
+        setIsUploadingNewsImage(false);
+      } else if (isExternalHttpUrl(imageUrlToSave)) {
+        setIsUploadingNewsImage(true);
+        imageUrlToSave = await uploadImageSourceToCloudinary(imageUrlToSave);
         setIsUploadingNewsImage(false);
       }
       

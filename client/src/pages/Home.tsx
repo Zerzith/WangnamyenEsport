@@ -84,6 +84,10 @@ const EventCard = memo(({ event, index, registeredCount, user }: {
             alt={event.title}
             loading="lazy"
             className="absolute inset-0 h-full w-full object-cover opacity-70 saturate-[0.88] transition-transform duration-300 group-hover:scale-105 group-hover:saturate-100"
+            onError={(e) => {
+              e.currentTarget.onerror = null;
+              e.currentTarget.src = HERO_BG;
+            }}
           />
           <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/70 to-slate-950/10" />
         </div>
@@ -307,6 +311,10 @@ export default function Home() {
                           alt={event.title}
                           loading="lazy"
                           className="absolute inset-0 h-full w-full object-cover opacity-75 transition-transform duration-300 group-hover:scale-105"
+                          onError={(e) => {
+                            e.currentTarget.onerror = null;
+                            e.currentTarget.src = DEFAULT_BANNER;
+                          }}
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-zinc-900 via-zinc-900/40 to-transparent" />
                         <div className="absolute top-3 left-3 flex items-center gap-1.5 rounded-md border border-amber-300/35 bg-zinc-950/80 px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.14em] text-amber-200">
@@ -402,7 +410,15 @@ export default function Home() {
                   <Card key={item.id} className="group esports-panel esports-panel-interactive h-full rounded-2xl border-white/[0.09] bg-card overflow-hidden cursor-pointer transition-all duration-150 hover:-translate-y-0.5 hover:border-primary/45">
                   {item.imageUrl && (
                     <div className="w-full aspect-[16/9] overflow-hidden">
-                      <img src={item.imageUrl} alt={item.title} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                      <img
+                        src={item.imageUrl}
+                        alt={item.title}
+                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                        onError={(e) => {
+                          e.currentTarget.onerror = null;
+                          e.currentTarget.parentElement?.remove();
+                        }}
+                      />
                     </div>
                   )}
                   <div className="p-6">
