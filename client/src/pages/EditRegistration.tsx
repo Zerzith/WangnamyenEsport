@@ -33,8 +33,8 @@ interface Registration {
 
 export default function EditRegistration() {
   const { user } = useAuth();
-  const [, setLocation] = useLocation();
-  const { registrationId } = useParams();
+  const [location, setLocation] = useLocation();
+  const { registrationId } = useParams<{ registrationId: string }>();
   const { toast } = useToast();
 
   const [registration, setRegistration] = useState<Registration | null>(null);

@@ -5,10 +5,11 @@ import { useLocation } from "wouter";
 import { collection, query, where, onSnapshot, addDoc, serverTimestamp, getDocs, orderBy } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { formatThaiDate } from "@/lib/date";
+import { uploadImageToCloudinary } from "@/lib/cloudinary";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
-import { Loader2, Menu, X, Trophy, Upload, ImageIcon, User, Gamepad2, GraduationCap, BookOpen, Fingerprint, Users } from "lucide-react";
+import { Loader2, Menu, X, Trophy, Upload, ImageIcon, User, Gamepad2, GraduationCap, BookOpen, Fingerprint, Users, Check } from "lucide-react";
 import { motion } from "framer-motion";
 
 
@@ -75,8 +76,7 @@ if (typeof document !== 'undefined') {
 }
 
 export default function RegisterTeam() {
-  const { user } = useLocation();
-  const [, setLocation] = useLocation();
+  const [location, setLocation] = useLocation();
   const { toast } = useToast();
   const authUser = useAuth();
 
@@ -169,7 +169,7 @@ export default function RegisterTeam() {
     return null;
   }
 
-  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
@@ -181,15 +181,13 @@ export default function RegisterTeam() {
 
     setUploading(true);
     try {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setFormData(prev => ({ ...prev, logoUrl: reader.result as string }));
-        setUploading(false);
-      };
-      reader.readAsDataURL(file);
+      const logoUrl = await uploadImageToCloudinary(file);
+      setFormData(prev => ({ ...prev, logoUrl }));
     } catch (error) {
       console.error("Error uploading file:", error);
-      setMessage({ type: "error", text: "เกิดข้อผิดพลาดในการอัปโหลด" });
+      const uploadError = error as { message?: string };
+      setMessage({ type: "error", text: uploadError.message || "เกิดข้อผิดพลาดในการอัปโหลด" });
+    } finally {
       setUploading(false);
     }
   };
@@ -200,29 +198,40 @@ export default function RegisterTeam() {
 
     setIsRegistering(true);
     try {
-      const filteredMembers = formData.members.filter((m) => m.name.trim());
+      const filteredMembers = formData.members
+        .filter((member) => member.name.trim())
+        .map((member) => ({
+          name: member.name.trim(),
+          gameName: member.gameName.trim(),
+          grade: member.grade.trim(),
+          department: member.department.trim(),
+          studentId: member.studentId.trim(),
+          phone: member.phone.trim(),
+          email: member.email.trim(),
+        }));
+      const registrationData = {
+        eventId: selectedEventId,
+        userId: authUser.user.uid,
+        teamName: formData.teamName.trim(),
+        members: filteredMembers,
+        logoUrl: formData.logoUrl || "",
+        status: "pending",
+        createdAt: serverTimestamp(),
+      };
 
       if (isEditing && userRegistration) {
 
         const { updateDoc, doc } = await import("firebase/firestore");
         await updateDoc(doc(db, "registrations", userRegistration.id), {
-          teamName: formData.teamName,
+          teamName: registrationData.teamName,
           members: filteredMembers,
-          logoUrl: formData.logoUrl,
+          logoUrl: registrationData.logoUrl,
           updatedAt: serverTimestamp(),
         });
         setMessage({ type: "success", text: "แก้ไขข้อมูลทีมเรียบร้อยแล้ว!" });
       } else {
 
-        await addDoc(collection(db, "registrations"), {
-          eventId: selectedEventId,
-          userId: authUser.user.uid,
-          teamName: formData.teamName,
-          members: filteredMembers,
-          logoUrl: formData.logoUrl,
-          status: "pending",
-          createdAt: serverTimestamp(),
-        });
+        await addDoc(collection(db, "registrations"), registrationData);
         setMessage({ type: "success", text: "ลงสมัครเข้าแข่งขันเรียบร้อยแล้ว!" });
       }
       setShowRegistrationForm(false);
@@ -230,7 +239,11 @@ export default function RegisterTeam() {
       setTimeout(() => setMessage(null), 3000);
     } catch (error) {
       console.error("Error registering/updating:", error);
-      setMessage({ type: "error", text: "ไม่สามารถดำเนินการได้" });
+      const firebaseError = error as { code?: string; message?: string };
+      const reason = firebaseError.code === "permission-denied"
+        ? "ไม่มีสิทธิ์บันทึกข้อมูล กรุณาเข้าสู่ระบบใหม่หรือติดต่อผู้ดูแล"
+        : firebaseError.message || "กรุณาตรวจสอบข้อมูลแล้วลองใหม่อีกครั้ง";
+      setMessage({ type: "error", text: `ไม่สามารถดำเนินการได้: ${reason}` });
     } finally {
       setIsRegistering(false);
     }
