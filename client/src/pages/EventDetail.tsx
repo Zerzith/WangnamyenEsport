@@ -290,26 +290,37 @@ export default function EventDetail() {
 
     setIsRegistering(true);
     try {
-      const filteredMembers = formData.members.filter((m) => m.name.trim());
+      const filteredMembers = formData.members
+        .filter((member) => member.name.trim())
+        .map((member) => ({
+          name: member.name.trim(),
+          gameName: member.gameName.trim(),
+          grade: member.grade.trim(),
+          department: member.department.trim(),
+          studentId: member.studentId.trim(),
+          phone: member.phone.trim(),
+          email: member.email.trim(),
+        }));
+      const registrationData = {
+        eventId,
+        userId: user.uid,
+        teamName: formData.teamName.trim(),
+        members: filteredMembers,
+        logoUrl: formData.logoUrl || "",
+        status: "pending",
+        createdAt: serverTimestamp(),
+      };
 
       if (isEditing && userRegistration) {
         await updateDoc(doc(db, "registrations", userRegistration.id), {
-          teamName: formData.teamName,
+          teamName: registrationData.teamName,
           members: filteredMembers,
-          logoUrl: formData.logoUrl,
+          logoUrl: registrationData.logoUrl,
           updatedAt: serverTimestamp(),
         });
         setMessage({ type: "success", text: "แก้ไขข้อมูลทีมเรียบร้อยแล้ว!" });
       } else {
-        await addDoc(collection(db, "registrations"), {
-          eventId: eventId,
-          userId: user.uid,
-          teamName: formData.teamName,
-          members: filteredMembers,
-          logoUrl: formData.logoUrl,
-          status: "pending",
-          createdAt: serverTimestamp(),
-        });
+        await addDoc(collection(db, "registrations"), registrationData);
         setMessage({ type: "success", text: "ลงสมัครเข้าแข่งขันเรียบร้อยแล้ว!" });
       }
       setShowRegistrationForm(false);
@@ -317,7 +328,11 @@ export default function EventDetail() {
       setTimeout(() => setMessage(null), 3000);
     } catch (error) {
       console.error("Error registering/updating:", error);
-      setMessage({ type: "error", text: "ไม่สามารถดำเนินการได้" });
+      const firebaseError = error as { code?: string; message?: string };
+      const reason = firebaseError.code === "permission-denied"
+        ? "ไม่มีสิทธิ์บันทึกข้อมูล กรุณาเข้าสู่ระบบใหม่หรือติดต่อผู้ดูแล"
+        : firebaseError.message || "กรุณาตรวจสอบข้อมูลแล้วลองใหม่อีกครั้ง";
+      setMessage({ type: "error", text: `ไม่สามารถดำเนินการได้: ${reason}` });
     } finally {
       setIsRegistering(false);
     }
