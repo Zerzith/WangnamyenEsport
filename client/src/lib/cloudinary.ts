@@ -1,5 +1,5 @@
-const CLOUDINARY_CLOUD_NAME = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME || "djubsqri6";
-const CLOUDINARY_UPLOAD_PRESET = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET || "wangnamyenesport";
+const CLOUDINARY_CLOUD_NAME = "djubsqri6";
+const CLOUDINARY_UPLOAD_PRESET = "wangnamyenesport";
 
 export async function uploadImageToCloudinary(source: File | string): Promise<string> {
   if (typeof source !== "string" && source.size > 10 * 1024 * 1024) {
