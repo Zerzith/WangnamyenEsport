@@ -161,10 +161,6 @@ export default function AdminDashboard() {
 
 
 
-  const [isLiveStreamDialogOpen, setIsLiveStreamDialogOpen] = useState(false);
-  const [liveStreamEventId, setLiveStreamEventId] = useState<string>("");
-  const [liveStreamUrl, setLiveStreamUrl] = useState<string>("");
-
   const filteredRegistrations = selectedRegistrationEvent === "all"
     ? registrations
     : registrations.filter(reg => reg.eventId === selectedRegistrationEvent);
@@ -416,26 +412,6 @@ export default function AdminDashboard() {
       toast({ title: "ไม่สามารถบันทึกการแก้ไขได้", description: (error as Error).message, variant: "destructive" });
     } finally {
       setIsSavingEvent(false);
-    }
-  };
-
-  const handleUpdateLiveStream = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!liveStreamEventId) {
-      toast({ title: "ไม่พบ Event ID", variant: "destructive" });
-      return;
-    }
-    try {
-      await updateDoc(doc(db, "events", liveStreamEventId), {
-        liveStreamUrl: liveStreamUrl,
-        updatedAt: serverTimestamp()
-      });
-      toast({ title: "อัปเดต Live Stream สำเร็จ" });
-      setIsLiveStreamDialogOpen(false);
-      setLiveStreamEventId("");
-      setLiveStreamUrl("");
-    } catch (error) {
-      toast({ title: "เกิดข้อผิดพลาดในการอัปเดต Live Stream", variant: "destructive" });
     }
   };
 
@@ -942,11 +918,6 @@ export default function AdminDashboard() {
                                 <Pencil className="h-4 w-4" />
                                 <span className="hidden sm:inline">แก้ไข</span>
                               </Button>
-                              <Button size="sm" variant="outline" onClick={() => {
-                                setLiveStreamEventId(event.id);
-                                setLiveStreamUrl(event.liveStreamUrl || "");
-                                setIsLiveStreamDialogOpen(true);
-                              }}><MonitorPlay className="h-4 w-4" /></Button>
                               <Button variant="destructive" size="sm" onClick={() => handleDeleteEvent(event.id)}><Trash2 className="h-4 w-4" /></Button>
                             </div>
                             {event.championTeamId ? (
@@ -1450,26 +1421,6 @@ export default function AdminDashboard() {
 
           </div>
         </Tabs>
-
-        <Dialog open={isLiveStreamDialogOpen} onOpenChange={setIsLiveStreamDialogOpen}>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>อัปเดต Live Stream URL</DialogTitle>
-              <DialogDescription>
-                กรุณาใส่ URL ของ Live Stream สำหรับการแข่งขันนี้
-              </DialogDescription>
-            </DialogHeader>
-            <form onSubmit={handleUpdateLiveStream} className="space-y-4">
-              <div>
-                <Label htmlFor="liveStreamUrl">Live Stream URL</Label>
-                <Input id="liveStreamUrl" type="url" value={liveStreamUrl} onChange={(e) => setLiveStreamUrl(e.target.value)} placeholder="https://www.youtube.com/watch?v=example" required />
-              </div>
-              <DialogFooter>
-                <Button type="submit">บันทึก</Button>
-              </DialogFooter>
-            </form>
-          </DialogContent>
-        </Dialog>
 
         <Dialog open={isEventEditDialogOpen} onOpenChange={(open) => { if (!open) closeEventEditor(); }}>
           <DialogContent className="max-h-[90vh] max-w-3xl overflow-y-auto bg-card text-white">
