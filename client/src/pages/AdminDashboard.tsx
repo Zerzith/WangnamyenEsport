@@ -52,6 +52,7 @@ export default function AdminDashboard() {
   const [registrations, setRegistrations] = useState<any[]>([]);
   const [selectedRegistrationEvent, setSelectedRegistrationEvent] = useState<string>("all");
   const [matches, setMatches] = useState<any[]>([]);
+  const [selectedMatchEventId, setSelectedMatchEventId] = useState<string | null>(null);
   const [news, setNews] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedTeam, setSelectedTeam] = useState<any | null>(null);
@@ -331,6 +332,11 @@ export default function AdminDashboard() {
     const eventB = events.find((event) => event.id === b.eventId)?.title || "";
     return `${eventA}|${a.round || ""}|${a.group || ""}`.localeCompare(`${eventB}|${b.round || ""}|${b.group || ""}`, "th");
   });
+  const matchEventGroups = Array.from(new Set(matches.map((match) => match.eventId))).map((eventId) => ({
+    id: eventId,
+    title: events.find((event) => event.id === eventId)?.title || "ไม่ระบุรายการ",
+    count: matches.filter((match) => match.eventId === eventId).length,
+  }));
 
   const handleCreateEvent = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -1287,8 +1293,31 @@ export default function AdminDashboard() {
                 </form>
 
                 <h3 className="text-lg font-semibold mt-8 mb-4">แมตช์ที่มีอยู่</h3>
-                <div className="space-y-4">
-                  {sortedMatches.map((match, index, list) => {
+                {!selectedMatchEventId ? (
+                  <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
+                    {matchEventGroups.length === 0 ? (
+                      <div className="col-span-full rounded-xl border border-dashed border-white/10 px-4 py-10 text-center text-muted-foreground">
+                        ยังไม่มีแมตช์ในระบบ
+                      </div>
+                    ) : matchEventGroups.map((eventGroup) => (
+                      <button
+                        key={eventGroup.id}
+                        type="button"
+                        onClick={() => setSelectedMatchEventId(eventGroup.id)}
+                        className="rounded-xl border border-white/10 bg-card/70 p-5 text-left transition-all hover:border-primary/50 hover:bg-primary/10"
+                      >
+                        <p className="text-xs font-bold uppercase tracking-widest text-primary">รายการแข่งขัน</p>
+                        <p className="mt-2 text-lg font-bold text-white">{eventGroup.title}</p>
+                        <p className="mt-3 text-sm text-muted-foreground">มี {eventGroup.count} แมตช์ · กดเพื่อดูรอบและสาย</p>
+                      </button>
+                    ))}
+                  </div>
+                ) : (
+                <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
+                  <Button type="button" variant="outline" className="col-span-full justify-self-start" onClick={() => setSelectedMatchEventId(null)}>
+                    <ArrowLeft className="mr-2 h-4 w-4" /> กลับไปเลือกรายการ
+                  </Button>
+                  {sortedMatches.filter((match) => match.eventId === selectedMatchEventId).map((match, index, list) => {
                     const teamA = teams.find(t => t.id === match.teamA);
                     const teamB = teams.find(t => t.id === match.teamB);
                     const eventTitle = events.find((event) => event.id === match.eventId)?.title || "ไม่ระบุรายการ";
@@ -1301,7 +1330,7 @@ export default function AdminDashboard() {
                     return (
                       <Fragment key={match.id}>
                         {showCategory && (
-                          <div className="mt-6 first:mt-0 rounded-xl border border-primary/25 bg-primary/10 px-4 py-3">
+                          <div className="col-span-full mt-6 first:mt-0 rounded-xl border border-primary/25 bg-primary/10 px-4 py-3">
                             <p className="text-xs font-bold uppercase tracking-widest text-primary">{eventTitle}</p>
                             <p className="mt-1 font-semibold text-white">รอบ {match.round || "ไม่ระบุรอบ"} · สาย {match.group || "ไม่ระบุสาย"}</p>
                           </div>
@@ -1435,6 +1464,7 @@ export default function AdminDashboard() {
                     );
                   })}
                 </div>
+                )}
               </CardContent>            </Card>
           </TabsContent>
 
