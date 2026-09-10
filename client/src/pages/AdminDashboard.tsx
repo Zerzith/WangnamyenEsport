@@ -1313,7 +1313,7 @@ export default function AdminDashboard() {
                     ))}
                   </div>
                 ) : (
-                <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
+                <div className="grid grid-cols-1 gap-6 xl:grid-cols-2">
                   <Button type="button" variant="outline" className="col-span-full justify-self-start" onClick={() => setSelectedMatchEventId(null)}>
                     <ArrowLeft className="mr-2 h-4 w-4" /> กลับไปเลือกรายการ
                   </Button>
@@ -1335,37 +1335,33 @@ export default function AdminDashboard() {
                             <p className="mt-1 font-semibold text-white">รอบ {match.round || "ไม่ระบุรอบ"} · สาย {match.group || "ไม่ระบุสาย"}</p>
                           </div>
                         )}
-                      <Card className="bg-card/70 border-white/10">
+                      <Card className="min-w-0 bg-card/70 border-white/10">
                         <CardContent className="p-4">
                           <p className="font-semibold">{eventTitle} · รอบ {match.round || "ไม่ระบุรอบ"} | สาย {match.group || "ไม่ระบุสาย"}</p>
-                          <div className="flex items-center justify-between mt-2">
-                            <div className="flex items-center gap-2">
+                          <div className="mt-4 grid min-w-0 grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-3">
+                            <div className="flex min-w-0 items-center gap-2">
                               {teamA?.logoUrl && <AvatarCustom src={teamA.logoUrl} name={teamA.name} className="w-6 h-6" />}
-                              <span>{teamA?.name || "N/A"}</span>
+                              <span className="min-w-0 break-words text-sm">{teamA?.name || "N/A"}</span>
                             </div>
-                            <div className="flex items-center gap-1">
+                            <div className="flex shrink-0 items-center gap-1">
                               <Input
                                 type="number"
                                 value={match.scoreA ?? 0}
                                 onChange={(e) => handleUpdateScore(match.id, 'A', Number(e.target.value) || 0)}
-                                className="w-16 text-center text-xs"
+                                className="w-14 text-center text-xs sm:w-16"
                                 placeholder="0"
                               />
-                              <span className="text-xs text-muted-foreground">pts</span>
-                            </div>
-                            <span className="mx-2">-</span>
-                            <div className="flex items-center gap-1">
-                              <span className="text-xs text-muted-foreground">pts</span>
+                              <span className="mx-1">-</span>
                               <Input
                                 type="number"
                                 value={match.scoreB ?? 0}
                                 onChange={(e) => handleUpdateScore(match.id, 'B', Number(e.target.value) || 0)}
-                                className="w-16 text-center text-xs"
+                                className="w-14 text-center text-xs sm:w-16"
                                 placeholder="0"
                               />
                             </div>
-                            <div className="flex items-center gap-2">
-                              <span>{teamB?.name || "N/A"}</span>
+                            <div className="flex min-w-0 items-center justify-end gap-2">
+                              <span className="min-w-0 break-words text-right text-sm">{teamB?.name || "N/A"}</span>
                               {teamB?.logoUrl && <AvatarCustom src={teamB.logoUrl} name={teamB.name} className="w-6 h-6" />}
                             </div>
                           </div>
