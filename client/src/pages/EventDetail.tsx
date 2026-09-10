@@ -131,8 +131,8 @@ const EventListItem = ({ item, index }: { item: Event, index: number }) => {
                 ตัวสำรองสูงสุด: {item.maxSubstitutes} คน
               </div>
             )}
-            <Button className="w-full bg-zinc-900 hover:bg-primary hover:text-white transition-colors border-white/10">
-              ดูรายละเอีย ด
+           <Button className="w-full bg-primary text-white border-white/10 transition-colors hover:bg-primary/90">
+              ดูรายละเอียด
             </Button>
           </div>
         </Card>
