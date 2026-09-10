@@ -257,6 +257,17 @@ export default function MatchManagement() {
     );
   }
 
+  const visibleMatches = matches.filter(
+    (match) => selectedEventId === "all" || match.eventId === selectedEventId
+  );
+  const eventGroups = Array.from(new Set(visibleMatches.map((match) => match.eventId))).map((eventId) => ({
+    id: eventId,
+    title: visibleMatches.find((match) => match.eventId === eventId)?.eventTitle ||
+      events.find((event) => event.id === eventId)?.title ||
+      eventId,
+    matches: visibleMatches.filter((match) => match.eventId === eventId),
+  }));
+
   return (
     <div className="min-h-screen">
       <div className="w-full px-2 sm:px-4 lg:px-6 py-12">
@@ -331,22 +342,40 @@ export default function MatchManagement() {
               <Loader2 className="w-12 h-12 animate-spin mx-auto text-primary mb-4" />
               <p className="text-muted-foreground">กำลังโหลดแมตช์...</p>
             </div>
-          ) : matches.filter(m => selectedEventId === "all" || m.eventId === selectedEventId).length === 0 ? (
+          ) : visibleMatches.length === 0 ? (
             <Card className="bg-zinc-900 border-white/10 text-center py-12">
               <Swords className="w-20 h-20 mx-auto text-white/20 mb-4" />
               <h3 className="text-xl font-bold text-white/40 mb-2">ยังไม่มีแมตช์</h3>
               <p className="text-muted-foreground">Admin จะสร้างแมตช์สำหรับทีมของคุณ</p>
             </Card>
           ) : (
-            <div className="grid grid-cols-1 gap-4">
-              {matches.filter(m => selectedEventId === "all" || m.eventId === selectedEventId).map((match, index) => (
-                <motion.div
-                  key={match.id}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: index * 0.1 }}
-                >
-                  <Card className="bg-zinc-900 border-white/10 overflow-hidden hover:border-primary/30 transition-colors">
+            <div className="space-y-8">
+              {eventGroups.map((eventGroup) => {
+                const rounds = Array.from(new Set(eventGroup.matches.map((match) => String(match.round || "1"))));
+                return (
+                  <section key={eventGroup.id} className="space-y-5">
+                    <div className="rounded-xl border border-primary/25 bg-primary/10 px-5 py-4">
+                      <p className="text-xs font-bold uppercase tracking-widest text-primary">รายการแข่งขัน</p>
+                      <h4 className="mt-1 text-xl font-bold text-white">{eventGroup.title}</h4>
+                    </div>
+                    {rounds.map((round) => {
+                      const roundMatches = eventGroup.matches.filter((match) => String(match.round || "1") === round);
+                      const groups = Array.from(new Set(roundMatches.map((match) => match.group || "ไม่ระบุสาย")));
+                      return (
+                        <div key={`${eventGroup.id}-${round}`} className="ml-2 space-y-4 border-l-2 border-white/10 pl-4">
+                          <h5 className="text-lg font-bold text-white">รอบ {round}</h5>
+                          {groups.map((group) => (
+                            <div key={`${eventGroup.id}-${round}-${group}`} className="space-y-3">
+                              <p className="text-sm font-semibold text-primary">สาย {group}</p>
+                              <div className="grid grid-cols-1 gap-4">
+                                {roundMatches.filter((match) => (match.group || "ไม่ระบุสาย") === group).map((match, index) => (
+                                  <motion.div
+                                    key={match.id}
+                                    initial={{ opacity: 0, y: 20 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    transition={{ delay: index * 0.1 }}
+                                  >
+                                    <Card className="bg-zinc-900 border-white/10 overflow-hidden hover:border-primary/30 transition-colors">
                     <CardHeader>
                       <div className="flex items-center justify-between">
                         <div>
@@ -412,9 +441,18 @@ export default function MatchManagement() {
                         )}
                       </div>
                     </CardContent>
-                  </Card>
-                </motion.div>
-              ))}
+                                    </Card>
+                                  </motion.div>
+                                ))}
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      );
+                    })}
+                  </section>
+                );
+              })}
             </div>
           )}
         </div>
