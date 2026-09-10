@@ -27,6 +27,12 @@ import { uploadImageToCloudinary } from "@/lib/cloudinary";
 
 const DEFAULT_EVENT_BANNER = "/assets/nebula-bg.png";
 
+const gameGuideUrls: Record<string, string> = {
+  "Free Fire": "https://www.garena.sg/news",
+  RoV: "https://www.narasci.go.th/9857/",
+  Valorant: "https://games.gg/valorant/guides/",
+};
+
 const isExternalHttpUrl = (value: string) => {
   try {
     const url = new URL(value);
@@ -70,6 +76,7 @@ export default function AdminDashboard() {
 
   const [newTitle, setNewTitle] = useState("");
   const [newGame, setNewGame] = useState("Valorant");
+  const [newGameGuideUrl, setNewGameGuideUrl] = useState(gameGuideUrls.Valorant);
   const [newMaxTeams, setNewMaxTeams] = useState("16");
   const [newMembers, setNewMembers] = useState("5");
   const [newSubs, setNewSubs] = useState("1");
@@ -85,6 +92,7 @@ export default function AdminDashboard() {
   const [editingEvent, setEditingEvent] = useState<any | null>(null);
   const [editTitle, setEditTitle] = useState("");
   const [editGame, setEditGame] = useState("Valorant");
+  const [editGameGuideUrl, setEditGameGuideUrl] = useState(gameGuideUrls.Valorant);
   const [editMaxTeams, setEditMaxTeams] = useState("16");
   const [editMembers, setEditMembers] = useState("5");
   const [editSubs, setEditSubs] = useState("1");
@@ -130,6 +138,7 @@ export default function AdminDashboard() {
     setEditingEvent(event);
     setEditTitle(event.title || "");
     setEditGame(event.game || "Valorant");
+    setEditGameGuideUrl(event.gameGuideUrl || gameGuideUrls[event.game] || "");
     setEditMaxTeams(String(event.maxTeams ?? 16));
     setEditMembers(String(event.membersPerTeam ?? 5));
     setEditSubs(String(event.maxSubstitutes ?? 0));
@@ -353,6 +362,7 @@ export default function AdminDashboard() {
       await addDoc(collection(db, "events"), {
         title: newTitle,
         game: newGame,
+        gameGuideUrl: newGameGuideUrl,
         maxTeams: parseInt(newMaxTeams),
         membersPerTeam: parseInt(newMembers),
         maxSubstitutes: parseInt(newSubs),
@@ -400,6 +410,7 @@ export default function AdminDashboard() {
       await updateDoc(doc(db, "events", editingEvent.id), {
         title: editTitle.trim(),
         game: editGame,
+        gameGuideUrl: editGameGuideUrl || gameGuideUrls[editGame] || "",
         maxTeams: Number.parseInt(editMaxTeams, 10),
         membersPerTeam: Number.parseInt(editMembers, 10),
         maxSubstitutes: Number.parseInt(editSubs, 10),
@@ -836,6 +847,7 @@ export default function AdminDashboard() {
                       <Select value={newGame} onValueChange={(val) => {
                         setNewGame(val);
                         setNewBannerUrl(gameBanners[val] || "");
+                        setNewGameGuideUrl(gameGuideUrls[val] || "");
                       }}>
                         <SelectTrigger>
                           <SelectValue placeholder="เลือกเกม" />
@@ -847,6 +859,10 @@ export default function AdminDashboard() {
                         </SelectContent>
                       </Select>
                     </div>
+                  </div>
+                  <div>
+                    <Label htmlFor="newGameGuideUrl">URL คู่มือเกม</Label>
+                    <Input id="newGameGuideUrl" value={newGameGuideUrl} readOnly className="text-muted-foreground" />
                   </div>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div>
@@ -1487,7 +1503,10 @@ export default function AdminDashboard() {
                 </div>
                 <div>
                   <Label htmlFor="editGame">เกม</Label>
-                  <Select value={editGame} onValueChange={setEditGame}>
+                  <Select value={editGame} onValueChange={(value) => {
+                    setEditGame(value);
+                    setEditGameGuideUrl(gameGuideUrls[value] || "");
+                  }}>
                     <SelectTrigger id="editGame"><SelectValue placeholder="เลือกเกม" /></SelectTrigger>
                     <SelectContent>
                       <SelectItem value="Valorant">Valorant</SelectItem>
@@ -1495,6 +1514,10 @@ export default function AdminDashboard() {
                       <SelectItem value="Free Fire">Free Fire</SelectItem>
                     </SelectContent>
                   </Select>
+                </div>
+                <div className="md:col-span-2">
+                  <Label htmlFor="editGameGuideUrl">URL คู่มือเกม</Label>
+                  <Input id="editGameGuideUrl" value={editGameGuideUrl} readOnly className="text-muted-foreground" />
                 </div>
               </div>
 

@@ -25,6 +25,7 @@ interface Event {
   maxSubstitutes?: number;
   registeredTeams?: number;
   bannerUrl?: string;
+  gameGuideUrl?: string;
   status?: string;
   registrationDeadline?: string;
   championTeamId?: string | null;
@@ -49,6 +50,12 @@ interface Registration {
   status: "pending" | "approved" | "rejected";
   createdAt: any;
 }
+
+const gameGuideUrls: Record<string, string> = {
+  "Free Fire": "https://www.garena.sg/news",
+  RoV: "https://www.narasci.go.th/9857/",
+  Valorant: "https://games.gg/valorant/guides/",
+};
 
 
 const EventListItem = ({ item, index }: { item: Event, index: number }) => {
@@ -572,6 +579,18 @@ export default function EventDetail() {
             {event.description && (
               <div className="pt-6 border-t border-white/10">
                 <p className="text-muted-foreground leading-relaxed whitespace-pre-wrap">{event.description}</p>
+              </div>
+            )}
+            {(event.gameGuideUrl || gameGuideUrls[event.game]) && (
+              <div className="pt-6 border-t border-white/10">
+                <a
+                  href={event.gameGuideUrl || gameGuideUrls[event.game]}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex items-center rounded-xl border border-primary/30 bg-primary/10 px-4 py-3 font-semibold text-primary transition-colors hover:bg-primary/20"
+                >
+                  ดูคู่มือและข้อมูลเกม {event.game}
+                </a>
               </div>
             )}
           </Card>
