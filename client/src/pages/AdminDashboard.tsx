@@ -110,9 +110,9 @@ export default function AdminDashboard() {
   };
 
   const gameBanners: { [key: string]: string } = {
-    "RoV": "/assets/rov-banner.png",
-    "Free Fire": "/assets/freefire-banner.png",
-    "Valorant": "/assets/valorant-banner.png",
+    "RoV": "https://res.cloudinary.com/djubsqri6/image/upload/v1789063776/w51t9yvyizyjji2s1wpw.png",
+    "Free Fire": "https://res.cloudinary.com/djubsqri6/image/upload/v1789063782/akb3y49izx7jptplnc2i.png",
+    "Valorant": "https://res.cloudinary.com/djubsqri6/image/upload/v1789063772/mnr87aqivzjfri0hcuwu.png",
   };
 
   const closeEventEditor = () => {
