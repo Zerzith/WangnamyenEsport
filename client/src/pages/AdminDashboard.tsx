@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from "react";
+import { Fragment, useState, useEffect } from "react";
 import { useAuth } from "@/hooks/use-auth";
 import { useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
@@ -325,6 +325,12 @@ export default function AdminDashboard() {
       </div>
     );
   }
+
+  const sortedMatches = [...matches].sort((a, b) => {
+    const eventA = events.find((event) => event.id === a.eventId)?.title || "";
+    const eventB = events.find((event) => event.id === b.eventId)?.title || "";
+    return `${eventA}|${a.round || ""}|${a.group || ""}`.localeCompare(`${eventB}|${b.round || ""}|${b.group || ""}`, "th");
+  });
 
   const handleCreateEvent = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -1282,13 +1288,27 @@ export default function AdminDashboard() {
 
                 <h3 className="text-lg font-semibold mt-8 mb-4">แมตช์ที่มีอยู่</h3>
                 <div className="space-y-4">
-                  {matches.map((match) => {
+                  {sortedMatches.map((match, index, list) => {
                     const teamA = teams.find(t => t.id === match.teamA);
                     const teamB = teams.find(t => t.id === match.teamB);
+                    const eventTitle = events.find((event) => event.id === match.eventId)?.title || "ไม่ระบุรายการ";
+                    const categoryKey = `${match.eventId}|${match.round || "ไม่ระบุรอบ"}|${match.group || "ไม่ระบุสาย"}`;
+                    const previousMatch = list[index - 1];
+                    const previousKey = previousMatch
+                      ? `${previousMatch.eventId}|${previousMatch.round || "ไม่ระบุรอบ"}|${previousMatch.group || "ไม่ระบุสาย"}`
+                      : "";
+                    const showCategory = categoryKey !== previousKey;
                     return (
-                      <Card key={match.id} className="bg-card/70 border-white/10">
+                      <Fragment key={match.id}>
+                        {showCategory && (
+                          <div className="mt-6 first:mt-0 rounded-xl border border-primary/25 bg-primary/10 px-4 py-3">
+                            <p className="text-xs font-bold uppercase tracking-widest text-primary">{eventTitle}</p>
+                            <p className="mt-1 font-semibold text-white">รอบ {match.round || "ไม่ระบุรอบ"} · สาย {match.group || "ไม่ระบุสาย"}</p>
+                          </div>
+                        )}
+                      <Card className="bg-card/70 border-white/10">
                         <CardContent className="p-4">
-                          <p className="font-semibold">รอบ {match.round} | กลุ่ม {match.group}</p>
+                          <p className="font-semibold">{eventTitle} · รอบ {match.round || "ไม่ระบุรอบ"} | สาย {match.group || "ไม่ระบุสาย"}</p>
                           <div className="flex items-center justify-between mt-2">
                             <div className="flex items-center gap-2">
                               {teamA?.logoUrl && <AvatarCustom src={teamA.logoUrl} name={teamA.name} className="w-6 h-6" />}
@@ -1297,8 +1317,8 @@ export default function AdminDashboard() {
                             <div className="flex items-center gap-1">
                               <Input
                                 type="number"
-                                value={match.scoreA}
-                                onChange={(e) => handleUpdateScore(match.id, 'A', parseInt(e.target.value))}
+                                value={match.scoreA ?? 0}
+                                onChange={(e) => handleUpdateScore(match.id, 'A', Number(e.target.value) || 0)}
                                 className="w-16 text-center text-xs"
                                 placeholder="0"
                               />
@@ -1309,8 +1329,8 @@ export default function AdminDashboard() {
                               <span className="text-xs text-muted-foreground">pts</span>
                               <Input
                                 type="number"
-                                value={match.scoreB}
-                                onChange={(e) => handleUpdateScore(match.id, 'B', parseInt(e.target.value))}
+                                value={match.scoreB ?? 0}
+                                onChange={(e) => handleUpdateScore(match.id, 'B', Number(e.target.value) || 0)}
                                 className="w-16 text-center text-xs"
                                 placeholder="0"
                               />
@@ -1320,7 +1340,6 @@ export default function AdminDashboard() {
                               {teamB?.logoUrl && <AvatarCustom src={teamB.logoUrl} name={teamB.name} className="w-6 h-6" />}
                             </div>
                           </div>
-                          {(match.winsA !== undefined || match.winsB !== undefined) && (
                             <div className="mt-4 space-y-3">
                               <div className="grid grid-cols-2 gap-4">
 
@@ -1386,7 +1405,6 @@ export default function AdminDashboard() {
                                 </div>
                               </div>
                             </div>
-                          )}
                           <div className="flex justify-between items-center mt-4">
                             <Badge variant={match.status === "ongoing" ? "default" : match.status === "completed" ? "success" : "secondary"}>
                               {match.status === "pending" && "ยังไม่เริ่ม"}
@@ -1413,6 +1431,7 @@ export default function AdminDashboard() {
                           </div>
                         </CardContent>
                       </Card>
+                      </Fragment>
                     );
                   })}
                 </div>
