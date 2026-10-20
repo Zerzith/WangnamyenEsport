@@ -242,7 +242,7 @@ export default function Home() {
               className="mb-5 sm:mb-6 max-w-3xl font-display text-3xl font-bold leading-[1.1] tracking-[-0.02em] text-white sm:text-4xl md:text-5xl"
             >
               ยกระดับการแข่งขัน <span className="hidden md:inline"> </span><br className="md:hidden" />
-              <span className="text-primary">ESPORTS</span> ในวิทยาลัยเทคนิควังน้ำเย็น
+              <span className="text-primary">ESPORTS</span>
             </motion.h1>
             <motion.p
               initial={{ opacity: 0, y: 20 }}
@@ -250,7 +250,7 @@ export default function Home() {
               transition={{ delay: 0.2 }}
               className="mb-6 sm:mb-8 max-w-xl text-sm sm:text-base leading-relaxed text-slate-300"
             >
-              แพลตฟอร์มจัดการแข่งขันอีสปอร์ตสำหรับนักเรียน/นักศึกษา วิทยาลัยเทคนิควังน้ำเย็น
+              ระบบบริหารการจัดการแข่งขันอีสปอร์ต
               ติดตามสายการแข่งขัน ผลการแข่ง และทำเนียบแชมเปี้ยนได้ที่นี่
             </motion.p>
             <motion.div
@@ -361,7 +361,7 @@ export default function Home() {
             <div>
               <span className="mb-2 block font-display text-xs font-bold uppercase tracking-[0.2em] text-primary">Tournaments</span>
               <h2 className="font-display text-4xl font-bold tracking-tight text-white md:text-5xl">การแข่งขันอีสปอร์ต</h2>
-              <p className="text-muted-foreground mt-3 text-lg">รายการแข่งขันทั้งหมดของวิทยาลัยเทคนิควังน้ำเย็น</p>
+              <p className="text-muted-foreground mt-3 text-lg">รายการแข่งขันทั้งหมด</p>
             </div>
           </div>
 
