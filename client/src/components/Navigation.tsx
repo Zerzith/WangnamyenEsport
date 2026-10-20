@@ -1,7 +1,7 @@
 import { useAuth } from "@/hooks/use-auth";
 import { Button } from "@/components/ui/button";
 import { AvatarCustom } from "@/components/ui/avatar-custom";
-import { Gamepad2, LogOut, LogIn } from "lucide-react";
+import { LogOut, LogIn } from "lucide-react";
 import { useLocation, Link } from "wouter";
 
 export function Navigation() {
@@ -22,9 +22,11 @@ export function Navigation() {
       <div className="flex min-h-[4rem] sm:min-h-[4.5rem] items-center gap-2 px-2 sm:px-4 lg:px-6">
         {}
         <Link href="/" aria-label="ระบบบริหารการจัดการแข่งขันอีสปอร์ต" className="flex flex-shrink-0 items-center gap-2">
-          <span aria-hidden="true" className="flex h-9 w-9 items-center justify-center rounded-lg border border-primary/30 bg-primary/10 text-primary sm:h-10 sm:w-10">
-            <Gamepad2 className="h-5 w-5" />
-          </span>
+          <img
+            src="/assets/wangnamyen-esport-crown-emblem.webp"
+            alt="โลโก้ Wangnamyen Esport"
+            className="h-9 w-9 rounded-lg object-contain sm:h-10 sm:w-10"
+          />
           <span className="hidden whitespace-nowrap font-display text-xs font-bold tracking-tight text-white sm:block lg:text-sm">
             ระบบบริหารการจัดการแข่งขันอีสปอร์ต
           </span>
