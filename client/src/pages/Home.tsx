@@ -230,8 +230,8 @@ export default function Home() {
             className="h-full w-full object-cover object-[25%_center] sm:object-center"
           />
 
-          <div className="absolute inset-0 bg-slate-950/70" />
-          <div className="absolute inset-0 bg-gradient-to-r from-slate-950/85 via-slate-950/40 to-transparent" />
+          <div className="absolute inset-0 bg-slate-950/30" />
+          <div className="absolute inset-0 bg-gradient-to-r from-slate-950/55 via-slate-950/25 to-transparent" />
         </div>
 
         <div className="relative z-10 w-full px-4 sm:px-8 lg:px-12">
