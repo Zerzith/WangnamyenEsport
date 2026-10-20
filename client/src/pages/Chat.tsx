@@ -6,6 +6,7 @@ import {
 } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { AvatarCustom } from "@/components/ui/avatar-custom";
@@ -38,6 +39,70 @@ interface LiveStreamConfig {
   isActive: boolean;
 }
 
+function getYouTubeEmbedUrl(input: string): string | null {
+  let source = input.trim();
+  if (!source) return null;
+
+  if (source.startsWith("<")) {
+    const parsed = new DOMParser().parseFromString(source, "text/html");
+    const iframe = parsed.body.querySelector("iframe");
+    if (
+      !iframe ||
+      parsed.body.children.length !== 1 ||
+      parsed.body.children[0] !== iframe
+    ) {
+      return null;
+    }
+    source = iframe.getAttribute("src") || "";
+  }
+
+  let url: URL;
+  try {
+    url = new URL(source.replace(/&amp;/g, "&").trim());
+  } catch {
+    return null;
+  }
+
+  if (url.protocol !== "https:" || url.port) return null;
+
+  const host = url.hostname.toLowerCase().replace(/^www\./, "");
+  let videoId = "";
+
+  if (host === "youtube.com" || host === "youtube-nocookie.com") {
+    videoId = url.pathname.match(/^\/embed\/([A-Za-z0-9_-]{11})\/?$/)?.[1] ||
+      (url.pathname === "/watch" ? url.searchParams.get("v") || "" : "");
+  } else if (host === "youtu.be") {
+    videoId = url.pathname.match(/^\/([A-Za-z0-9_-]{11})\/?$/)?.[1] || "";
+  } else {
+    return null;
+  }
+
+  if (!/^[A-Za-z0-9_-]{11}$/.test(videoId)) return null;
+
+  const embedUrl = new URL(`https://www.youtube.com/embed/${videoId}`);
+  const allowedParameters = [
+    "si", "controls", "start", "end", "rel", "modestbranding",
+    "playsinline", "loop", "playlist", "cc_load_policy",
+  ];
+  allowedParameters.forEach((parameter) => {
+    url.searchParams.getAll(parameter).forEach((value) => {
+      embedUrl.searchParams.append(parameter, value);
+    });
+  });
+
+  return embedUrl.toString();
+}
+
+function getYouTubePlayerUrl(input: string): string {
+  const embedUrl = getYouTubeEmbedUrl(input);
+  if (!embedUrl) return "";
+
+  const playerUrl = new URL(embedUrl);
+  playerUrl.searchParams.set("autoplay", "1");
+  playerUrl.searchParams.set("mute", "0");
+  return playerUrl.toString();
+}
+
 export default function Chat() {
   const { user } = useAuth();
   const [, setLocation] = useLocation();
@@ -47,12 +112,14 @@ export default function Chat() {
   const [liveStream, setLiveStream] = useState<LiveStreamConfig | null>(null);
   const [isEditingStream, setIsEditingStream] = useState(false);
   const [editStreamUrl, setEditStreamUrl] = useState("");
+  const [streamInputError, setStreamInputError] = useState("");
   const [videoExpanded, setVideoExpanded] = useState(false);
   const [editStreamTitle, setEditStreamTitle] = useState("");
   const [viewerCount, setViewerCount] = useState(0);
   const scrollRef = useRef<HTMLDivElement>(null);
   const presenceDocRef = useRef<string | null>(null);
 
+  const liveStreamSrc = getYouTubePlayerUrl(liveStream?.liveUrl || "");
   const isAdmin = user?.role === 'admin';
 
 
@@ -221,10 +288,15 @@ export default function Chat() {
       alert("คุณไม่มีสิทธิ์ในการอัปเดตไลฟ์สด");
       return;
     }
-    if (!editStreamUrl.trim()) return;
+    const embedUrl = getYouTubeEmbedUrl(editStreamUrl);
+    if (!embedUrl) {
+      setStreamInputError("กรุณาวาง URL YouTube หรือโค้ด iframe จาก YouTube ที่ถูกต้อง");
+      return;
+    }
+    setStreamInputError("");
     try {
       await setDoc(doc(db, "config", "live_stream"), {
-        liveUrl: editStreamUrl,
+        liveUrl: embedUrl,
         title: editStreamTitle || "Live Stream",
         isActive: true,
         updatedAt: serverTimestamp(),
@@ -255,16 +327,6 @@ export default function Chat() {
     }
   };
 
-  const isYoutubeUrl = (url: string) => url.includes("youtube.com") || url.includes("youtu.be");
-  const getYoutubeEmbedUrl = (url: string) => {
-    if (url.includes("youtube.com/watch?v=")) {
-      return url.replace("youtube.com/watch?v=", "youtube.com/embed/");
-    } else if (url.includes("youtu.be/")) {
-      return url.replace("youtu.be/", "youtube.com/embed/");
-    }
-    return url;
-  };
-
   if (!user) {
     setLocation("/login");
     return null;
@@ -276,16 +338,17 @@ export default function Chat() {
       <div className="flex-1 flex flex-col lg:flex-row gap-0 overflow-hidden min-h-0">
 
         <div className={`order-1 flex-none lg:order-none lg:flex-1 lg:flex lg:flex-col lg:overflow-hidden ${videoExpanded ? 'flex-none' : ''}`}>
-          {liveStream?.isActive && liveStream?.liveUrl ? (
+          {liveStream?.isActive && liveStreamSrc ? (
             <div className="bg-black lg:relative lg:flex lg:h-full lg:flex-1 lg:flex-col">
 
               <div className={`relative w-full ${videoExpanded ? 'flex-1 lg:flex-1' : 'aspect-video'} lg:min-h-0 ${!videoExpanded ? 'lg:flex-1 lg:aspect-auto' : ''}`}>
                 <iframe
                   className="absolute inset-0 w-full h-full"
-                  src={`${getYoutubeEmbedUrl(liveStream.liveUrl)}?autoplay=1&mute=0`}
-                  title="Live Stream"
+                  src={liveStreamSrc}
+                  title={liveStream.title || "Live Stream"}
                   frameBorder="0"
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                  referrerPolicy="strict-origin-when-cross-origin"
                   allowFullScreen
                 />
               </div>
@@ -335,11 +398,11 @@ export default function Chat() {
                           <Edit2 className="w-4 h-4" />
                         </Button>
                       </DialogTrigger>
-                      <DialogContent className="sm:max-w-[425px]">
+                      <DialogContent className="w-[calc(100vw-2rem)] sm:max-w-2xl">
                         <DialogHeader>
                           <DialogTitle>แก้ไข Live Stream</DialogTitle>
                           <DialogDescription>
-                            อัปเดตลิงก์และชื่อเรื่องของการถ่ายทอดสด
+                            วาง URL YouTube หรือโค้ด iframe แบบเต็มได้ ระบบจะฝังวิดีโอจาก YouTube ให้โดยอัตโนมัติ
                           </DialogDescription>
                         </DialogHeader>
                         <div className="grid gap-4 py-4">
@@ -351,9 +414,20 @@ export default function Chat() {
                           </div>
                           <div className="grid grid-cols-4 items-center gap-4">
                             <label htmlFor="url" className="text-right text-sm">
-                              URL
+                              URL / iframe
                             </label>
-                            <Input id="url" value={editStreamUrl} onChange={(e) => setEditStreamUrl(e.target.value)} className="col-span-3" />
+                            <Textarea
+                              id="url"
+                              rows={6}
+                              value={editStreamUrl}
+                              onChange={(e) => {
+                                setEditStreamUrl(e.target.value);
+                                setStreamInputError("");
+                              }}
+                              placeholder="วาง URL YouTube หรือโค้ด <iframe> แบบเต็ม"
+                              className="col-span-3 font-mono text-xs"
+                            />
+                            {streamInputError && <p className="col-span-4 text-right text-sm text-red-400">{streamInputError}</p>}
                           </div>
                         </div>
                         <DialogFooter>
@@ -388,11 +462,11 @@ export default function Chat() {
                         <Plus className="w-4 h-4 mr-2" /> เพิ่มลิงก์ไลฟ์สด
                       </Button>
                     </DialogTrigger>
-                    <DialogContent className="sm:max-w-[425px]">
+                    <DialogContent className="w-[calc(100vw-2rem)] sm:max-w-2xl">
                       <DialogHeader>
                         <DialogTitle>เพิ่ม Live Stream</DialogTitle>
                         <DialogDescription>
-                          เพิ่มลิงก์และชื่อเรื่องของการถ่ายทอดสด
+                          วาง URL YouTube หรือโค้ด iframe แบบเต็มได้ ระบบจะฝังวิดีโอจาก YouTube ให้โดยอัตโนมัติ
                         </DialogDescription>
                       </DialogHeader>
                       <div className="grid gap-4 py-4">
@@ -404,9 +478,20 @@ export default function Chat() {
                         </div>
                         <div className="grid grid-cols-4 items-center gap-4">
                           <label htmlFor="url" className="text-right text-sm">
-                            URL
+                            URL / iframe
                           </label>
-                          <Input id="url" value={editStreamUrl} onChange={(e) => setEditStreamUrl(e.target.value)} className="col-span-3" />
+                          <Textarea
+                            id="url"
+                            rows={6}
+                            value={editStreamUrl}
+                            onChange={(e) => {
+                              setEditStreamUrl(e.target.value);
+                              setStreamInputError("");
+                            }}
+                            placeholder="วาง URL YouTube หรือโค้ด <iframe> แบบเต็ม"
+                            className="col-span-3 font-mono text-xs"
+                          />
+                          {streamInputError && <p className="col-span-4 text-right text-sm text-red-400">{streamInputError}</p>}
                         </div>
                       </div>
                       <DialogFooter>
