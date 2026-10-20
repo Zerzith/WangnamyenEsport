@@ -225,13 +225,13 @@ export default function Home() {
 
         <div className="absolute inset-0 z-0">
           <img
-            src="/assets/nebula-bg.png"
-            alt="Background"
-            className="h-full w-full object-cover"
+            src="/assets/Gemini_Generated_Image_pu625pu625pu625p.jpg"
+            alt="ภาพประกอบเกมอีสปอร์ตสำหรับหน้าแรก"
+            className="h-full w-full object-cover object-[25%_center] sm:object-center"
           />
 
-          <div className="absolute inset-0 bg-slate-950/80" />
-          <div className="absolute inset-0 bg-gradient-to-r from-slate-950/70 via-transparent to-transparent" />
+          <div className="absolute inset-0 bg-slate-950/70" />
+          <div className="absolute inset-0 bg-gradient-to-r from-slate-950/85 via-slate-950/40 to-transparent" />
         </div>
 
         <div className="relative z-10 w-full px-4 sm:px-8 lg:px-12">
