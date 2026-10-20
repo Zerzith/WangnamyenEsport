@@ -13,6 +13,7 @@ import { motion } from "framer-motion";
 import { TeamMembersModal } from "@/components/TeamMembersModal";
 import { formatThaiDate, formatThaiDateTime } from "@/lib/date";
 import { uploadImageToCloudinary } from "@/lib/cloudinary";
+import { RegistrationRulesDialog } from "@/components/RegistrationRulesDialog";
 
 interface Event {
   id: string;
@@ -151,6 +152,7 @@ export default function EventDetail() {
   const [userRegistration, setUserRegistration] = useState<Registration | null>(null);
   const [isRegistering, setIsRegistering] = useState(false);
   const [showRegistrationForm, setShowRegistrationForm] = useState(false);
+  const [showRegistrationRules, setShowRegistrationRules] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
 
   const initialMember = { name: "", gameName: "", grade: "", department: "", studentId: "", phone: "", email: "" };
@@ -475,6 +477,15 @@ export default function EventDetail() {
 
   return (
     <div className="w-full px-2 sm:px-4 lg:px-6 py-12">
+      <RegistrationRulesDialog
+        open={showRegistrationRules}
+        onOpenChange={setShowRegistrationRules}
+        eventName={event.title}
+        onContinue={() => {
+          setShowRegistrationRules(false);
+          setShowRegistrationForm(true);
+        }}
+      />
 
       <Button
         onClick={() => setLocation("/events")}
@@ -580,7 +591,7 @@ export default function EventDetail() {
           {!userRegistration ? (
             isOpen && !isFull && !showRegistrationForm ? (
               <Button
-                onClick={() => setShowRegistrationForm(true)}
+                onClick={() => setShowRegistrationRules(true)}
                 className="w-full bg-primary hover:bg-primary/80 py-8 text-xl font-bold rounded-xl shadow-lg shadow-primary/20 transition-all hover:scale-[1.02]"
               >
                 ลงสมัครเข้าแข่งขันตอนนี้

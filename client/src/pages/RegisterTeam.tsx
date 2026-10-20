@@ -9,6 +9,7 @@ import { uploadImageToCloudinary } from "@/lib/cloudinary";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
+import { RegistrationRulesDialog } from "@/components/RegistrationRulesDialog";
 import { Loader2, Menu, X, Trophy, Upload, ImageIcon, User, Gamepad2, GraduationCap, BookOpen, Fingerprint, Users, Check } from "lucide-react";
 import { motion } from "framer-motion";
 
@@ -87,6 +88,7 @@ export default function RegisterTeam() {
   const [userRegistration, setUserRegistration] = useState<Registration | null>(null);
   const [isRegistering, setIsRegistering] = useState(false);
   const [showRegistrationForm, setShowRegistrationForm] = useState(false);
+  const [showRegistrationRules, setShowRegistrationRules] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [loading, setLoading] = useState(true);
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -287,6 +289,15 @@ export default function RegisterTeam() {
 
   return (
     <div className="min-h-screen">
+      <RegistrationRulesDialog
+        open={showRegistrationRules}
+        onOpenChange={setShowRegistrationRules}
+        eventName={event?.title}
+        onContinue={() => {
+          setShowRegistrationRules(false);
+          setShowRegistrationForm(true);
+        }}
+      />
       <div className="w-full px-2 sm:px-4 lg:px-6 py-12">
         <div className="flex items-center gap-4 mb-8">
           <Button
@@ -588,7 +599,7 @@ export default function RegisterTeam() {
                 </Card>
               ) : (
                 <Button
-                  onClick={() => setShowRegistrationForm(true)}
+                  onClick={() => setShowRegistrationRules(true)}
                   className="w-full bg-primary hover:bg-primary/80 py-8 text-xl font-bold rounded-xl shadow-lg shadow-primary/20 transition-all hover:scale-[1.02]"
                 >
                   ลงสมัครเข้าแข่งขันตอนนี้
