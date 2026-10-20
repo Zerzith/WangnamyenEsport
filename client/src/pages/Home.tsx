@@ -8,6 +8,7 @@ import { useEffect, useState, memo } from "react";
 import { collection, onSnapshot, query, where, orderBy, limit, getDocs } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { formatThaiDate, formatThaiDateTime } from "@/lib/date";
+import { SupportedGamesBanner } from "@/components/SupportedGamesBanner";
 
 const HERO_BG = "https://images.unsplash.com/photo-1552820728-8ac41f1ce891?q=80&w=2070&auto=format&fit=crop";
 
@@ -274,6 +275,7 @@ export default function Home() {
         </div>
       </section>
 
+      <SupportedGamesBanner />
 
       {champions.length > 0 && (
           <section className="border-y border-white/[0.06] bg-black/15 py-24">
