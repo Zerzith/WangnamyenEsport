@@ -424,7 +424,7 @@ export default function EventDetail() {
             กลับไปหน้าแรก
           </Button>
           <h1 className="text-4xl font-display font-bold text-white mb-4">รายการแข่งขันทั้งหมด</h1>
-          <p className="text-muted-foreground">รวมรายการแข่งขันอีสปอร์ตทั้งหมดของวิทยาลัยเทคนิควังน้ำเย็น</p>
+          <p className="text-muted-foreground">ติดตามรายการแข่งขันทั้งหมดได้ผ่านระบบบริหารการจัดการแข่งขันอีสปอร์ต</p>
         </div>
 
         {allEvents.length === 0 ? (

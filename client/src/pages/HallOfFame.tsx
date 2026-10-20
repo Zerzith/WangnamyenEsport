@@ -119,7 +119,7 @@ export default function HallOfFame() {
           <h1 className="text-4xl font-display font-bold text-white">ห้องเกียรติยศ</h1>
         </div>
         <p className="text-muted-foreground">
-          รายชื่อทีมที่ผ่านการคัดเลือกและเข้าร่วมการแข่งขัน WNY Esports Tournament
+          รายชื่อทีมที่ผ่านการคัดเลือกและเข้าร่วมการแข่งขันในระบบบริหารการจัดการแข่งขันอีสปอร์ต
         </p>
       </div>
 

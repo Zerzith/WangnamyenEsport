@@ -299,7 +299,7 @@ export default function RegisterTeam() {
           </Button>
           <div>
             <h1 className="text-4xl font-display font-bold text-white mb-2">ลงทะเบียนทีมแข่ง</h1>
-            <p className="text-muted-foreground">เข้าร่วมการแข่งขัน WNY Esports Tournament</p>
+            <p className="text-muted-foreground">ลงทะเบียนเข้าร่วมการแข่งขันผ่านระบบบริหารการจัดการแข่งขันอีสปอร์ต</p>
           </div>
         </div>
 

@@ -10,14 +10,14 @@ export default function Privacy() {
           className="text-center mb-16"
         >
           <h1 className="text-4xl md:text-5xl font-display font-bold text-white mb-4">นโยบายความเป็นส่วนตัว</h1>
-          <p className="text-xl text-muted-foreground">การจัดการข้อมูลส่วนบุคคลสำหรับผู้ใช้งาน WNY Esports</p>
+          <p className="text-xl text-muted-foreground">การจัดการข้อมูลส่วนบุคคลสำหรับผู้ใช้งานระบบบริหารการจัดการแข่งขันอีสปอร์ต</p>
         </motion.div>
 
         <div className="space-y-8 text-muted-foreground leading-relaxed">
           <section>
             <h2 className="text-2xl font-bold text-white mb-4">1. ข้อมูลที่เราจัดเก็บ</h2>
             <p>
-              ในการใช้งานแพลตฟอร์ม WNY Esports เราอาจจัดเก็บข้อมูลส่วนบุคคลที่จำเป็นสำหรับการจัดการแข่งขัน ได้แก่:
+              ในการใช้งานระบบบริหารการจัดการแข่งขันอีสปอร์ต เราอาจจัดเก็บข้อมูลส่วนบุคคลที่จำเป็นสำหรับการจัดการแข่งขัน ได้แก่:
             </p>
             <ul className="list-disc list-inside mt-2 space-y-1">
               <li>ข้อมูลบัญชีผู้ใช้ (ชื่อที่แสดง, อีเมล, รูปโปรไฟล์)</li>

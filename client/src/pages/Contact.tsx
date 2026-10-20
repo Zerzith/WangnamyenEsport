@@ -3,7 +3,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { MapPin, Phone, Mail, Facebook, Globe } from "lucide-react";
+import { MapPin, Phone, Mail } from "lucide-react";
 
 export default function Contact() {
   return (
@@ -26,7 +26,7 @@ export default function Contact() {
                 <MapPin className="w-6 h-6 text-primary mt-1" />
                 <div>
                   <h3 className="font-bold text-white">ที่อยู่</h3>
-                  <p className="text-sm text-muted-foreground">วิทยาลัยเทคนิควังน้ำเย็น 104 ม.13 ต.วังน้ำเย็น อ.วังน้ำเย็น</p>
+                  <p className="text-sm text-muted-foreground">ระบบบริหารการจัดการแข่งขันอีสปอร์ต · 104 ม.13 ต.วังน้ำเย็น อ.วังน้ำเย็น</p>
                 </div>
               </div>
             </Card>
@@ -51,14 +51,6 @@ export default function Contact() {
               </div>
             </Card>
 
-            <div className="flex gap-4 pt-4">
-              <a href="https://web.facebook.com/p/%E0%B8%A7%E0%B8%B4%E0%B8%97%E0%B8%A2%E0%B8%B2%E0%B8%A5%E0%B8%B1%E0%B8%A2%E0%B9%80%E0%B8%97%E0%B8%84%E0%B8%99%E0%B8%B4%E0%B8%84%E0%B8%A7%E0%B8%B1%E0%B8%87%E0%B8%99%E0%B9%89%E0%B8%B3%E0%B9%80%E0%B8%A2%E0%B9%87%E0%B8%99-61560850153252/?_rdc=1&_rdr" target="_blank" rel="noreferrer" className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center text-primary hover:bg-primary hover:text-white transition-all">
-                <Facebook className="w-5 h-5" />
-              </a>
-              <a href="https://www.wangcc.ac.th/" target="_blank" rel="noreferrer" className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center text-primary hover:bg-primary hover:text-white transition-all">
-                <Globe className="w-5 h-5" />
-              </a>
-            </div>
           </div>
 
           {}

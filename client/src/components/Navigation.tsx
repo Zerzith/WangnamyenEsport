@@ -1,7 +1,7 @@
 import { useAuth } from "@/hooks/use-auth";
 import { Button } from "@/components/ui/button";
 import { AvatarCustom } from "@/components/ui/avatar-custom";
-import { LogOut, LogIn } from "lucide-react";
+import { Gamepad2, LogOut, LogIn } from "lucide-react";
 import { useLocation, Link } from "wouter";
 
 export function Navigation() {
@@ -21,14 +21,12 @@ export function Navigation() {
     <nav className="sticky top-0 z-50 w-full border-b border-white/[0.08] bg-zinc-950/95">
       <div className="flex min-h-[4rem] sm:min-h-[4.5rem] items-center gap-2 px-2 sm:px-4 lg:px-6">
         {}
-        <Link href="/" className="flex flex-shrink-0 items-center gap-2">
-          <img
-            src="/logo.png"
-            alt="WNYTC Esports Championship"
-            className="h-9 w-9 sm:h-10 sm:w-10 rounded-lg object-contain"
-          />
-          <span className="hidden sm:block whitespace-nowrap font-display text-xs sm:text-sm lg:text-base font-bold uppercase tracking-tight text-white">
-            WangNamYen<span className="text-primary">Esports</span>
+        <Link href="/" aria-label="ระบบบริหารการจัดการแข่งขันอีสปอร์ต" className="flex flex-shrink-0 items-center gap-2">
+          <span aria-hidden="true" className="flex h-9 w-9 items-center justify-center rounded-lg border border-primary/30 bg-primary/10 text-primary sm:h-10 sm:w-10">
+            <Gamepad2 className="h-5 w-5" />
+          </span>
+          <span className="hidden whitespace-nowrap font-display text-xs font-bold tracking-tight text-white sm:block lg:text-sm">
+            ระบบบริหารการจัดการแข่งขันอีสปอร์ต
           </span>
         </Link>
 

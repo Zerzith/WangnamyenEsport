@@ -138,7 +138,7 @@ export default function NewsDetail() {
                     <ArrowLeft className="h-4 w-4" />
                     ข่าวสารทั้งหมด
                   </Link>
-                  <span className="text-xs text-white/40">WangNamYen Esports</span>
+                  <span className="text-xs text-white/40">ระบบบริหารการจัดการแข่งขันอีสปอร์ต</span>
                 </div>
               </motion.div>
             </div>
