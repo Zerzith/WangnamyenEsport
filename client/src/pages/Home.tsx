@@ -251,7 +251,7 @@ export default function Home() {
               className="mb-6 sm:mb-8 max-w-xl text-sm sm:text-base leading-relaxed text-slate-300"
             >
               ระบบบริหารการจัดการแข่งขันอีสปอร์ต
-              ติดตามสายการแข่งขัน ผลการแข่ง และทำเนียบแชมเปี้ยนได้ที่นี่
+              ติดตามสายการแข่งขัน ผลการแข่ง     และทำเนียบแชมเปี้ยนได้ที่นี่
             </motion.p>
             <motion.div
               initial={{ opacity: 0, y: 20 }}
