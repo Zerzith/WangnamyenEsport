@@ -492,10 +492,10 @@ export default function EventDetail() {
 
       <Button
         onClick={() => setLocation("/events")}
-        variant="ghost"
-        className="mb-6 text-muted-foreground hover:text-white"
+        variant="default"
+        className="mb-6 h-12 w-full justify-start gap-2 rounded-lg border border-primary/70 bg-primary px-5 text-base font-bold text-primary-foreground shadow-none hover:bg-primary/90 hover:text-primary-foreground focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 sm:w-auto sm:justify-center"
       >
-        <ArrowLeft className="w-4 h-4 mr-2" />
+        <ArrowLeft className="h-5 w-5" />
         กลับไปหน้ารายการ
       </Button>
 
