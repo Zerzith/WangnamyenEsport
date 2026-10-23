@@ -421,10 +421,10 @@ export default function EventDetail() {
         <div className="mb-12">
           <Button
             onClick={() => setLocation("/")}
-            variant="ghost"
-            className="mb-6 text-muted-foreground hover:text-white"
+            variant="default"
+            className="mb-6 h-12 w-full justify-start gap-2 rounded-lg border border-primary/70 bg-primary px-5 text-base font-bold text-primary-foreground shadow-none hover:bg-primary/90 hover:text-primary-foreground focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 sm:w-auto sm:justify-center"
           >
-            <ArrowLeft className="w-4 h-4 mr-2" />
+            <ArrowLeft className="h-5 w-5" />
             กลับไปหน้าแรก
           </Button>
           <h1 className="text-4xl font-display font-bold text-white mb-4">รายการแข่งขันทั้งหมด</h1>
@@ -435,7 +435,12 @@ export default function EventDetail() {
           <div className="text-center py-24 bg-zinc-900 rounded-xl border border-dashed border-white/10">
             <Gamepad2 className="w-20 h-20 mx-auto text-white/5 mb-6" />
             <h3 className="text-xl font-bold text-white/40">ไม่พบรายการแข่งขันในขณะนี้</h3>
-            <Button onClick={() => setLocation("/")} variant="outline" className="mt-6">
+            <Button
+              onClick={() => setLocation("/")}
+              variant="default"
+              className="mt-6 h-12 gap-2 rounded-lg border border-primary/70 bg-primary px-5 text-base font-bold text-primary-foreground shadow-none hover:bg-primary/90 hover:text-primary-foreground focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+            >
+              <ArrowLeft className="h-5 w-5" />
               กลับไปหน้าแรก
             </Button>
           </div>
