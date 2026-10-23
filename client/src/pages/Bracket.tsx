@@ -1,279 +1,489 @@
-import { useState, useEffect } from "react";
-import { collection, query, where, onSnapshot, orderBy, getDocs, getDoc, doc } from "firebase/firestore";
+import { useEffect, useMemo, useState } from "react";
+import { collection, doc, getDoc, onSnapshot, orderBy, query, where } from "firebase/firestore";
+import { CalendarDays, CheckCircle2, Clock3, Gamepad2, Loader2, Swords, Trophy } from "lucide-react";
 import { TeamMembersModal } from "@/components/TeamMembersModal";
+import { TournamentBracketBoard, type BracketMatchData, type BracketRoundData, type BracketTeamData } from "@/components/TournamentBracketBoard";
 import { db } from "@/lib/firebase";
-import { Card } from "@/components/ui/card";
-import { Loader2, Trophy, LayoutGrid } from "lucide-react";
-import { motion } from "framer-motion";
-import { censorText } from "@/lib/filter";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-
-interface Match {
-  id: string;
-  round: string;
-  teamA: string;
-  teamB: string;
-  scoreA: number;
-  scoreB: number;
-  status: "pending" | "ongoing" | "completed";
-  tournamentId: string;
-  group?: string;
-  teamAName?: string;
-  teamBName?: string;
-  logoUrlA?: string;
-  logoUrlB?: string;
-  game?: string;
-  winsA?: number;
-  winsB?: number;
-  lossesA?: number;
-  lossesB?: number;
-  drawsA?: number;
-  drawsB?: number;
-  createdAt?: any;
-}
+import { formatThaiDate } from "@/lib/date";
 
 interface Tournament {
   id: string;
   title: string;
   game: string;
-  status: string;
+  status?: string;
+  date?: string;
+  bannerUrl?: string;
+  championTeamId?: string | null;
 }
 
+type TeamRegistration = BracketTeamData;
 
+type TournamentCategory = "ongoing" | "completed" | "upcoming" | "champions";
+
+const CATEGORY_OPTIONS: Array<{ id: TournamentCategory; label: string; icon: typeof Swords }> = [
+  { id: "ongoing", label: "กำลังแข่ง", icon: Swords },
+  { id: "completed", label: "ตัดสินแล้ว", icon: CheckCircle2 },
+  { id: "upcoming", label: "ยังไม่เริ่มแข่ง", icon: Clock3 },
+  { id: "champions", label: "แชมเปี้ยน", icon: Trophy },
+];
+const DEFAULT_CATEGORY_PRIORITY: TournamentCategory[] = ["ongoing", "upcoming", "completed", "champions"];
+
+const DEFAULT_BANNER = "/assets/valorant-banner.png";
 const teamDataCache: Record<string, { teamName: string; logoUrl?: string }> = {};
+
+function getGameBanner(game?: string) {
+  const normalized = (game || "").toLowerCase().replace(/[^a-z0-9]/g, "");
+  if (normalized.includes("freefire")) return "/assets/freefire-banner.png";
+  if (normalized.includes("valorant")) return "/assets/valorant-banner.png";
+  if (normalized.includes("rov") || normalized.includes("arenaofvalor")) return "/assets/rov-banner.png";
+  return null;
+}
+
+function getTournamentProgress(tournament: Tournament, statusesByEvent: Record<string, string[]>): Exclude<TournamentCategory, "champions"> {
+  const statuses = statusesByEvent[tournament.id] || [];
+  if (statuses.length > 0 && statuses.every((status) => status === "completed")) return "completed";
+  if (statuses.some((status) => status === "ongoing" || status === "completed")) return "ongoing";
+  return "upcoming";
+}
+
+function getCategoryLabel(category: Exclude<TournamentCategory, "champions">) {
+  if (category === "ongoing") return "กำลังแข่ง";
+  if (category === "completed") return "ตัดสินแล้ว";
+  return "ยังไม่เริ่มแข่ง";
+}
+
+function normalizeGroup(group?: string) {
+  const value = (group || "").trim();
+  if (!value || value.toLowerCase() === "all" || value.toLowerCase() === "general") return "ทั่วไป";
+  return value;
+}
+
+function getGroupLabel(group: string) {
+  return group === "ทั่วไป" ? group : `กลุ่ม ${group}`;
+}
+
+function getRoundTitle(round: string) {
+  return /^\d+$/.test(round) ? `รอบ ${round}` : round;
+}
+
+async function fetchTeamData(teamId: string) {
+  if (!teamId || teamId === "TBD") return null;
+  if (teamDataCache[teamId]) return teamDataCache[teamId];
+
+  try {
+    const teamDoc = await getDoc(doc(db, "registrations", teamId));
+    if (!teamDoc.exists()) return null;
+    const data = teamDoc.data() as { teamName?: string; name?: string; logoUrl?: string };
+    const result = { teamName: data.teamName || data.name || teamId, logoUrl: data.logoUrl };
+    teamDataCache[teamId] = result;
+    return result;
+  } catch (error) {
+    console.error("Error fetching bracket team:", teamId, error);
+    return null;
+  }
+}
+
+async function fetchMatchStatusesFromApi() {
+  const response = await fetch("/api/matches");
+  if (!response.ok) throw new Error(`Unable to load matches: ${response.status}`);
+
+  const matchRows = await response.json() as Array<{ eventId?: string; status?: string }>;
+  const nextStatuses: Record<string, string[]> = {};
+  matchRows.forEach((match) => {
+    if (!match.eventId) return;
+    nextStatuses[match.eventId] ||= [];
+    nextStatuses[match.eventId].push(String(match.status || "pending"));
+  });
+  return nextStatuses;
+}
 
 export default function Bracket() {
   const [tournaments, setTournaments] = useState<Tournament[]>([]);
-  const [selectedTournament, setSelectedTournament] = useState<Tournament | null>(null);
-  const [matches, setMatches] = useState<Match[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [groups, setGroups] = useState<string[]>(["All"]);
-  const [selectedTeam, setSelectedTeam] = useState<any>(null);
+  const [selectedTournamentId, setSelectedTournamentId] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState<TournamentCategory | null>(null);
+  const [matches, setMatches] = useState<BracketMatchData[]>([]);
+  const [statusesByEvent, setStatusesByEvent] = useState<Record<string, string[]>>({});
+  const [registrations, setRegistrations] = useState<TeamRegistration[]>([]);
+  const [groups, setGroups] = useState<string[]>([]);
+  const [selectedGroup, setSelectedGroup] = useState("");
+  const [selectedTeam, setSelectedTeam] = useState<TeamRegistration | null>(null);
   const [showTeamModal, setShowTeamModal] = useState(false);
-  const [registrations, setRegistrations] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [matchesLoading, setMatchesLoading] = useState(false);
 
+  const categoryCounts = useMemo(() => ({
+    ongoing: tournaments.filter((tournament) => getTournamentProgress(tournament, statusesByEvent) === "ongoing").length,
+    completed: tournaments.filter((tournament) => getTournamentProgress(tournament, statusesByEvent) === "completed").length,
+    upcoming: tournaments.filter((tournament) => getTournamentProgress(tournament, statusesByEvent) === "upcoming").length,
+    champions: tournaments.filter((tournament) => Boolean(tournament.championTeamId)).length,
+  }), [tournaments, statusesByEvent]);
 
-  useEffect(() => {
-    if (!selectedTournament) return;
+  const activeCategory = selectedCategory ?? DEFAULT_CATEGORY_PRIORITY.find((category) => categoryCounts[category] > 0) ?? "upcoming";
 
-    const q = query(
-      collection(db, "registrations"),
-      where("eventId", "==", selectedTournament.id),
-      where("status", "==", "approved")
-    );
+  const filteredTournaments = useMemo(() => {
+    if (activeCategory === "champions") return tournaments.filter((tournament) => Boolean(tournament.championTeamId));
+    return tournaments.filter((tournament) => getTournamentProgress(tournament, statusesByEvent) === activeCategory);
+  }, [activeCategory, tournaments, statusesByEvent]);
 
-    const unsubscribe = onSnapshot(q, (snapshot) => {
-      const regs = snapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      } as any));
-      setRegistrations(regs);
+  const selectedTournament = filteredTournaments.find((tournament) => tournament.id === selectedTournamentId)
+    || filteredTournaments[0]
+    || null;
+
+  const matchGroups = useMemo(() => Array.from(new Set(matches.map((match) => normalizeGroup(match.group)))), [matches]);
+
+  const visibleMatches = useMemo(
+    () => matches.filter((match) => normalizeGroup(match.group) === selectedGroup),
+    [matches, selectedGroup],
+  );
+
+  const rounds = useMemo<BracketRoundData[]>(() => {
+    const grouped = new Map<string, BracketMatchData[]>();
+    visibleMatches.forEach((match) => {
+      const key = String(match.round ?? "1").trim() || "1";
+      const roundMatches = grouped.get(key) || [];
+      roundMatches.push(match);
+      grouped.set(key, roundMatches);
     });
 
-    return () => unsubscribe();
-  }, [selectedTournament]);
-
+    return Array.from(grouped.entries())
+      .sort(([left], [right]) => {
+        const leftNumber = Number.parseInt(left, 10);
+        const rightNumber = Number.parseInt(right, 10);
+        if (Number.isFinite(leftNumber) && Number.isFinite(rightNumber)) return leftNumber - rightNumber;
+        if (Number.isFinite(leftNumber)) return -1;
+        if (Number.isFinite(rightNumber)) return 1;
+        return left.localeCompare(right, "th", { numeric: true });
+      })
+      .map(([key, roundMatches]) => ({ key, title: getRoundTitle(key), matches: roundMatches }));
+  }, [visibleMatches]);
 
   useEffect(() => {
-    const q = query(collection(db, "events"), orderBy("createdAt", "desc"));
-    const unsubscribe = onSnapshot(q, (snapshot) => {
-      const tournamentsData = snapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      } as any));
-      setTournaments(tournamentsData);
-      if (tournamentsData.length > 0 && !selectedTournament) {
-        setSelectedTournament(tournamentsData[0]);
-      }
+    const eventsQuery = query(collection(db, "events"), orderBy("createdAt", "desc"));
+    const unsubscribe = onSnapshot(eventsQuery, (snapshot) => {
+      setTournaments(snapshot.docs.map((eventDoc) => ({ id: eventDoc.id, ...eventDoc.data() } as Tournament)));
+      setLoading(false);
+    }, (error) => {
+      console.error("Error fetching tournaments:", error);
       setLoading(false);
     });
 
     return () => unsubscribe();
   }, []);
 
-
   useEffect(() => {
-    if (!selectedTournament) return;
-
-    const q = query(
-      collection(db, "matches"),
-      where("eventId", "==", selectedTournament.id)
-    );
-    const unsubscribe = onSnapshot(q, async (snapshot) => {
-      let matchesData = snapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      } as any));
-
-
-      matchesData.sort((a, b) => {
-        const timeA = a.createdAt?.seconds || 0;
-        const timeB = b.createdAt?.seconds || 0;
-        return timeA - timeB;
+    const unsubscribe = onSnapshot(collection(db, "matches"), (snapshot) => {
+      const nextStatuses: Record<string, string[]> = {};
+      snapshot.docs.forEach((matchDoc) => {
+        const data = matchDoc.data();
+        if (!data.eventId) return;
+        const eventId = String(data.eventId);
+        nextStatuses[eventId] ||= [];
+        nextStatuses[eventId].push(String(data.status || "pending"));
       });
-
-
-      const fetchTeamData = async (teamId: string) => {
-        if (!teamId) return null;
-        if (teamDataCache[teamId]) return teamDataCache[teamId];
-        try {
-          const teamDoc = await getDoc(doc(db, "registrations", teamId));
-          if (teamDoc.exists()) {
-            const data = teamDoc.data() as any;
-            teamDataCache[teamId] = { teamName: data.teamName, logoUrl: data.logoUrl };
-            return teamDataCache[teamId];
-          }
-        } catch (error) {
-          console.error("Error fetching team data:", teamId, error);
-        }
-        return null;
-      };
-
-      const matchesWithLogos = await Promise.all(
-        matchesData.map(async (match) => {
-          const [teamAData, teamBData] = await Promise.all([
-            fetchTeamData(match.teamA),
-            fetchTeamData(match.teamB),
-          ]);
-          return {
-            ...match,
-            teamAName: teamAData?.teamName || match.teamA,
-            teamBName: teamBData?.teamName || match.teamB,
-            logoUrlA: teamAData?.logoUrl || undefined,
-            logoUrlB: teamBData?.logoUrl || undefined,
-          };
-        })
-      );
-
-      setMatches(matchesWithLogos);
-
-
-      const uniqueGroups = Array.from(new Set(
-        matchesWithLogos
-          .map((match) => String(match.group || "General").trim())
-          .filter((group) => group && group !== "All")
-      ));
-      setGroups(["All", ...uniqueGroups]);
+      setStatusesByEvent(nextStatuses);
     }, (error) => {
-      console.error("Error fetching matches:", error);
+      console.error("Error fetching tournament status categories:", error);
+      void fetchMatchStatusesFromApi()
+        .then(setStatusesByEvent)
+        .catch((fallbackError) => console.error("Unable to load match status fallback:", fallbackError));
     });
 
     return () => unsubscribe();
-  }, [selectedTournament]);
+  }, []);
+
+  useEffect(() => {
+    if (!filteredTournaments.length) {
+      setSelectedTournamentId("");
+      return;
+    }
+    setSelectedTournamentId((current) => filteredTournaments.some((tournament) => tournament.id === current)
+      ? current
+      : filteredTournaments[0].id);
+  }, [filteredTournaments]);
+
+  useEffect(() => {
+    if (!selectedTournament?.id) {
+      setMatches([]);
+      setRegistrations([]);
+      setMatchesLoading(false);
+      return;
+    }
+
+    let isCurrent = true;
+    setMatches([]);
+    setRegistrations([]);
+    setMatchesLoading(true);
+
+    const registrationsQuery = query(
+      collection(db, "registrations"),
+      where("eventId", "==", selectedTournament.id),
+      where("status", "==", "approved"),
+    );
+    const unsubscribeRegistrations = onSnapshot(registrationsQuery, (snapshot) => {
+      if (!isCurrent) return;
+      setRegistrations(snapshot.docs.map((registrationDoc) => ({
+        id: registrationDoc.id,
+        ...registrationDoc.data(),
+      } as TeamRegistration)));
+    }, (error) => {
+      console.error("Error fetching registered teams:", error);
+    });
+
+    const matchesQuery = query(collection(db, "matches"), where("eventId", "==", selectedTournament.id));
+    const unsubscribeMatches = onSnapshot(matchesQuery, async (snapshot) => {
+      const matchesData = snapshot.docs
+        .map((matchDoc) => ({ id: matchDoc.id, ...matchDoc.data() } as BracketMatchData))
+        .sort((left, right) => {
+          const leftTime = left.createdAt?.seconds || 0;
+          const rightTime = right.createdAt?.seconds || 0;
+          return leftTime - rightTime;
+        });
+
+      try {
+        const matchesWithTeams = await Promise.all(matchesData.map(async (match) => {
+          const [teamA, teamB] = await Promise.all([fetchTeamData(match.teamA), fetchTeamData(match.teamB)]);
+          return {
+            ...match,
+            teamAName: teamA?.teamName || match.teamAName || match.teamA || "รอทีม",
+            teamBName: teamB?.teamName || match.teamBName || match.teamB || "รอทีม",
+            logoUrlA: teamA?.logoUrl || match.logoUrlA,
+            logoUrlB: teamB?.logoUrl || match.logoUrlB,
+          };
+        }));
+        if (isCurrent) setMatches(matchesWithTeams);
+      } catch (error) {
+        console.error("Error loading bracket matches:", error);
+        if (isCurrent) setMatches(matchesData);
+      } finally {
+        if (isCurrent) setMatchesLoading(false);
+      }
+    }, (error) => {
+      console.error("Error fetching bracket matches:", error);
+      if (isCurrent) setMatchesLoading(false);
+    });
+
+    return () => {
+      isCurrent = false;
+      unsubscribeRegistrations();
+      unsubscribeMatches();
+    };
+  }, [selectedTournament?.id]);
+
+  useEffect(() => {
+    setSelectedGroup((current) => matchGroups.includes(current) ? current : (matchGroups[0] || ""));
+  }, [matchGroups]);
 
   if (loading) {
     return (
-      <div className="w-full px-2 sm:px-4 lg:px-6 py-24 flex flex-col items-center justify-center">
-        <Loader2 className="w-12 h-12 animate-spin text-primary mb-4" />
-        <p className="text-muted-foreground animate-pulse">กำลังโหลดข้อมูลสายการแข่งขันแบบเรียลไทม์...</p>
+      <div className="flex min-h-[60vh] flex-col items-center justify-center gap-3 px-4 text-center">
+        <Loader2 className="h-8 w-8 text-primary" />
+        <p className="text-sm text-slate-400">กำลังโหลดรายการแข่งขัน...</p>
       </div>
     );
   }
 
+  const activeCategoryLabel = CATEGORY_OPTIONS.find((category) => category.id === activeCategory)?.label || "รายการแข่งขัน";
+  const categoryIcon = CATEGORY_OPTIONS.find((category) => category.id === activeCategory)?.icon || Trophy;
+  const CategoryIcon = categoryIcon;
+  const selectedTournamentProgress = selectedTournament
+    ? getTournamentProgress(selectedTournament, statusesByEvent)
+    : "upcoming";
+  const champion = selectedTournament?.championTeamId
+    ? registrations.find((registration) => registration.id === selectedTournament.championTeamId)
+    : undefined;
+  const bannerUrl = selectedTournament
+    ? getGameBanner(selectedTournament.game) || selectedTournament.bannerUrl || DEFAULT_BANNER
+    : DEFAULT_BANNER;
+
   return (
-    <div className="min-h-screen bg-transparent">
-      <div className="w-full px-2 sm:px-4 lg:px-6 py-14">
-        <div className="mb-12 text-center">
-          <h1 className="mb-4 font-display text-4xl font-bold uppercase tracking-tight text-white md:text-6xl">
-            สายการแข่งขัน
-          </h1>
-          <p className="mx-auto max-w-2xl text-base leading-relaxed text-muted-foreground">
-            ติดตามผลการแข่งขันแบบสดๆ โดยไม่ต้องรีเฟรชหน้าจอ
+    <main className="min-h-screen bg-transparent">
+      <div className="mx-auto w-full max-w-[1440px] px-3 py-7 sm:px-5 sm:py-9 lg:px-8">
+        <header className="mb-6">
+          <p className="mb-1 text-xs font-bold uppercase tracking-[0.16em] text-primary">Wangnamyen Esports</p>
+          <h1 className="text-3xl font-bold text-white sm:text-4xl">สายการแข่งขัน</h1>
+          <p className="mt-2 max-w-2xl text-sm leading-relaxed text-slate-400">
+            เลือกรายการเพื่อดูผังการแข่งขัน ผลแต่ละรอบ และทีมที่ผ่านเข้าสู่รอบถัดไป
           </p>
-        </div>
+        </header>
 
-        <div className="mb-12 flex flex-wrap justify-center gap-2.5">
-          {tournaments.map((tournament) => (
-            <button
-              key={tournament.id}
-              onClick={() => setSelectedTournament(tournament)}
-              className={`rounded-xl border px-5 py-2.5 font-display text-sm font-bold tracking-wide transition-all duration-300 ${
-                selectedTournament?.id === tournament.id
-                  ? "border-primary/45 bg-primary text-primary-foreground shadow-[0_14px_28px_-14px_rgb(34_211_238_/_0.95)] scale-[1.03]"
-                  : "border-white/[0.1] bg-zinc-900/50 text-white/60 hover:border-primary/35 hover:bg-primary/[0.08] hover:text-white"
-              }`}
-            >
-              {tournament.title}
-            </button>
-          ))}
-        </div>
+        <section aria-label="หมวดหมู่รายการแข่งขัน" className="mb-5 grid grid-cols-2 gap-2 sm:grid-cols-4">
+          {CATEGORY_OPTIONS.map(({ id, label, icon: Icon }) => {
+            const isSelected = activeCategory === id;
+            return (
+              <button
+                key={id}
+                type="button"
+                onClick={() => setSelectedCategory(id)}
+                aria-pressed={isSelected}
+                className={`flex min-h-[68px] items-center justify-between gap-2 rounded-lg border px-3 py-2.5 text-left ${
+                  isSelected
+                    ? "border-primary/50 bg-primary/10 text-white"
+                    : "border-white/10 bg-zinc-900 text-slate-300"
+                } transition-none active:transform-none`}
+              >
+                <span className="flex min-w-0 items-center gap-2">
+                  <Icon className={`h-4 w-4 shrink-0 ${isSelected ? "text-primary" : "text-slate-400"}`} />
+                  <span className="text-xs font-semibold leading-snug sm:text-sm">{label}</span>
+                </span>
+                <span className="shrink-0 rounded-md bg-black/20 px-2 py-1 text-xs tabular-nums text-slate-300">
+                  {categoryCounts[id]}
+                </span>
+              </button>
+            );
+          })}
+        </section>
 
-        {tournaments.length === 0 ? (
-          <div className="esports-panel mx-auto max-w-3xl border-dashed border-white/[0.15] bg-zinc-900/35 py-24 text-center">
-            <Trophy className="w-16 h-16 mx-auto text-white/10 mb-4" />
-            <p className="text-muted-foreground text-lg">ยังไม่มีข้อมูลการแข่งขันในขณะนี้</p>
-          </div>
-        ) : (
-          <Tabs defaultValue="All" className="w-full">
-            <div className="flex justify-center mb-8">
-              <TabsList className="border-white/[0.1] bg-zinc-950/55 p-1">
-                {groups.map(group => (
-                  <TabsTrigger key={group} value={group} className="px-5 data-[state=active]:border-primary/30 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
-                    {group === "All" ? "ทั้งหมด" : `กลุ่ม ${group}`}
-                  </TabsTrigger>
+        {filteredTournaments.length === 0 ? (
+          <section className="rounded-xl border border-white/10 bg-zinc-950/70 px-5 py-12 text-center">
+            <CategoryIcon className="mx-auto mb-3 h-9 w-9 text-slate-500" />
+            <h2 className="text-lg font-semibold text-white">ไม่มีรายการในหมวด{activeCategoryLabel}ในขณะนี้</h2>
+            <p className="mt-2 text-sm text-slate-400">เลือกหมวดหมู่อื่นเพื่อดูรายการและสายการแข่งขัน</p>
+          </section>
+        ) : selectedTournament ? (
+          <>
+            <section className="mb-5 rounded-xl border border-white/10 bg-zinc-950/80 p-3 sm:p-4">
+              <div className="mb-2 flex items-center justify-between gap-3">
+                <label htmlFor="bracket-tournament" className="text-sm font-semibold text-white">เลือกรายการแข่งขัน</label>
+                <span className="text-xs text-slate-400">{filteredTournaments.length} รายการในหมวดนี้</span>
+              </div>
+              <select
+                id="bracket-tournament"
+                value={selectedTournament.id}
+                onChange={(event) => setSelectedTournamentId(event.target.value)}
+                className="w-full rounded-lg border border-white/15 bg-zinc-900 px-3 py-3 text-sm text-white outline-none focus:border-primary [color-scheme:dark]"
+              >
+                {filteredTournaments.map((tournament) => (
+                  <option key={tournament.id} value={tournament.id}>
+                    {tournament.title} · {tournament.game}
+                  </option>
                 ))}
-              </TabsList>
-            </div>
+              </select>
+            </section>
 
-            {groups.map(group => {
-              const filteredMatches = matches.filter(m => group === "All" || (m.group || "General") === group);
+            <section className="relative mb-5 min-h-[190px] overflow-hidden rounded-xl border border-white/10 bg-zinc-900 sm:min-h-[220px]">
+              <img
+                src={bannerUrl}
+                alt=""
+                aria-hidden="true"
+                className="absolute inset-0 h-full w-full object-cover"
+                onError={(event) => {
+                  event.currentTarget.onerror = null;
+                  event.currentTarget.src = selectedTournament.bannerUrl || DEFAULT_BANNER;
+                }}
+              />
+              <div className="absolute inset-0 bg-gradient-to-r from-zinc-950/95 via-zinc-950/75 to-zinc-950/25" />
+              <div className="relative flex min-h-[190px] flex-col justify-between gap-5 p-4 sm:min-h-[220px] sm:p-6 lg:flex-row lg:items-end">
+                <div className="max-w-3xl">
+                  <div className="mb-3 flex flex-wrap items-center gap-2">
+                    <span className="inline-flex items-center gap-1.5 rounded-md border border-white/15 bg-zinc-950/75 px-2.5 py-1 text-xs font-semibold text-white">
+                      <Gamepad2 className="h-3.5 w-3.5 text-primary" />
+                      {selectedTournament.game || "เกมแข่งขัน"}
+                    </span>
+                    <span className={`rounded-md border px-2.5 py-1 text-xs font-semibold ${
+                      selectedTournamentProgress === "ongoing"
+                        ? "border-primary/30 bg-primary/10 text-primary"
+                        : selectedTournamentProgress === "completed"
+                          ? "border-emerald-400/25 bg-emerald-400/10 text-emerald-200"
+                          : "border-white/15 bg-zinc-950/70 text-slate-200"
+                    }`}>
+                      {getCategoryLabel(selectedTournamentProgress)}
+                    </span>
+                    {selectedTournament.championTeamId && (
+                      <span className="inline-flex items-center gap-1 rounded-md border border-amber-300/25 bg-zinc-950/75 px-2.5 py-1 text-xs font-semibold text-amber-200">
+                        <Trophy className="h-3.5 w-3.5" /> แชมเปี้ยน
+                      </span>
+                    )}
+                  </div>
+                  <h2 className="text-2xl font-bold leading-tight text-white sm:text-3xl">{selectedTournament.title}</h2>
+                  <p className="mt-2 flex items-center gap-2 text-sm text-slate-200">
+                    <CalendarDays className="h-4 w-4 shrink-0 text-primary" />
+                    {selectedTournament.date ? formatThaiDate(selectedTournament.date) : "กำหนดการแข่งขัน"}
+                  </p>
+                </div>
+                <div className="shrink-0 rounded-lg border border-white/15 bg-zinc-950/75 px-3 py-2 text-sm text-white">
+                  <span className="text-slate-400">แมตช์ในรายการ </span>
+                  <span className="font-bold tabular-nums">{matches.length}</span>
+                </div>
+              </div>
+            </section>
 
-              const matchesByRound = filteredMatches.reduce((acc, match) => {
-                const roundKey = match.round || "1";
-                if (!acc[roundKey]) {
-                  acc[roundKey] = [];
-                }
-                acc[roundKey].push(match);
-                return acc;
-              }, {} as Record<string, Match[]>);
-
-              const rounds = Array.from(new Set(filteredMatches.map(m => m.round || "1")));
-
-              return (
-                <TabsContent key={group} value={group} className="mt-0">
-                  {filteredMatches.length === 0 ? (
-                    <div className="esports-panel mx-auto max-w-3xl border-dashed border-white/[0.15] bg-zinc-900/35 py-24 text-center">
-                      <LayoutGrid className="w-16 h-16 mx-auto text-white/10 mb-4" />
-                      <p className="text-muted-foreground text-lg">ยังไม่มีข้อมูลการแข่งขันในกลุ่มนี้</p>
-                    </div>
+            {selectedTournament.championTeamId && (
+              <section className="mb-5 flex items-center gap-3 rounded-xl border border-amber-300/20 bg-zinc-950/80 p-4" aria-label="แชมป์เปี้ยนรายการ">
+                <span className="flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-lg border border-amber-300/25 bg-amber-300/10">
+                  {champion?.logoUrl ? (
+                    <img src={champion.logoUrl} alt="" className="h-full w-full object-cover" />
                   ) : (
-                    <div className="scrollbar-hide overflow-x-auto rounded-xl border border-white/[0.07] bg-zinc-950/20 pb-12">
-                      <div className="flex min-w-max justify-center gap-12 px-5 py-10 md:gap-20">
-                        {rounds.map((round, roundIndex) => (
-                          <div key={round} className="flex flex-col justify-around gap-8">
-                            <div className="text-center mb-4">
-                              <div className="inline-block rounded-lg border border-primary/20 bg-primary/[0.08] px-4 py-1.5 shadow-[0_0_16px_-11px_rgb(34_211_238_/_0.85)]">
-                                <p className="text-xs font-black text-primary uppercase tracking-[0.2em]">
-                                  {round}
-                                </p>
-                              </div>
-                            </div>
-                            <div className="flex flex-col gap-8">
-                              {matchesByRound[round].map((match) => (
-                                <BracketMatch
-                                  key={match.id}
-                                  match={match}
-                                  tournamentGame={selectedTournament?.game}
-                                  registrations={registrations}
-                                  onTeamClick={(team) => {
-                                    setSelectedTeam(team);
-                                    setShowTeamModal(true);
-                                  }}
-                                />
-                              ))}
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
+                    <Trophy className="h-5 w-5 text-amber-200" />
                   )}
-                </TabsContent>
-              );
-            })}
-          </Tabs>
-        )}
-      </div>
+                </span>
+                <div className="min-w-0">
+                  <p className="text-xs font-semibold text-amber-200">แชมเปี้ยนประจำรายการ</p>
+                  <p className="truncate font-bold text-white">{champion?.teamName || "ประกาศผู้ชนะแล้ว"}</p>
+                </div>
+              </section>
+            )}
 
+            {matchGroups.length > 1 && (
+              <section className="mb-4 rounded-xl border border-white/10 bg-zinc-950/65 p-3" aria-label="เลือกกลุ่มการแข่งขัน">
+                <p className="mb-2 text-xs font-semibold text-slate-400">กลุ่มการแข่งขัน</p>
+                <div className="flex flex-wrap gap-2">
+                  {matchGroups.map((group) => (
+                    <button
+                      key={group}
+                      type="button"
+                      onClick={() => setSelectedGroup(group)}
+                      aria-pressed={selectedGroup === group}
+                      className={`rounded-md border px-3 py-2 text-xs font-semibold ${
+                        selectedGroup === group
+                          ? "border-primary/45 bg-primary/10 text-primary"
+                          : "border-white/10 bg-zinc-900 text-slate-300"
+                      } transition-none active:transform-none`}
+                    >
+                      {getGroupLabel(group)}
+                    </button>
+                  ))}
+                </div>
+              </section>
+            )}
+
+            <section aria-label="ผังสายการแข่งขัน">
+              <div className="mb-3 flex flex-wrap items-end justify-between gap-2">
+                <div>
+                  <h2 className="text-xl font-bold text-white sm:text-2xl">ผังสายการแข่งขัน</h2>
+                  <p className="mt-1 text-xs text-slate-400">
+                    {matchGroups.length > 1 ? `${getGroupLabel(selectedGroup)} · ` : ""}
+                    เส้นแสดงการผ่านรอบ และเน้นทีมที่ชนะในแต่ละแมตช์
+                  </p>
+                </div>
+                <span className="rounded-md border border-white/10 bg-zinc-950/70 px-2.5 py-1.5 text-xs text-slate-300">
+                  {rounds.length} รอบ · {visibleMatches.length} แมตช์
+                </span>
+              </div>
+
+              {matchesLoading ? (
+                <div className="flex min-h-40 items-center justify-center gap-3 rounded-xl border border-white/10 bg-zinc-950/70 text-sm text-slate-400">
+                  <Loader2 className="h-5 w-5 text-primary" /> กำลังโหลดสายการแข่งขัน...
+                </div>
+              ) : rounds.length > 0 ? (
+                <TournamentBracketBoard
+                  rounds={rounds}
+                  registrations={registrations}
+                  onTeamClick={(team) => {
+                    setSelectedTeam(team);
+                    setShowTeamModal(true);
+                  }}
+                />
+              ) : (
+                <div className="rounded-xl border border-white/10 bg-zinc-950/70 px-5 py-10 text-center">
+                  <Swords className="mx-auto mb-3 h-8 w-8 text-slate-500" />
+                  <h3 className="font-semibold text-white">ยังไม่มีแมตช์ในรายการนี้</h3>
+                  <p className="mt-1 text-sm text-slate-400">สายการแข่งขันจะแสดงที่นี่เมื่อผู้จัดเพิ่มแมตช์แล้ว</p>
+                </div>
+              )}
+            </section>
+          </>
+        ) : null}
+      </div>
 
       {selectedTeam && (
         <TeamMembersModal
@@ -281,190 +491,9 @@ export default function Bracket() {
           onClose={() => setShowTeamModal(false)}
           teamName={selectedTeam.teamName}
           teamLogo={selectedTeam.logoUrl}
-          members={selectedTeam.members}
+          members={selectedTeam.members || []}
         />
       )}
-    </div>
-  );
-}
-
-interface BracketMatchProps {
-  match: Match;
-  tournamentGame?: string;
-  registrations?: any[];
-  onTeamClick?: (team: any) => void;
-}
-
-function BracketMatch({ match, tournamentGame, registrations = [], onTeamClick }: BracketMatchProps) {
-  const isCompleted = match.status === "completed";
-  const isOngoing = match.status === "ongoing";
-  const isPending = match.status === "pending";
-
-  const hasWLDData = match.winsA !== undefined && match.winsB !== undefined;
-
-
-  const wldWinnerA = isCompleted && hasWLDData && (match.winsA || 0) > (match.winsB || 0);
-  const wldWinnerB = isCompleted && hasWLDData && (match.winsB || 0) > (match.winsA || 0);
-
-  const regularWinnerA = isCompleted && !hasWLDData && match.scoreA > match.scoreB;
-  const regularWinnerB = isCompleted && !hasWLDData && match.scoreB > match.scoreA;
-
-  const winnerA = hasWLDData ? wldWinnerA : regularWinnerA;
-  const winnerB = hasWLDData ? wldWinnerB : regularWinnerB;
-
-  const getStatusBadge = () => {
-    if (isOngoing) {
-      return {
-        text: "กำลังดำเนินการ",
-        bgColor: "bg-red-600",
-        textColor: "text-white",
-        animate: "animate-pulse"
-      };
-    }
-    if (isCompleted) {
-      return {
-        text: "จบการแข่งขันแล้ว",
-        bgColor: "bg-green-600",
-        textColor: "text-white",
-        animate: ""
-      };
-    }
-    return {
-      text: "ยังไม่เริ่ม",
-      bgColor: "bg-gray-600",
-      textColor: "text-white",
-      animate: ""
-    };
-  };
-
-  const statusBadge = getStatusBadge();
-
-  return (
-    <motion.div
-      initial={{ opacity: 0, scale: 0.95 }}
-      animate={{ opacity: 1, scale: 1 }}
-      className="relative"
-    >
-      <Card
-        className={`group w-64 border-white/[0.1] bg-zinc-900  transition-all duration-200 hover:-translate-y-1 hover:border-primary/50 hover: md:w-72 ${
-          isOngoing ? "border-red-500/45 ring-1 ring-red-500/45 shadow-[0_0_16px_-10px_rgb(239_68_68_/_0.8)]" : ""
-        } ${isCompleted ? "shadow-[0_18px_45px_-30px_rgb(0_0_0_/_0.9)]" : ""}`}
-      >
-
-        <div className="flex justify-center pt-3 pb-1">
-          <div className={`rounded-full border border-white/15 ${statusBadge.bgColor} ${statusBadge.textColor} px-3 py-1 text-[9px] font-black uppercase tracking-[0.12em] shadow-lg  ${statusBadge.animate}`}>
-            {statusBadge.text}
-          </div>
-        </div>
-
-
-        <div
-          className={`flex items-center justify-between border-b border-white/[0.07] p-4 transition-colors ${
-            winnerA ? "border-b-primary/35 bg-primary/[0.12]" : ""
-          } ${winnerA ? "" : ""}`}
-        >
-          <button
-            onClick={() => {
-              const teamA = registrations.find(r => r.id === match.teamA);
-              if (teamA) onTeamClick?.(teamA);
-            }}
-            className="flex cursor-pointer items-center gap-3 overflow-hidden transition-opacity hover:opacity-80"
-          >
-            <div className={`flex h-8 w-8 items-center justify-center overflow-hidden rounded-lg border border-white/[0.08] text-xs font-bold ${winnerA ? 'bg-primary text-primary-foreground shadow-[0_0_18px_-10px_rgb(34_211_238_/_0.9)]' : 'bg-white/[0.06] text-white/40'}`}>
-              {match.logoUrlA ? (
-                <img src={match.logoUrlA} alt={match.teamA} className="w-full h-full object-cover" />
-              ) : (
-                censorText(match.teamA).charAt(0)
-              )}
-            </div>
-            <span className={`font-bold truncate text-sm ${winnerA ? "text-primary font-black" : "text-white/40"}`}>
-              {match.teamAName || match.teamA || "TBD"}
-            </span>
-          </button>
-          <div className="flex items-center gap-2">
-            {hasWLDData ? (
-              <div className="flex items-center gap-2 text-xs font-bold">
-                {match.winsA === 1 && match.drawsA === 0 && match.lossesA === 0 ? (
-                  <span className="text-green-400 px-2 py-1 bg-green-400/10 rounded border border-green-400/30">ชนะ</span>
-                ) : match.drawsA === 1 && match.winsA === 0 && match.lossesA === 0 ? (
-                  <span className="text-yellow-400 px-2 py-1 bg-yellow-400/10 rounded border border-yellow-400/30">เสมอ</span>
-                ) : match.lossesA === 1 && match.winsA === 0 && match.drawsA === 0 ? (
-                  <span className="text-red-400 px-2 py-1 bg-red-400/10 rounded border border-red-400/30">แพ้</span>
-                ) : (
-                  <span className="text-white/40 px-2 py-1 bg-zinc-900 rounded border border-white/10">-</span>
-                )}
-              </div>
-            ) : (
-              <div className="flex items-center gap-2">
-                {isCompleted && match.scoreA === match.scoreB ? (
-                  <span className="text-yellow-400 px-2 py-1 bg-yellow-400/10 rounded border border-yellow-400/30 text-xs font-bold">=</span>
-                ) : (
-                  <span className={`font-mono font-black text-lg ${winnerA ? "text-primary" : "text-white/20"}`}>
-                    {match.scoreA}
-                  </span>
-                )}
-              </div>
-            )}
-            {winnerA && (
-              <div className="text-xs font-bold px-2 py-1 bg-primary/30 text-primary rounded border border-primary/50">👑</div>
-            )}
-          </div>
-        </div>
-
-
-        <div
-          className={`flex items-center justify-between p-4 transition-colors ${
-            winnerB ? "border-t-primary/35 bg-primary/[0.12]" : ""
-          } ${winnerB ? "" : ""}`}
-        >
-          <button
-            onClick={() => {
-              const teamB = registrations.find(r => r.id === match.teamB);
-              if (teamB) onTeamClick?.(teamB);
-            }}
-            className="flex cursor-pointer items-center gap-3 overflow-hidden transition-opacity hover:opacity-80"
-          >
-            <div className={`flex h-8 w-8 items-center justify-center overflow-hidden rounded-lg border border-white/[0.08] text-xs font-bold ${winnerB ? 'bg-primary text-primary-foreground shadow-[0_0_18px_-10px_rgb(34_211_238_/_0.9)]' : 'bg-white/[0.06] text-white/40'}`}>
-              {match.logoUrlB ? (
-                <img src={match.logoUrlB} alt={match.teamB} className="w-full h-full object-cover" />
-              ) : (
-                censorText(match.teamB).charAt(0)
-              )}
-            </div>
-            <span className={`font-bold truncate text-sm ${winnerB ? "text-primary font-black" : "text-white/40"}`}>
-              {match.teamBName || match.teamB || "TBD"}
-            </span>
-          </button>
-          <div className="flex items-center gap-2">
-            {hasWLDData ? (
-              <div className="flex items-center gap-2 text-xs font-bold">
-                {match.winsB === 1 && match.drawsB === 0 && match.lossesB === 0 ? (
-                  <span className="text-green-400 px-2 py-1 bg-green-400/10 rounded border border-green-400/30">ชนะ</span>
-                ) : match.drawsB === 1 && match.winsB === 0 && match.lossesB === 0 ? (
-                  <span className="text-yellow-400 px-2 py-1 bg-yellow-400/10 rounded border border-yellow-400/30">เสมอ</span>
-                ) : match.lossesB === 1 && match.winsB === 0 && match.drawsB === 0 ? (
-                  <span className="text-red-400 px-2 py-1 bg-red-400/10 rounded border border-red-400/30">แพ้</span>
-                ) : (
-                  <span className="text-white/40 px-2 py-1 bg-zinc-900 rounded border border-white/10">-</span>
-                )}
-              </div>
-            ) : (
-              <div className="flex items-center gap-2">
-                {isCompleted && match.scoreA === match.scoreB ? (
-                  <span className="text-yellow-400 px-2 py-1 bg-yellow-400/10 rounded border border-yellow-400/30 text-xs font-bold">=</span>
-                ) : (
-                  <span className={`font-mono font-black text-lg ${winnerB ? "text-primary" : "text-white/20"}`}>
-                    {match.scoreB}
-                  </span>
-                )}
-              </div>
-            )}
-            {winnerB && (
-              <div className="text-xs font-bold px-2 py-1 bg-primary/30 text-primary rounded border border-primary/50">👑</div>
-            )}
-          </div>
-        </div>
-      </Card>
-    </motion.div>
+    </main>
   );
 }
