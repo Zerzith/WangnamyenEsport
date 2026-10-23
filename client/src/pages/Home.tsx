@@ -1,6 +1,4 @@
 import { Link } from "wouter";
-import { motion } from "framer-motion";
-import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { ArrowRight, Trophy, Loader2 } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
@@ -197,9 +195,8 @@ function getEventBracketGroups(event: Event, allMatches: TournamentMatch[], team
 }
 
 
-const EventCard = memo(({ event, index, registeredCount, user }: {
+const EventCard = memo(({ event, registeredCount, user }: {
   event: Event;
-  index: number;
   registeredCount: number;
   user: any;
 }) => {
@@ -215,102 +212,80 @@ const EventCard = memo(({ event, index, registeredCount, user }: {
 
   const isCompleted = event.competitionStatus === "completed" || Boolean(event.championTeamId);
   const isOpen = !isCompleted && (event.status === 'open' || (event.status !== 'closed' && !isExpired)) && !isFull;
+  const statusLabel = isCompleted ? "ตัดสินแล้ว" : isFull ? "เต็มแล้ว" : isOpen ? "เปิดรับสมัคร" : "ปิดรับสมัคร";
+  const statusColor = isCompleted ? "text-emerald-300" : isFull ? "text-amber-200" : isOpen ? "text-primary" : "text-slate-400";
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      transition={{ delay: Math.min(index * 0.08, 0.4) }}
-      className={`group relative h-[25rem] overflow-hidden rounded-2xl border bg-card shadow-[0_18px_38px_-30px_rgb(0_0_0_/_0.95)] transition-all duration-150 ${
-        !isOpen || isFull ? "border-destructive/35 opacity-90" : "border-white/[0.09] hover:-translate-y-0.5 hover:border-primary/45"
-      }`}
-    >
-      <Link href={`/event/${event.id}`}>
-        <div className="absolute inset-0 cursor-pointer">
+    <article className="flex h-full flex-col overflow-hidden border border-white/10 bg-[#11181d] transition-colors duration-150 hover:border-white/20">
+      <Link href={`/event/${event.id}`} className="group block">
+        <div className="relative aspect-[16/9] overflow-hidden bg-slate-950">
           <img
             src={event.bannerUrl || HERO_BG}
-            alt={event.title}
+            alt={`${event.game} — ${event.title}`}
             loading="lazy"
-            className="absolute inset-0 h-full w-full object-cover opacity-70 saturate-[0.88] transition-transform duration-300 group-hover:scale-105 group-hover:saturate-100"
+            className="h-full w-full object-cover"
             onError={(e) => {
               e.currentTarget.onerror = null;
               e.currentTarget.src = HERO_BG;
             }}
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/70 to-slate-950/10" />
+          <div className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-slate-950/70 to-transparent" />
+          <span className="absolute bottom-3 left-3 border-l-2 border-primary bg-slate-950/85 px-2.5 py-1 text-xs font-semibold text-white">
+            {event.game}
+          </span>
         </div>
       </Link>
 
-      <div className="absolute top-4 right-4 z-10 flex gap-2">
-        {isCompleted ? (
-          <div className="rounded-md border border-emerald-300/20 bg-slate-950/85 px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider text-emerald-200">
-            ตัดสินแล้ว
-          </div>
-        ) : !isOpen ? (
-          <div className="rounded-md border border-red-300/20 bg-slate-950/85 px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider text-red-200">
-            ปิดรับสมัคร
-          </div>
-        ) : isFull ? (
-          <div className="rounded-md border border-red-300/20 bg-slate-950/85 px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider text-red-200">
-            เต็มแล้ว
-          </div>
-        ) : (
-          <div className="rounded-md border border-primary/30 bg-slate-950/85 px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider text-sky-100">
-            เปิดรับสมัคร
-          </div>
-        )}
-      </div>
-
-      <div className="pointer-events-none absolute bottom-0 left-0 w-full p-6 sm:p-7">
-        <div className="flex items-center gap-2 mb-3 flex-wrap">
-            <span className="rounded-md border border-primary/25 bg-slate-950/70 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.14em] text-primary">
-            {event.game}
+      <div className="flex flex-1 flex-col p-4 sm:p-5">
+        <div className="flex items-center justify-between gap-3">
+          <span className={`inline-flex items-center gap-2 text-xs font-semibold ${statusColor}`}>
+            <span className="h-1.5 w-1.5 rounded-full bg-current" />
+            {statusLabel}
           </span>
-            <span className="text-[10px] text-slate-200 font-bold tracking-wider">
-            เริ่มแข่งขัน: {formatThaiDate(event.date)}
-          </span>
-          {event.registrationDeadline && (
-            <span className="text-[10px] text-amber-200/90 font-medium">
-              ปิดรับสมัคร: {formatThaiDateTime(event.registrationDeadline)}
-            </span>
-          )}
+          {event.date && <span className="text-xs text-slate-400">เริ่ม {formatThaiDate(event.date)}</span>}
         </div>
 
-        <h3 className="pointer-events-auto mb-3 font-display text-2xl font-bold text-white transition-colors group-hover:text-primary">
-          <Link href={`/event/${event.id}`}>{event.title}</Link>
+        <h3 className="mt-3 line-clamp-2 min-h-[3.5rem] font-display text-xl font-bold leading-snug text-white">
+          <Link href={`/event/${event.id}`} className="hover:text-primary">{event.title}</Link>
         </h3>
 
-        <div className="flex items-center justify-between mt-4 gap-2">
-          <div className="flex items-center gap-2">
-              <div className="rounded-md border border-white/[0.1] bg-slate-950/70 px-3 py-1.5 text-sm">
-              <span className={isFull ? "text-red-400 font-bold" : "text-white font-bold"}>
-                {registeredCount}/{event.maxTeams || 16} ทีม
-              </span>
-            </div>
-            {event.maxSubstitutes !== undefined && event.maxSubstitutes > 0 && (
-              <div className="rounded-md border border-primary/20 bg-slate-950/70 px-3 py-1.5 text-xs text-primary font-medium">
-                สำรอง {event.maxSubstitutes}
-              </div>
-            )}
+        <div className="mt-4 grid grid-cols-2 border-y border-white/10 py-3">
+          <div>
+            <p className="text-[11px] text-slate-400">ทีมที่สมัคร</p>
+            <p className="mt-1 text-sm font-semibold tabular-nums text-white">{registeredCount} / {event.maxTeams || 16} ทีม</p>
           </div>
-          {isOpen && !isFull && (
-            <Link href={user ? `/event/${event.id}` : "/login"}>
-              <Button size="sm" className="pointer-events-auto rounded-md border-primary/45 bg-primary px-4 font-bold text-primary-foreground hover:bg-primary/90">
-                สมัครเลย
-              </Button>
+          <div className="border-l border-white/10 pl-4">
+            <p className="text-[11px] text-slate-400">ผู้เล่นต่อทีม</p>
+            <p className="mt-1 text-sm font-semibold text-white">
+              {event.membersPerTeam || 5} หลัก{event.maxSubstitutes ? ` + ${event.maxSubstitutes} สำรอง` : ""}
+            </p>
+          </div>
+        </div>
+
+        {event.registrationDeadline && (
+          <p className="mt-3 text-xs text-slate-400">ปิดรับสมัคร {formatThaiDateTime(event.registrationDeadline)}</p>
+        )}
+
+        <div className="mt-auto flex gap-2 pt-4">
+          {isOpen && (
+            <Link
+              href={user ? `/event/${event.id}` : "/login"}
+              className="inline-flex min-h-10 flex-1 items-center justify-center rounded-md bg-primary px-3 text-sm font-bold text-primary-foreground hover:bg-primary/90"
+            >
+              สมัครแข่งขัน
             </Link>
           )}
-          {(!isOpen || isFull) && (
-            <Link href={`/event/${event.id}`}>
-              <Button size="sm" variant="outline" className="pointer-events-auto rounded-md border-white/15 bg-transparent px-4 font-bold text-white/80 hover:border-primary/35 hover:text-primary">
-                ดูรายละเอียด
-              </Button>
-            </Link>
-          )}
+          <Link
+            href={`/event/${event.id}`}
+            className={`inline-flex min-h-10 flex-1 items-center justify-center rounded-md px-3 text-sm font-semibold ${
+              isOpen ? "border border-white/15 text-white hover:border-white/30" : "bg-primary text-primary-foreground hover:bg-primary/90"
+            }`}
+          >
+            ดูรายละเอียด
+          </Link>
         </div>
       </div>
-    </motion.div>
+    </article>
   );
 });
 
@@ -415,56 +390,43 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-transparent">
 
-      <section className="relative flex min-h-[calc(86vh-4.5rem)] items-center border-b border-white/[0.06] overflow-hidden">
-
-        <div className="absolute inset-0 z-0">
-          <img
-            src="/assets/Gemini_Generated_Image_pu625pu625pu625p.jpg"
-            alt="ภาพประกอบเกมอีสปอร์ตสำหรับหน้าแรก"
-            className="h-full w-full object-cover object-[25%_center] sm:object-center"
-          />
-
-          <div className="absolute inset-0 bg-slate-950/30" />
-          <div className="absolute inset-0 bg-gradient-to-r from-slate-950/55 via-slate-950/25 to-transparent" />
-        </div>
-
-        <div className="relative z-10 w-full px-4 sm:px-8 lg:px-12">
-          <div className="max-w-3xl">
-            <motion.h1
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.1 }}
-              className="mb-5 sm:mb-6 max-w-3xl font-display text-3xl font-bold leading-[1.1] tracking-[-0.02em] text-white sm:text-4xl md:text-5xl"
-            >
-              ยกระดับการแข่งขัน <span className="hidden md:inline"> </span><br className="md:hidden" />
-              <span className="text-primary">ESPORTS</span>
-            </motion.h1>
-            <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 }}
-              className="mb-6 sm:mb-8 max-w-xl text-sm sm:text-base leading-relaxed text-slate-300"
-            >
+      <section className="border-b border-white/10 bg-[#0d1317]">
+        <div className="mx-auto grid max-w-[1500px] grid-cols-1 lg:grid-cols-[0.88fr_1.12fr]">
+          <div className="flex flex-col justify-center px-4 py-14 sm:px-8 sm:py-16 lg:px-12 lg:py-20 xl:px-16">
+            <p className="mb-5 flex items-center gap-3 text-sm font-medium text-slate-300">
+              <span className="h-px w-8 bg-primary" />
               ระบบบริหารการจัดการแข่งขันอีสปอร์ต
-              ติดตามสายการแข่งขัน ผลการแข่ง
-            </motion.p>
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3 }}
-              className="flex flex-wrap gap-3 sm:gap-4"
-            >
-              <Link href="/bracket">
-                <Button size="lg" className="h-11 sm:h-12 rounded-lg border-primary/45 bg-primary px-5 sm:px-8 text-sm sm:text-base font-bold text-primary-foreground hover:bg-primary/90">
-                  ดูสายการแข่งขัน
-                </Button>
+            </p>
+            <h1 className="max-w-xl font-display text-4xl font-bold leading-[1.2] tracking-tight text-white sm:text-5xl lg:text-[3.5rem]">
+              การแข่งขันอีสปอร์ต
+              <span className="mt-1 block text-primary">จัดการได้ในที่เดียว</span>
+            </h1>
+            <p className="mt-5 max-w-lg text-sm leading-7 text-slate-300 sm:text-base">
+              สมัครทีม ดูสายการแข่งขัน ติดตามผล ข่าวสาร และการถ่ายทอดสด ผ่านระบบเดียวที่ออกแบบมาสำหรับผู้จัด ผู้เข้าแข่งขัน และผู้ชม
+            </p>
+            <div className="mt-7 flex flex-wrap gap-3">
+              <Link
+                href="/bracket"
+                className="inline-flex min-h-11 items-center justify-center rounded-md bg-primary px-5 text-sm font-bold text-primary-foreground hover:bg-primary/90"
+              >
+                ดูสายการแข่งขัน
               </Link>
-              <Link href="/rules">
-                <Button size="lg" variant="outline" className="h-11 sm:h-12 rounded-lg border-white/15 bg-transparent px-5 sm:px-8 text-sm sm:text-base font-bold text-white hover:border-primary/40 hover:text-primary">
-                  กฎการแข่งขัน
-                </Button>
+              <Link
+                href="/events"
+                className="inline-flex min-h-11 items-center justify-center rounded-md border border-white/20 px-5 text-sm font-semibold text-white hover:border-white/40"
+              >
+                รายการแข่งขัน
               </Link>
-            </motion.div>
+            </div>
+          </div>
+
+          <div className="relative min-h-[240px] overflow-hidden sm:min-h-[340px] lg:min-h-[550px]">
+            <img
+              src="/assets/Gemini_Generated_Image_pu625pu625pu625p.jpg"
+              alt="ภาพบรรยากาศการแข่งขันอีสปอร์ต"
+              className="absolute inset-0 h-full w-full object-cover object-center"
+            />
+            <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[#0d1317]/35 lg:bg-gradient-to-r lg:from-[#0d1317]/30 lg:via-transparent lg:to-transparent" />
           </div>
         </div>
       </section>
@@ -472,18 +434,20 @@ export default function Home() {
       <SupportedGamesBanner />
 
       {champions.length > 0 && (
-        <section className="border-y border-white/[0.06] bg-black/15 py-16 sm:py-20">
-          <div className="w-full px-3 sm:px-5 lg:px-8">
-            <div className="mb-8">
-              <div className="mb-3 inline-flex items-center gap-2">
-                <Trophy className="h-5 w-5 text-amber-300" />
-                <span className="text-xs font-bold uppercase tracking-[0.2em] text-amber-200">Hall of Fame</span>
+        <section className="border-b border-white/10 bg-[#0d1317] py-14 sm:py-16">
+          <div className="mx-auto max-w-[1500px] px-4 sm:px-8 lg:px-12">
+            <div className="mb-7 flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
+              <div>
+                <p className="mb-2 text-sm font-medium text-amber-200">ผลการแข่งขัน</p>
+                <h2 className="font-display text-3xl font-bold text-white sm:text-4xl">ทำเนียบแชมเปี้ยน</h2>
+                <p className="mt-2 text-sm text-muted-foreground">อันดับ 1–3 และสายการแข่งขันของแต่ละรายการ</p>
               </div>
-              <h2 className="font-display text-3xl font-bold text-white sm:text-4xl">ทำเนียบแชมเปี้ยน</h2>
-              <p className="mt-2 text-sm text-muted-foreground">สรุปอันดับ 1–3 พร้อมเปิดดูสายการแข่งขันของแต่ละรายการ</p>
+              <Link href="/bracket?category=completed" className="inline-flex min-h-10 items-center gap-2 text-sm font-semibold text-slate-300 hover:text-white">
+                ผลการแข่งขันทั้งหมด <ArrowRight className="h-4 w-4" />
+              </Link>
             </div>
 
-            <div className="grid grid-cols-1 gap-5 lg:grid-cols-2 2xl:grid-cols-3">
+            <div className="grid grid-cols-1 gap-4 lg:grid-cols-2 2xl:grid-cols-3">
               {champions.map((event) => {
                 const champion = event.championTeamId ? teamMap[event.championTeamId] : undefined;
                 const podium = getTournamentPodium(event, championMatches);
@@ -496,7 +460,7 @@ export default function Home() {
                 ];
 
                 return (
-                  <article key={event.id} className="overflow-hidden rounded-xl border border-white/10 bg-zinc-950/80">
+                  <article key={event.id} className="overflow-hidden rounded-lg border border-white/10 bg-[#11181d]">
                     <Link href={`/event/${event.id}`}>
                       <div className="relative h-36 overflow-hidden">
                         <img
@@ -599,34 +563,36 @@ export default function Home() {
       )}
 
 
-      <section className="py-24">
-        <div className="w-full px-2 sm:px-4 lg:px-6">
-          <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-4">
+      <section className="border-b border-white/10 py-14 sm:py-16">
+        <div className="mx-auto max-w-[1500px] px-4 sm:px-8 lg:px-12">
+          <div className="mb-8 flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
             <div>
-              <span className="mb-2 block font-display text-xs font-bold uppercase tracking-[0.2em] text-primary">Tournaments</span>
-              <h2 className="font-display text-4xl font-bold tracking-tight text-white md:text-5xl">การแข่งขันอีสปอร์ต</h2>
-              <p className="text-muted-foreground mt-3 text-lg">รายการแข่งขันทั้งหมด</p>
+              <p className="mb-2 text-sm font-medium text-primary">รายการแข่งขัน</p>
+              <h2 className="font-display text-3xl font-bold tracking-tight text-white sm:text-4xl">เลือกการแข่งขันที่สนใจ</h2>
+              <p className="mt-2 text-sm text-muted-foreground">ดูสถานะการรับสมัคร จำนวนทีม และกำหนดการแข่งขัน</p>
             </div>
+            <Link href="/events" className="inline-flex min-h-10 items-center gap-2 text-sm font-semibold text-slate-300 hover:text-white">
+              ดูรายการทั้งหมด <ArrowRight className="h-4 w-4" />
+            </Link>
           </div>
 
           {loading ? (
-            <div className="flex flex-col items-center justify-center h-96">
-              <Loader2 className="w-12 h-12 animate-spin text-primary mb-4" />
-              <p className="text-muted-foreground animate-pulse">กำลังโหลดข้อมูลการแข่งขัน...</p>
+            <div className="flex min-h-64 flex-col items-center justify-center">
+              <Loader2 className="mb-3 h-8 w-8 animate-spin text-primary" />
+              <p className="text-sm text-muted-foreground">กำลังโหลดข้อมูลการแข่งขัน...</p>
             </div>
           ) : events.length === 0 ? (
-            <div className="esports-panel mx-auto max-w-3xl border-dashed border-white/15 bg-zinc-900/35 py-24 text-center">
-              <Trophy className="w-20 h-20 mx-auto text-white/5 mb-6" />
-              <h3 className="text-2xl font-bold text-white/40">ยังไม่มีการแข่งขันในขณะนี้</h3>
-              <p className="text-muted-foreground mt-2">โปรดติดตามข่าวสารประกาศเร็วๆ นี้</p>
+            <div className="border border-dashed border-white/15 bg-[#11181d] px-5 py-14 text-center">
+              <Trophy className="mx-auto mb-4 h-10 w-10 text-slate-500" />
+              <h3 className="text-xl font-bold text-white">ยังไม่มีรายการแข่งขัน</h3>
+              <p className="mt-2 text-sm text-muted-foreground">โปรดติดตามข่าวสารสำหรับกำหนดการแข่งขันครั้งถัดไป</p>
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-10">
-              {events.map((event, i) => (
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 lg:gap-5">
+              {events.map((event) => (
                 <EventCard
                   key={event.id}
                   event={event}
-                  index={i}
                   registeredCount={registrationCounts[event.id] ?? (event.registeredTeams || 0)}
                   user={user}
                 />
@@ -638,22 +604,24 @@ export default function Home() {
 
 
       {news.length > 0 && (
-        <section className="border-y border-white/[0.06] bg-black/15 py-24">
-          <div className="w-full px-2 sm:px-4 lg:px-6">
-            <div className="mb-12">
-              <h2 className="text-3xl font-display font-bold text-white">ข่าวสารล่าสุด</h2>
+        <section className="bg-[#10161b] py-14 sm:py-16">
+          <div className="mx-auto max-w-[1500px] px-4 sm:px-8 lg:px-12">
+            <div className="mb-8">
+              <p className="mb-2 text-sm font-medium text-primary">อัปเดตจากผู้จัด</p>
+              <h2 className="text-3xl font-display font-bold text-white sm:text-4xl">ข่าวสารล่าสุด</h2>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-3 lg:gap-5">
               {news.map((item) => (
-                <Link href={`/news/${item.id}`}>
-                  <Card key={item.id} className="group esports-panel esports-panel-interactive h-full rounded-2xl border-white/[0.09] bg-card overflow-hidden cursor-pointer transition-all duration-150 hover:-translate-y-0.5 hover:border-primary/45">
+                <Link key={item.id} href={`/news/${item.id}`} className="block h-full">
+                  <Card className="group h-full overflow-hidden rounded-lg border border-white/10 bg-[#11181d] transition-colors duration-150 hover:border-white/25">
                   {item.imageUrl && (
                     <div className="w-full aspect-[16/9] overflow-hidden">
                       <img
                         src={item.imageUrl}
                         alt={item.title}
-                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                        loading="lazy"
+                        className="w-full h-full object-cover"
                         onError={(e) => {
                           e.currentTarget.onerror = null;
                           e.currentTarget.parentElement?.remove();
@@ -661,12 +629,12 @@ export default function Home() {
                       />
                     </div>
                   )}
-                  <div className="p-6">
-                  <div className="mb-3 text-xs font-bold uppercase tracking-[0.16em] text-primary">
+                  <div className="p-4 sm:p-5">
+                  <div className="mb-3 text-xs text-slate-400">
                     {item.createdAt?.toDate ? formatDate(item.createdAt.toDate().toISOString()) : "เมื่อเร็วๆ นี้"}
                   </div>
-                  <h3 className="mb-3 line-clamp-2 font-display text-xl font-bold text-white transition-colors group-hover:text-primary">{item.title}</h3>
-                  <div className="flex items-center justify-between border-t border-white/[0.07] pt-4">
+                  <h3 className="mb-4 line-clamp-2 font-display text-lg font-bold leading-snug text-white group-hover:text-primary">{item.title}</h3>
+                  <div className="flex items-center justify-between border-t border-white/10 pt-3">
                     <span className="text-xs text-white/40">โดย {item.author || "Admin"}</span>
                     <span className="flex items-center text-sm font-medium text-muted-foreground transition-colors group-hover:text-primary">
                       อ่านต่อ <ArrowRight className="ml-1.5 h-4 w-4" />
