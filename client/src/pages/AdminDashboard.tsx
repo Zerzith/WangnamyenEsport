@@ -19,7 +19,7 @@ import {
   UserCheck, UserX, Eye, EyeOff, LayoutGrid, MonitorPlay, ImagePlus, FileImage,
   ArrowLeft, Pencil
 } from "lucide-react";
-import { collection, onSnapshot, addDoc, deleteDoc, doc, updateDoc, query, orderBy, where, serverTimestamp, getDoc, getDocs } from "firebase/firestore";
+import { collection, onSnapshot, addDoc, deleteDoc, deleteField, doc, updateDoc, query, orderBy, where, serverTimestamp, getDoc, getDocs } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { formatThaiDate } from "@/lib/date";
 import { uploadImageToCloudinary } from "@/lib/cloudinary";
@@ -685,12 +685,14 @@ export default function AdminDashboard() {
   };
 
   const handleCrownChampion = async (eventId: string, teamId: string) => {
-    if (!confirm("ยืนยันการมอบมงกุฎแชมป์เปี้ยนให้ทีมนี้?")) return;
+    if (!confirm("ยืนยันมอบแชมป์ให้ทีมนี้? รายการจะปิดรับสมัครและเปลี่ยนสถานะเป็นตัดสินแล้ว")) return;
     try {
       await updateDoc(doc(db, "events", eventId), {
-        championTeamId: teamId
+        championTeamId: teamId,
+        competitionStatus: "completed",
+        status: "closed",
       });
-      toast({ title: "ประกาศแชมป์เปี้ยนเรียบร้อย" });
+      toast({ title: "ประกาศแชมป์และตัดสินรายการเรียบร้อย" });
     } catch (error) {
       toast({ title: "ผิดพลาดในการประกาศแชมป์เปี้ยน", variant: "destructive" });
     }
@@ -761,7 +763,9 @@ export default function AdminDashboard() {
     if (!confirm("ยืนยันการยกเลิกตำแหน่งแชมป์เปี้ยน?")) return;
     try {
       await updateDoc(doc(db, "events", eventId), {
-        championTeamId: null
+        championTeamId: null,
+        competitionStatus: deleteField(),
+        completedAt: deleteField(),
       });
       toast({ title: "ยกเลิกตำแหน่งแชมป์เปี้ยนเรียบร้อย" });
     } catch (error) {
@@ -919,6 +923,9 @@ export default function AdminDashboard() {
                             <div className="mb-1 flex flex-wrap items-center gap-2">
                               <p className="truncate font-semibold text-white sm:text-lg">{event.title}</p>
                               <span className="rounded-md border border-primary/20 bg-primary/10 px-2 py-0.5 text-[10px] font-bold tracking-wide text-primary">{event.game}</span>
+                              {(event.competitionStatus === "completed" || event.championTeamId) && (
+                                <Badge variant="outline" className="border-emerald-400/25 bg-emerald-400/10 text-[10px] text-emerald-200">ตัดสินแล้ว</Badge>
+                              )}
                             </div>
                             <p className="flex items-center gap-1 text-sm text-muted-foreground"><Calendar className="h-4 w-4" />วันเริ่มแข่งขัน: {formatThaiDate(event.date)}</p>
                             <p className="mt-1 text-xs text-muted-foreground">สูงสุด {event.maxTeams || 16} ทีม · สมาชิก {event.membersPerTeam || 5} คน · สำรอง {event.maxSubstitutes || 0} คน</p>

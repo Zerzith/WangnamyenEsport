@@ -11,6 +11,7 @@ interface Tournament {
   title: string;
   game: string;
   status?: string;
+  competitionStatus?: string;
   date?: string;
   bannerUrl?: string;
   championTeamId?: string | null;
@@ -28,6 +29,22 @@ const CATEGORY_OPTIONS: Array<{ id: TournamentCategory; label: string; icon: typ
 ];
 const DEFAULT_CATEGORY_PRIORITY: TournamentCategory[] = ["ongoing", "upcoming", "completed", "champions"];
 
+function getInitialBracketSelection() {
+  if (typeof window === "undefined") return { category: null as TournamentCategory | null, eventId: "" };
+
+  try {
+    const params = new URLSearchParams(window.location.search);
+    const category = params.get("category");
+    const validCategories: TournamentCategory[] = ["ongoing", "completed", "upcoming", "champions"];
+    return {
+      category: validCategories.includes(category as TournamentCategory) ? category as TournamentCategory : null,
+      eventId: params.get("eventId")?.trim() || "",
+    };
+  } catch {
+    return { category: null as TournamentCategory | null, eventId: "" };
+  }
+}
+
 const DEFAULT_BANNER = "/assets/valorant-banner.png";
 const teamDataCache: Record<string, { teamName: string; logoUrl?: string }> = {};
 
@@ -41,6 +58,7 @@ function getGameBanner(game?: string) {
 
 function getTournamentProgress(tournament: Tournament, statusesByEvent: Record<string, string[]>): Exclude<TournamentCategory, "champions"> {
   const statuses = statusesByEvent[tournament.id] || [];
+  if (tournament.competitionStatus === "completed" || tournament.championTeamId) return "completed";
   if (statuses.length > 0 && statuses.every((status) => status === "completed")) return "completed";
   if (statuses.some((status) => status === "ongoing" || status === "completed")) return "ongoing";
   return "upcoming";
@@ -98,9 +116,10 @@ async function fetchMatchStatusesFromApi() {
 }
 
 export default function Bracket() {
+  const [initialSelection] = useState(getInitialBracketSelection);
   const [tournaments, setTournaments] = useState<Tournament[]>([]);
-  const [selectedTournamentId, setSelectedTournamentId] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState<TournamentCategory | null>(null);
+  const [selectedTournamentId, setSelectedTournamentId] = useState(initialSelection.eventId);
+  const [selectedCategory, setSelectedCategory] = useState<TournamentCategory | null>(initialSelection.category);
   const [matches, setMatches] = useState<BracketMatchData[]>([]);
   const [statusesByEvent, setStatusesByEvent] = useState<Record<string, string[]>>({});
   const [championTeams, setChampionTeams] = useState<Record<string, { teamName: string; logoUrl?: string }>>({});
@@ -199,13 +218,13 @@ export default function Bracket() {
 
   useEffect(() => {
     if (!filteredTournaments.length) {
-      setSelectedTournamentId("");
+      if (!loading) setSelectedTournamentId("");
       return;
     }
     setSelectedTournamentId((current) => filteredTournaments.some((tournament) => tournament.id === current)
       ? current
       : filteredTournaments[0].id);
-  }, [filteredTournaments]);
+  }, [filteredTournaments, loading]);
 
   useEffect(() => {
     if (!selectedTournament?.id) {

@@ -29,6 +29,7 @@ interface Event {
   status?: string;
   registrationDeadline?: string;
   championTeamId?: string | null;
+  competitionStatus?: string;
 }
 
 interface TeamMember {
@@ -82,7 +83,8 @@ const EventListItem = ({ item, index }: { item: Event, index: number }) => {
     }
     return deadline < new Date();
   })() : false;
-  const isOpen = (item.status === 'open' || (item.status !== 'closed' && !isExpired)) && !isFull;
+  const isCompleted = Boolean(item.championTeamId) || item.competitionStatus === "completed";
+  const isOpen = (item.status === 'open' || (item.status !== 'closed' && !isExpired)) && !isFull && !isCompleted;
 
   return (
     <motion.div
@@ -287,7 +289,7 @@ export default function EventDetail() {
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!user || !eventId || !formData.teamName.trim()) return;
+    if (!user || !eventId || !formData.teamName.trim() || event?.status === "closed" || event?.championTeamId || event?.competitionStatus === "completed") return;
 
     setIsRegistering(true);
     try {
@@ -473,7 +475,8 @@ export default function EventDetail() {
     }
     return deadline < new Date();
   })() : false;
-  const isOpen = (event.status === 'open' || (event.status !== 'closed' && !isExpired)) && !isFull;
+  const isCompleted = Boolean(event.championTeamId) || event.competitionStatus === "completed";
+  const isOpen = (event.status === 'open' || (event.status !== 'closed' && !isExpired)) && !isFull && !isCompleted;
 
   return (
     <div className="w-full px-2 sm:px-4 lg:px-6 py-12">
@@ -634,6 +637,7 @@ export default function EventDetail() {
                     variant="outline"
                     className="border-white/10 hover:bg-zinc-900 text-white gap-2 rounded-xl h-11"
                     onClick={handleEditRegistration}
+                    disabled={!isOpen}
                   >
 แก้ไขข้อมูล
                   </Button>
