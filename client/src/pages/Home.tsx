@@ -390,9 +390,19 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-transparent">
 
-      <section className="border-b border-white/10 bg-[#0d1317]">
-        <div className="mx-auto grid max-w-[1500px] grid-cols-1 lg:grid-cols-[0.88fr_1.12fr]">
-          <div className="flex flex-col justify-center px-4 py-14 sm:px-8 sm:py-16 lg:px-12 lg:py-20 xl:px-16">
+      <section className="relative isolate flex min-h-[calc(86vh-4.5rem)] items-center overflow-hidden border-b border-white/10">
+        <div className="absolute inset-0 z-0">
+          <img
+            src="/assets/Gemini_Generated_Image_pu625pu625pu625p.jpg"
+            alt="ภาพบรรยากาศการแข่งขันอีสปอร์ต"
+            className="h-full w-full object-cover object-[25%_center] sm:object-center"
+          />
+          <div className="absolute inset-0 bg-slate-950/25" />
+          <div className="absolute inset-0 bg-gradient-to-r from-slate-950/65 via-slate-950/35 to-slate-950/10" />
+        </div>
+
+        <div className="relative z-10 mx-auto w-full max-w-[1500px] px-4 py-14 sm:px-8 lg:px-12">
+          <div className="max-w-3xl">
             <p className="mb-5 flex items-center gap-3 text-sm font-medium text-slate-300">
               <span className="h-px w-8 bg-primary" />
               ระบบบริหารการจัดการแข่งขันอีสปอร์ต
@@ -418,15 +428,6 @@ export default function Home() {
                 รายการแข่งขัน
               </Link>
             </div>
-          </div>
-
-          <div className="relative min-h-[240px] overflow-hidden sm:min-h-[340px] lg:min-h-[550px]">
-            <img
-              src="/assets/Gemini_Generated_Image_pu625pu625pu625p.jpg"
-              alt="ภาพบรรยากาศการแข่งขันอีสปอร์ต"
-              className="absolute inset-0 h-full w-full object-cover object-center"
-            />
-            <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[#0d1317]/35 lg:bg-gradient-to-r lg:from-[#0d1317]/30 lg:via-transparent lg:to-transparent" />
           </div>
         </div>
       </section>
