@@ -32,7 +32,6 @@ export default function Login() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [displayName, setDisplayName] = useState("");
-  const [studentId, setStudentId] = useState("");
 
   const passwordRequirements = [
     { id: "length", label: "อย่างน้อย 8 ตัวอักษร", met: Array.from(password).length >= 8 },
@@ -83,7 +82,6 @@ export default function Login() {
 
         await setDoc(doc(db, "users", userCredential.user.uid), {
           displayName,
-          studentId,
           role: "user",
           email: userCredential.user.email,
           createdAt: new Date().toISOString()
@@ -136,26 +134,15 @@ export default function Login() {
         <CardContent className="pt-2">
           <form onSubmit={handleSubmit} className="space-y-5">
             {isRegister && (
-              <>
-                <div className="space-y-2">
-                  <Label>ชื่อ-นามสกุล</Label>
-                  <Input
-                    value={displayName}
-                    onChange={(e) => setDisplayName(e.target.value)}
-                    placeholder="นาย/นางสาวเกมเมอร์ วังน้ำเย็น"
-                    required
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label>รหัสบัตรนักศึกษา</Label>
-                  <Input
-                    value={studentId}
-                    onChange={(e) => setStudentId(e.target.value)}
-                    placeholder="รหัสบัตรนักเรียน นักศึกษา"
-                    required
-                  />
-                </div>
-              </>
+              <div className="space-y-2">
+                <Label>ชื่อ-นามสกุล</Label>
+                <Input
+                  value={displayName}
+                  onChange={(e) => setDisplayName(e.target.value)}
+                  placeholder="นาย/นางสาวเกมเมอร์ วังน้ำเย็น"
+                  required
+                />
+              </div>
             )}
             <div className="space-y-2">
               <Label>อีเมล</Label>
