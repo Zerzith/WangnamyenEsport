@@ -401,7 +401,7 @@ export default function Home() {
           <div className="absolute inset-0 bg-gradient-to-r from-slate-950/65 via-slate-950/35 to-slate-950/10" />
         </div>
 
-        <div className="relative z-10 mx-auto w-full max-w-[1500px] px-4 py-14 sm:px-8 lg:px-12">
+        <div className="relative z-10 w-full px-3 py-14 sm:px-4 lg:px-5 xl:px-6">
           <div className="max-w-3xl">
             <p className="mb-5 flex items-center gap-3 text-sm font-medium text-slate-300">
               <span className="h-px w-8 bg-primary" />
@@ -436,7 +436,7 @@ export default function Home() {
 
       {champions.length > 0 && (
         <section className="border-b border-white/10 bg-[#0d1317] py-14 sm:py-16">
-          <div className="mx-auto max-w-[1500px] px-4 sm:px-8 lg:px-12">
+          <div className="w-full px-3 sm:px-4 lg:px-5 xl:px-6">
             <div className="mb-7 flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
               <div>
                 <p className="mb-2 text-sm font-medium text-amber-200">ผลการแข่งขัน</p>
@@ -448,7 +448,7 @@ export default function Home() {
               </Link>
             </div>
 
-            <div className="grid grid-cols-1 gap-4 lg:grid-cols-2 2xl:grid-cols-3">
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
               {champions.map((event) => {
                 const champion = event.championTeamId ? teamMap[event.championTeamId] : undefined;
                 const podium = getTournamentPodium(event, championMatches);
@@ -565,7 +565,7 @@ export default function Home() {
 
 
       <section className="border-b border-white/10 py-14 sm:py-16">
-        <div className="mx-auto max-w-[1500px] px-4 sm:px-8 lg:px-12">
+        <div className="w-full px-3 sm:px-4 lg:px-5 xl:px-6">
           <div className="mb-8 flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
             <div>
               <p className="mb-2 text-sm font-medium text-primary">รายการแข่งขัน</p>
@@ -589,7 +589,7 @@ export default function Home() {
               <p className="mt-2 text-sm text-muted-foreground">โปรดติดตามข่าวสารสำหรับกำหนดการแข่งขันครั้งถัดไป</p>
             </div>
           ) : (
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 lg:gap-5">
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 lg:gap-5">
               {events.map((event) => (
                 <EventCard
                   key={event.id}
@@ -606,13 +606,13 @@ export default function Home() {
 
       {news.length > 0 && (
         <section className="bg-[#10161b] py-14 sm:py-16">
-          <div className="mx-auto max-w-[1500px] px-4 sm:px-8 lg:px-12">
+          <div className="w-full px-3 sm:px-4 lg:px-5 xl:px-6">
             <div className="mb-8">
               <p className="mb-2 text-sm font-medium text-primary">อัปเดตจากผู้จัด</p>
               <h2 className="text-3xl font-display font-bold text-white sm:text-4xl">ข่าวสารล่าสุด</h2>
             </div>
 
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-3 lg:gap-5">
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-3 2xl:grid-cols-4 lg:gap-5">
               {news.map((item) => (
                 <Link key={item.id} href={`/news/${item.id}`} className="block h-full">
                   <Card className="group h-full overflow-hidden rounded-lg border border-white/10 bg-[#11181d] transition-colors duration-150 hover:border-white/25">

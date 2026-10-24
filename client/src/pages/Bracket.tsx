@@ -346,7 +346,7 @@ export default function Bracket() {
 
   return (
     <main className="min-h-screen bg-transparent">
-      <div className="mx-auto w-full max-w-[1440px] px-3 py-7 sm:px-5 sm:py-9 lg:px-8">
+      <div className="w-full px-3 py-7 sm:px-4 sm:py-9 lg:px-5 xl:px-6">
         <header className="mb-6">
           <p className="mb-1 text-xs font-bold uppercase tracking-[0.16em] text-primary">Wangnamyen Esports</p>
           <h1 className="text-3xl font-bold text-white sm:text-4xl">สายการแข่งขัน</h1>
@@ -392,7 +392,7 @@ export default function Bracket() {
               <h2 className="text-xl font-bold text-white sm:text-2xl">ทำเนียบแชมเปี้ยน</h2>
               <p className="mt-1 text-sm text-slate-400">รวมทีมผู้ชนะของแต่ละรายการ เลือกการ์ดเพื่อดูสายการแข่งขัน</p>
             </header>
-            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3">
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
               {filteredTournaments.map((tournament) => {
                 const championId = tournament.championTeamId || "";
                 const championTeam = championTeams[championId];

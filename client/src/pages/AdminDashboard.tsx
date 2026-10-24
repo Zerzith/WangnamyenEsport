@@ -774,8 +774,8 @@ export default function AdminDashboard() {
   };
 
   return (
-    <div className="admin-shell px-2 sm:px-4">
-      <div className="mx-auto w-full max-w-7xl space-y-6 px-2 sm:px-4 lg:px-6">
+    <div className="admin-shell px-1 sm:px-2 lg:px-3 xl:px-4">
+      <div className="w-full space-y-6 px-1 sm:px-2 lg:px-3">
         <header className="admin-surface overflow-hidden">
           <div className="flex flex-col gap-6 p-5 sm:p-6 lg:flex-row lg:items-center lg:justify-between">
             <div className="flex items-start gap-4">

@@ -22,7 +22,7 @@ const supportedGames = [
 export function SupportedGamesBanner() {
   return (
     <section className="border-b border-white/10 bg-[#11181d]">
-      <div className="mx-auto max-w-[1500px] px-4 py-10 sm:px-8 sm:py-12 lg:px-12">
+      <div className="w-full px-3 py-10 sm:px-4 sm:py-12 lg:px-5 xl:px-6">
         <div className="grid gap-7 lg:grid-cols-[0.8fr_1.2fr] lg:items-center lg:gap-10">
           <div>
             <p className="mb-2 text-sm font-medium text-primary">เกมที่รองรับ</p>
