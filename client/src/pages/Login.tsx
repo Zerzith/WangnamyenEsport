@@ -8,7 +8,7 @@ import { Card, CardHeader, CardContent, CardTitle, CardDescription, CardFooter }
 import { useToast } from "@/hooks/use-toast";
 import { CheckCircle2, Circle, Loader2, LogIn, UserPlus } from "lucide-react";
 import { FcGoogle } from "react-icons/fc";
-import { auth, db } from "@/lib/firebase";
+import { auth, db, mapFirebaseErrorToThaiMessage } from "@/lib/firebase";
 import {
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
@@ -96,7 +96,7 @@ export default function Login() {
     } catch (error: any) {
       toast({
         title: isRegister ? "สมัครสมาชิกไม่สำเร็จ" : "เข้าสู่ระบบไม่สำเร็จ",
-        description: "อีเมลหรือรหัสผ่านไม่ถูกต้อง",
+        description: mapFirebaseErrorToThaiMessage(typeof error?.code === "string" ? error.code : ""),
         variant: "destructive"
       });
     } finally {
