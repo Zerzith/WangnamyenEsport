@@ -21,7 +21,7 @@ const supportedGames = [
 
 export function SupportedGamesBanner() {
   return (
-    <section className="border-b border-white/10 bg-[#11181d]">
+    <section className="border-b border-white/10 bg-card">
       <div className="w-full px-3 py-10 sm:px-4 sm:py-12 lg:px-5 xl:px-6">
         <div className="grid gap-7 lg:grid-cols-[0.8fr_1.2fr] lg:items-center lg:gap-10">
           <div>

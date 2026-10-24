@@ -217,7 +217,7 @@ const EventCard = memo(({ event, registeredCount, user }: {
   const statusColor = isCompleted ? "text-emerald-300" : isFull ? "text-amber-200" : isOpen ? "text-primary" : "text-slate-400";
 
   return (
-    <article className="flex h-full flex-col overflow-hidden border border-white/10 bg-[#11181d] transition-colors duration-150 hover:border-white/20">
+    <article className="flex h-full flex-col overflow-hidden border border-white/10 bg-card transition-colors duration-150 hover:border-white/20">
       <Link href={`/event/${event.id}`} className="group block">
         <div className="relative aspect-[16/9] overflow-hidden bg-slate-950">
           <img
@@ -441,7 +441,7 @@ export default function Home() {
       <SupportedGamesBanner />
 
       {champions.length > 0 && (
-        <section className="border-b border-white/10 bg-[#0d1317] py-14 sm:py-16">
+        <section className="border-b border-white/10 bg-secondary/70 py-14 sm:py-16">
           <div className="w-full px-3 sm:px-4 lg:px-5 xl:px-6">
             <div className="mb-7 flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
               <div>
@@ -466,7 +466,7 @@ export default function Home() {
                 ];
 
                 return (
-                  <article key={event.id} className="overflow-hidden rounded-lg border border-white/10 bg-[#11181d]">
+                  <article key={event.id} className="overflow-hidden rounded-lg border border-white/10 bg-card">
                     <Link href={`/event/${event.id}`}>
                       <div className="relative h-36 overflow-hidden">
                         <img
@@ -555,7 +555,7 @@ export default function Home() {
               <Sheet open={Boolean(expandedChampion)} onOpenChange={(open) => { if (!open) setExpandedChampionId(null); }}>
                 <SheetContent
                   side="right"
-                  className="flex h-full w-full flex-col gap-0 overflow-hidden border-l border-white/10 bg-[#0d1317] p-0 text-white sm:w-[88vw] sm:max-w-6xl"
+                  className="flex h-full w-full flex-col gap-0 overflow-hidden border-l border-white/10 bg-background p-0 text-white sm:w-[88vw] sm:max-w-6xl"
                 >
                   <SheetHeader className="shrink-0 border-b border-white/10 py-4 pl-5 pr-14 text-left sm:py-5 sm:pl-6">
                     <SheetTitle className="text-left text-white">สายการแข่งขัน</SheetTitle>
@@ -607,7 +607,7 @@ export default function Home() {
               <p className="text-sm text-muted-foreground">กำลังโหลดข้อมูลการแข่งขัน...</p>
             </div>
           ) : events.length === 0 ? (
-            <div className="border border-dashed border-white/15 bg-[#11181d] px-5 py-14 text-center">
+                    <div className="border border-dashed border-white/15 bg-card px-5 py-14 text-center">
               <Trophy className="mx-auto mb-4 h-10 w-10 text-slate-500" />
               <h3 className="text-xl font-bold text-white">ยังไม่มีรายการแข่งขัน</h3>
               <p className="mt-2 text-sm text-muted-foreground">โปรดติดตามข่าวสารสำหรับกำหนดการแข่งขันครั้งถัดไป</p>
@@ -629,7 +629,7 @@ export default function Home() {
 
 
       {news.length > 0 && (
-        <section className="bg-[#10161b] py-14 sm:py-16">
+        <section className="bg-secondary/60 py-14 sm:py-16">
           <div className="w-full px-3 sm:px-4 lg:px-5 xl:px-6">
             <div className="mb-8">
               <p className="mb-2 text-sm font-medium text-primary">อัปเดตจากผู้จัด</p>
@@ -639,7 +639,7 @@ export default function Home() {
             <div className="grid grid-cols-1 gap-4 md:grid-cols-3 2xl:grid-cols-4 lg:gap-5">
               {news.map((item) => (
                 <Link key={item.id} href={`/news/${item.id}`} className="block h-full">
-                  <Card className="group h-full overflow-hidden rounded-lg border border-white/10 bg-[#11181d] transition-colors duration-150 hover:border-white/25">
+                  <Card className="group h-full overflow-hidden rounded-lg border border-white/10 bg-card transition-colors duration-150 hover:border-white/25">
                   {item.imageUrl && (
                     <div className="w-full aspect-[16/9] overflow-hidden">
                       <img
