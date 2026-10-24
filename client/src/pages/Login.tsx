@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardHeader, CardContent, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, LogIn, UserPlus } from "lucide-react";
+import { CheckCircle2, Circle, Loader2, LogIn, UserPlus } from "lucide-react";
 import { FcGoogle } from "react-icons/fc";
 import { auth, db } from "@/lib/firebase";
 import {
@@ -30,8 +30,18 @@ export default function Login() {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [displayName, setDisplayName] = useState("");
   const [studentId, setStudentId] = useState("");
+
+  const passwordRequirements = [
+    { id: "length", label: "อย่างน้อย 8 ตัวอักษร", met: Array.from(password).length >= 8 },
+    { id: "number", label: "มีตัวเลขอย่างน้อย 1 ตัว", met: /[0-9]/.test(password) },
+    { id: "lowercase", label: "มีภาษาอังกฤษตัวพิมพ์เล็ก (a–z)", met: /[a-z]/.test(password) },
+    { id: "uppercase", label: "มีภาษาอังกฤษตัวพิมพ์ใหญ่ (A–Z)", met: /[A-Z]/.test(password) },
+  ];
+  const allPasswordRequirementsMet = passwordRequirements.every((requirement) => requirement.met);
+  const passwordsMatch = password === confirmPassword;
 
   if (user) {
     setLocation("/");
@@ -40,6 +50,29 @@ export default function Login() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (isRegister && !allPasswordRequirementsMet) {
+      const missingRequirements = passwordRequirements
+        .filter((requirement) => !requirement.met)
+        .map((requirement) => requirement.label)
+        .join("、");
+      toast({
+        title: "รหัสผ่านยังไม่ครบตามเงื่อนไข",
+        description: `กรุณาตรวจสอบ: ${missingRequirements}`,
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (isRegister && !passwordsMatch) {
+      toast({
+        title: "รหัสผ่านไม่ตรงกัน",
+        description: "กรุณากรอกรหัสผ่านทั้งสองช่องให้ตรงกัน",
+        variant: "destructive",
+      });
+      return;
+    }
+
     setIsLoading(true);
 
     try {
@@ -141,9 +174,57 @@ export default function Login() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••"
+                autoComplete={isRegister ? "new-password" : "current-password"}
+                aria-describedby={isRegister ? "password-requirements" : undefined}
                 required
               />
+              {isRegister && (
+                <div id="password-requirements" aria-live="polite" className="rounded-md border border-white/10 bg-black/10 p-3">
+                  <p className="mb-2 text-xs font-medium text-muted-foreground">ข้อกำหนดรหัสผ่าน</p>
+                  <ul className="space-y-1.5">
+                    {passwordRequirements.map((requirement) => {
+                      const StatusIcon = requirement.met ? CheckCircle2 : Circle;
+                      return (
+                        <li
+                          key={requirement.id}
+                          className={`flex items-center gap-2 text-xs ${requirement.met ? "text-emerald-300" : "text-muted-foreground"}`}
+                        >
+                          <StatusIcon className="h-4 w-4 shrink-0" aria-hidden="true" />
+                          <span className="min-w-0 flex-1">{requirement.label}</span>
+                          <span className="shrink-0 font-medium">{requirement.met ? "ครบแล้ว" : "ยังไม่ครบ"}</span>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                </div>
+              )}
             </div>
+            {isRegister && (
+              <div className="space-y-2">
+                <Label htmlFor="confirm-password">ยืนยันรหัสผ่าน</Label>
+                <Input
+                  id="confirm-password"
+                  type="password"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  placeholder="กรอกรหัสผ่านอีกครั้ง"
+                  autoComplete="new-password"
+                  aria-describedby="confirm-password-status"
+                  required
+                />
+                <p
+                  id="confirm-password-status"
+                  aria-live="polite"
+                  className={`text-xs ${confirmPassword.length === 0 ? "text-muted-foreground" : passwordsMatch ? "text-emerald-300" : "text-red-300"}`}
+                >
+                  {confirmPassword.length === 0
+                    ? "กรอกรหัสผ่านอีกครั้งเพื่อยืนยัน"
+                    : passwordsMatch
+                      ? "รหัสผ่านตรงกัน"
+                      : "รหัสผ่านไม่ตรงกัน"}
+                </p>
+              </div>
+            )}
             <Button type="submit" className="h-11 w-full border-primary/45 bg-primary text-primary-foreground shadow-[0_14px_30px_-14px_rgb(34_211_238_/_0.9)] hover:bg-primary" disabled={isLoading || isGoogleLoading}>
               {isLoading && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
               {isRegister ? (
@@ -186,7 +267,11 @@ export default function Login() {
           <Button
             variant="ghost"
             className="text-muted-foreground hover:bg-primary/10 hover:text-primary"
-            onClick={() => setIsRegister(!isRegister)}
+            onClick={() => {
+              setIsRegister((current) => !current);
+              setPassword("");
+              setConfirmPassword("");
+            }}
             disabled={isLoading || isGoogleLoading}
           >
             {isRegister ? "มีบัญชีอยู่แล้ว? เข้าสู่ระบบ" : "ยังไม่มีบัญชี? สมัครสมาชิก"}
