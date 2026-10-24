@@ -8,6 +8,7 @@ import { db } from "@/lib/firebase";
 import { formatThaiDate, formatThaiDateTime } from "@/lib/date";
 import { SupportedGamesBanner } from "@/components/SupportedGamesBanner";
 import { TournamentBracketBoard, type BracketMatchData, type BracketRoundData } from "@/components/TournamentBracketBoard";
+import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 
 const HERO_BG = "https://images.unsplash.com/photo-1552820728-8ac41f1ce891?q=80&w=2070&auto=format&fit=crop";
 
@@ -387,6 +388,11 @@ export default function Home() {
     };
   }, [champions]);
 
+  const expandedChampion = champions.find((event) => event.id === expandedChampionId) || null;
+  const expandedChampionBracketGroups = expandedChampion
+    ? getEventBracketGroups(expandedChampion, championMatches, teamMap)
+    : [];
+
   return (
     <div className="min-h-screen bg-transparent">
 
@@ -452,7 +458,6 @@ export default function Home() {
               {champions.map((event) => {
                 const champion = event.championTeamId ? teamMap[event.championTeamId] : undefined;
                 const podium = getTournamentPodium(event, championMatches);
-                const bracketGroups = getEventBracketGroups(event, championMatches, teamMap);
                 const expanded = expandedChampionId === event.id;
                 const placements = [
                   { label: "อันดับ 1", teamIds: event.championTeamId ? [event.championTeamId] : [], color: "border-amber-300/25 bg-amber-300/[0.05] text-amber-100" },
@@ -526,11 +531,11 @@ export default function Home() {
                       <div className="mt-4 flex flex-wrap gap-2">
                         <button
                           type="button"
-                          onClick={() => setExpandedChampionId(expanded ? null : event.id)}
+                          onClick={() => setExpandedChampionId(event.id)}
                           aria-expanded={expanded}
                           className="rounded-md border border-primary/35 bg-primary/10 px-3 py-2 text-xs font-semibold text-primary transition-none active:transform-none"
                         >
-                          {expanded ? "ซ่อนสายการแข่งขัน" : "แสดงสายการแข่งขัน"}
+                          แสดงสายการแข่งขัน
                         </button>
                         <Link
                           href={`/bracket?category=completed&eventId=${encodeURIComponent(event.id)}`}
@@ -540,25 +545,44 @@ export default function Home() {
                         </Link>
                       </div>
 
-                      {expanded && (
-                        <div className="mt-4 space-y-4 border-t border-white/10 pt-4">
-                          {bracketGroups.length > 0 ? bracketGroups.map((group) => (
-                            <section key={group.key} aria-label={group.title}>
-                              <h4 className="mb-2 text-sm font-semibold text-white">{group.title}</h4>
-                              <TournamentBracketBoard rounds={group.rounds} registrations={[]} onTeamClick={() => undefined} />
-                            </section>
-                          )) : (
-                            <p className="rounded-lg border border-white/10 bg-zinc-900 px-3 py-4 text-center text-sm text-slate-400">
-                              ยังไม่มีแมตช์ให้แสดงในสายการแข่งขัน
-                            </p>
-                          )}
-                        </div>
-                      )}
                     </div>
                   </article>
                 );
               })}
             </div>
+
+            {expandedChampion && (
+              <Sheet open={Boolean(expandedChampion)} onOpenChange={(open) => { if (!open) setExpandedChampionId(null); }}>
+                <SheetContent
+                  side="right"
+                  className="flex h-full w-full flex-col gap-0 overflow-hidden border-l border-white/10 bg-[#0d1317] p-0 text-white sm:w-[88vw] sm:max-w-6xl"
+                >
+                  <SheetHeader className="shrink-0 border-b border-white/10 py-4 pl-5 pr-14 text-left sm:py-5 sm:pl-6">
+                    <SheetTitle className="text-left text-white">สายการแข่งขัน</SheetTitle>
+                    <SheetDescription className="text-left text-slate-300">
+                      {expandedChampion.title} · {expandedChampion.game}
+                    </SheetDescription>
+                  </SheetHeader>
+
+                  <div className="custom-scrollbar flex-1 overflow-y-auto p-4 sm:p-6">
+                    {expandedChampionBracketGroups.length > 0 ? (
+                      <div className="space-y-6">
+                        {expandedChampionBracketGroups.map((group) => (
+                          <section key={group.key} aria-label={group.title} className="min-w-0">
+                            <h3 className="mb-3 text-sm font-semibold text-white">{group.title}</h3>
+                            <TournamentBracketBoard rounds={group.rounds} registrations={[]} onTeamClick={() => undefined} />
+                          </section>
+                        ))}
+                      </div>
+                    ) : (
+                      <p className="rounded-lg border border-white/10 bg-zinc-900 px-4 py-8 text-center text-sm text-slate-400">
+                        ยังไม่มีแมตช์ให้แสดงในสายการแข่งขัน
+                      </p>
+                    )}
+                  </div>
+                </SheetContent>
+              </Sheet>
+            )}
           </div>
         </section>
       )}
