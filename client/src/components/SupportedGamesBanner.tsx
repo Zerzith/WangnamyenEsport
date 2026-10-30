@@ -26,7 +26,7 @@ export function SupportedGamesBanner() {
         <div className="grid gap-7 lg:grid-cols-[0.8fr_1.2fr] lg:items-center lg:gap-10">
           <div>
             <p className="mb-2 text-sm font-medium text-primary">เกมที่รองรับ</p>
-            <h2 className="max-w-lg font-display text-2xl font-bold leading-snug text-white sm:text-3xl">
+            <h2 className="max-w-lg font-display text-2xl font-bold leading-snug text-card-foreground sm:text-3xl">
               เลือกรายการแข่งขันที่คุณสนใจ
             </h2>
             <p className="mt-3 max-w-lg text-sm leading-6 text-slate-300">
@@ -34,7 +34,7 @@ export function SupportedGamesBanner() {
             </p>
             <Link
               href="/bracket"
-              className="mt-5 inline-flex min-h-10 items-center gap-2 text-sm font-semibold text-primary hover:text-sky-200"
+              className="mt-5 inline-flex min-h-10 items-center gap-2 text-sm font-semibold text-primary hover:text-primary/80"
             >
               ไปที่สายการแข่งขัน
               <ArrowRight className="h-4 w-4" aria-hidden="true" />

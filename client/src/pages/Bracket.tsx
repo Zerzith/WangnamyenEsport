@@ -349,7 +349,7 @@ export default function Bracket() {
       <div className="w-full px-3 py-7 sm:px-4 sm:py-9 lg:px-5 xl:px-6">
         <header className="mb-6">
           <p className="mb-1 text-xs font-bold uppercase tracking-[0.16em] text-primary">Wangnamyen Esports</p>
-          <h1 className="text-3xl font-bold text-white sm:text-4xl">สายการแข่งขัน</h1>
+          <h1 className="text-3xl font-bold text-foreground sm:text-4xl">สายการแข่งขัน</h1>
           <p className="mt-2 max-w-2xl text-sm leading-relaxed text-slate-400">
             เลือกรายการเพื่อดูผังการแข่งขัน ผลแต่ละรอบ และทีมที่ผ่านเข้าสู่รอบถัดไป
           </p>
@@ -366,7 +366,7 @@ export default function Bracket() {
                 aria-pressed={isSelected}
                 className={`flex min-h-[68px] items-center justify-between gap-2 rounded-lg border px-3 py-2.5 text-left ${
                   isSelected
-                    ? "border-primary/50 bg-primary/10 text-white"
+                    ? "border-primary/50 bg-primary/10 text-foreground"
                     : "border-white/10 bg-zinc-900 text-slate-300"
                 } transition-none active:transform-none`}
               >
@@ -389,7 +389,7 @@ export default function Bracket() {
                 <Trophy className="h-4 w-4" />
                 <span className="text-xs font-semibold uppercase tracking-[0.12em]">Hall of Champions</span>
               </div>
-              <h2 className="text-xl font-bold text-white sm:text-2xl">ทำเนียบแชมเปี้ยน</h2>
+              <h2 className="text-xl font-bold text-foreground sm:text-2xl">ทำเนียบแชมเปี้ยน</h2>
               <p className="mt-1 text-sm text-slate-400">รวมทีมผู้ชนะของแต่ละรายการ เลือกการ์ดเพื่อดูสายการแข่งขัน</p>
             </header>
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
@@ -469,7 +469,7 @@ export default function Bracket() {
                   id="bracket-tournament"
                   value={selectedTournament.id}
                   onChange={(event) => setSelectedTournamentId(event.target.value)}
-                  className="w-full rounded-lg border border-white/15 bg-zinc-900 px-3 py-3 text-sm text-white outline-none focus:border-primary [color-scheme:dark]"
+                  className="w-full rounded-lg border border-white/15 bg-zinc-900 px-3 py-3 text-sm text-white outline-none focus:border-primary"
                 >
                   {filteredTournaments.map((tournament) => (
                     <option key={tournament.id} value={tournament.id}>

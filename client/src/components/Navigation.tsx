@@ -54,7 +54,7 @@ export function Navigation() {
   }, [menuOpen]);
 
   return (
-    <nav aria-label="เมนูหลัก" className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur">
+    <nav aria-label="เมนูหลัก" className="sticky top-0 z-50 w-full border-b border-border/80 bg-background/95 backdrop-blur-xl">
       <div className="flex min-h-[4rem] items-center gap-2 px-3 sm:min-h-[4.5rem] sm:px-4 lg:px-6">
         <Link href="/" aria-label="ระบบบริหารการจัดการแข่งขันอีสปอร์ต" className="flex shrink-0 items-center gap-2">
           <img
@@ -73,7 +73,7 @@ export function Navigation() {
             return (
               <Link key={item.href} href={item.href}>
                 <span
-                  className={`cursor-pointer whitespace-nowrap rounded-md px-2.5 py-2 text-sm font-medium transition-colors ${
+                  className={`cursor-pointer whitespace-nowrap rounded-md px-3 py-2 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary ${
                     isActive ? "bg-primary/15 text-primary" : "text-muted-foreground hover:bg-foreground/5 hover:text-foreground"
                   }`}
                 >
@@ -156,8 +156,7 @@ export function Navigation() {
             <Link href="/login">
               <Button size="sm" className="h-9 whitespace-nowrap px-3 text-xs sm:h-10 sm:px-4 sm:text-sm">
                 <LogIn className="mr-1 h-3 w-3 sm:mr-2 sm:h-4 sm:w-4" />
-                <span className="hidden sm:inline">เข้าสู่ระบบ</span>
-                <span className="sm:hidden">Login</span>
+                <span>เข้าสู่ระบบ</span>
               </Button>
             </Link>
           )}

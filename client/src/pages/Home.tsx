@@ -394,9 +394,9 @@ export default function Home() {
     : [];
 
   return (
-    <div className="min-h-screen bg-transparent">
+    <div className="home-page min-h-screen bg-transparent">
 
-      <section className="relative isolate flex min-h-[calc(86vh-4.5rem)] items-center overflow-hidden border-b border-white/10">
+      <section className="home-hero relative isolate flex min-h-[30rem] items-center overflow-hidden border-b border-white/10 md:min-h-[min(78vh,48rem)]">
         <div className="absolute inset-0 z-0">
           <img
             src="/assets/Gemini_Generated_Image_pu625pu625pu625p.jpg"
@@ -446,10 +446,10 @@ export default function Home() {
             <div className="mb-7 flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
               <div>
                 <p className="mb-2 text-sm font-medium text-amber-200">ผลการแข่งขัน</p>
-                <h2 className="font-display text-3xl font-bold text-white sm:text-4xl">ทำเนียบแชมเปี้ยน</h2>
+                <h2 className="font-display text-3xl font-bold text-secondary-foreground sm:text-4xl">ทำเนียบแชมเปี้ยน</h2>
                 <p className="mt-2 text-sm text-muted-foreground">อันดับ 1–3 และสายการแข่งขันของแต่ละรายการ</p>
               </div>
-              <Link href="/bracket?category=completed" className="inline-flex min-h-10 items-center gap-2 text-sm font-semibold text-slate-300 hover:text-white">
+              <Link href="/bracket?category=completed" className="inline-flex min-h-10 items-center gap-2 text-sm font-semibold text-slate-300 hover:text-primary">
                 ผลการแข่งขันทั้งหมด <ArrowRight className="h-4 w-4" />
               </Link>
             </div>
@@ -494,7 +494,7 @@ export default function Home() {
                     </Link>
 
                     <div className="p-4 sm:p-5">
-                      <span className="rounded-md border border-primary/25 bg-slate-950/70 px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.12em] text-primary">
+                      <span className="rounded-md border border-primary/25 bg-primary/10 px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.12em] text-primary">
                         {event.game}
                       </span>
                       <Link href={`/event/${event.id}`}>
@@ -593,10 +593,10 @@ export default function Home() {
           <div className="mb-8 flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
             <div>
               <p className="mb-2 text-sm font-medium text-primary">รายการแข่งขัน</p>
-              <h2 className="font-display text-3xl font-bold tracking-tight text-white sm:text-4xl">เลือกการแข่งขันที่สนใจ</h2>
+              <h2 className="font-display text-3xl font-bold tracking-tight text-foreground sm:text-4xl">เลือกการแข่งขันที่สนใจ</h2>
               <p className="mt-2 text-sm text-muted-foreground">ดูสถานะการรับสมัคร จำนวนทีม และกำหนดการแข่งขัน</p>
             </div>
-            <Link href="/events" className="inline-flex min-h-10 items-center gap-2 text-sm font-semibold text-slate-300 hover:text-white">
+            <Link href="/events" className="inline-flex min-h-10 items-center gap-2 text-sm font-semibold text-slate-300 hover:text-primary">
               ดูรายการทั้งหมด <ArrowRight className="h-4 w-4" />
             </Link>
           </div>
@@ -607,9 +607,9 @@ export default function Home() {
               <p className="text-sm text-muted-foreground">กำลังโหลดข้อมูลการแข่งขัน...</p>
             </div>
           ) : events.length === 0 ? (
-                    <div className="border border-dashed border-white/15 bg-card px-5 py-14 text-center">
+            <div className="border border-dashed border-white/15 bg-card px-5 py-14 text-center">
               <Trophy className="mx-auto mb-4 h-10 w-10 text-slate-500" />
-              <h3 className="text-xl font-bold text-white">ยังไม่มีรายการแข่งขัน</h3>
+              <h3 className="text-xl font-bold text-card-foreground">ยังไม่มีรายการแข่งขัน</h3>
               <p className="mt-2 text-sm text-muted-foreground">โปรดติดตามข่าวสารสำหรับกำหนดการแข่งขันครั้งถัดไป</p>
             </div>
           ) : (
@@ -633,7 +633,7 @@ export default function Home() {
           <div className="w-full px-3 sm:px-4 lg:px-5 xl:px-6">
             <div className="mb-8">
               <p className="mb-2 text-sm font-medium text-primary">อัปเดตจากผู้จัด</p>
-              <h2 className="text-3xl font-display font-bold text-white sm:text-4xl">ข่าวสารล่าสุด</h2>
+              <h2 className="text-3xl font-display font-bold text-secondary-foreground sm:text-4xl">ข่าวสารล่าสุด</h2>
             </div>
 
             <div className="grid grid-cols-1 gap-4 md:grid-cols-3 2xl:grid-cols-4 lg:gap-5">
@@ -660,7 +660,7 @@ export default function Home() {
                   </div>
                   <h3 className="mb-4 line-clamp-2 font-display text-lg font-bold leading-snug text-white group-hover:text-primary">{item.title}</h3>
                   <div className="flex items-center justify-between border-t border-white/10 pt-3">
-                    <span className="text-xs text-white/40">โดย {item.author || "Admin"}</span>
+                    <span className="text-xs text-muted-foreground">โดย {item.author || "Admin"}</span>
                     <span className="flex items-center text-sm font-medium text-muted-foreground transition-colors group-hover:text-primary">
                       อ่านต่อ <ArrowRight className="ml-1.5 h-4 w-4" />
                     </span>
