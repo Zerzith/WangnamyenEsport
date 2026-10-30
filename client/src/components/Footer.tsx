@@ -2,11 +2,11 @@ import { Link } from "wouter";
 
 export function Footer() {
   return (
-    <footer className="mt-auto border-t border-white/[0.08] bg-zinc-950/70">
+    <footer className="mt-auto border-t border-border bg-secondary">
       <div className="w-full px-2 py-10 sm:px-4 lg:px-6">
         <div className="flex flex-col items-center justify-between gap-7 md:flex-row">
           <div className="text-center md:text-left">
-            <h3 className="mb-2 font-display text-lg font-bold tracking-tight text-white">
+            <h3 className="mb-2 font-display text-lg font-bold tracking-tight text-secondary-foreground">
               ระบบบริหารการจัดการแข่งขันอีสปอร์ต
             </h3>
             <p className="max-w-xl text-sm leading-relaxed text-muted-foreground">
@@ -25,8 +25,8 @@ export function Footer() {
             </Link>
           </div>
         </div>
-        <div className="mt-8 border-t border-white/[0.06] pt-6 text-center text-xs font-medium tracking-wide text-muted-foreground/70">
-          © 2026 ระบบบริหารการจัดการแข่งขันอีสปอร์ต. All rights reserved.
+        <div className="mt-8 border-t border-border pt-6 text-center text-xs font-medium tracking-wide text-muted-foreground">
+          © 2026 ระบบบริหารการจัดการแข่งขันอีสปอร์ต สงวนลิขสิทธิ์
         </div>
       </div>
     </footer>

@@ -21,7 +21,7 @@ const supportedGames = [
 
 export function SupportedGamesBanner() {
   return (
-    <section className="border-b border-white/10 bg-card">
+    <section className="border-b border-border bg-card">
       <div className="w-full px-3 py-10 sm:px-4 sm:py-12 lg:px-5 xl:px-6">
         <div className="grid gap-7 lg:grid-cols-[0.8fr_1.2fr] lg:items-center lg:gap-10">
           <div>
@@ -47,7 +47,7 @@ export function SupportedGamesBanner() {
                 key={game.name}
                 href="/bracket"
                 aria-label={`ดูการแข่งขันเกม ${game.name}`}
-                className="group relative isolate aspect-[16/9] overflow-hidden rounded-md border border-white/10 bg-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+                className="group relative isolate aspect-[16/9] overflow-hidden border border-border bg-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
               >
                 <img
                   src={game.image}

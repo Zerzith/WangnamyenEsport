@@ -348,7 +348,7 @@ export default function Bracket() {
     <main className="min-h-screen bg-transparent">
       <div className="w-full px-3 py-7 sm:px-4 sm:py-9 lg:px-5 xl:px-6">
         <header className="mb-6">
-          <p className="mb-1 text-xs font-bold uppercase tracking-[0.16em] text-primary">Wangnamyen Esports</p>
+          <p className="mb-1 text-xs font-semibold tracking-wide text-primary">ภาพรวมการแข่งขัน</p>
           <h1 className="text-3xl font-bold text-foreground sm:text-4xl">สายการแข่งขัน</h1>
           <p className="mt-2 max-w-2xl text-sm leading-relaxed text-slate-400">
             เลือกรายการเพื่อดูผังการแข่งขัน ผลแต่ละรอบ และทีมที่ผ่านเข้าสู่รอบถัดไป
@@ -364,17 +364,17 @@ export default function Bracket() {
                 type="button"
                 onClick={() => setSelectedCategory(id)}
                 aria-pressed={isSelected}
-                className={`flex min-h-[68px] items-center justify-between gap-2 rounded-lg border px-3 py-2.5 text-left ${
+                className={`flex min-h-[68px] items-center justify-between gap-2 rounded-md border px-3 py-2.5 text-left ${
                   isSelected
                     ? "border-primary/50 bg-primary/10 text-foreground"
-                    : "border-white/10 bg-zinc-900 text-slate-300"
+                    : "border-border bg-card text-muted-foreground hover:border-primary/35 hover:text-foreground"
                 } transition-none active:transform-none`}
               >
                 <span className="flex min-w-0 items-center gap-2">
                   <Icon className={`h-4 w-4 shrink-0 ${isSelected ? "text-primary" : "text-slate-400"}`} />
                   <span className="text-xs font-semibold leading-snug sm:text-sm">{label}</span>
                 </span>
-                <span className="shrink-0 rounded-md bg-black/20 px-2 py-1 text-xs tabular-nums text-slate-300">
+                <span className="shrink-0 rounded-sm bg-secondary px-2 py-1 text-xs tabular-nums text-secondary-foreground">
                   {categoryCounts[id]}
                 </span>
               </button>
@@ -405,8 +405,8 @@ export default function Bracket() {
                     type="button"
                     onClick={() => setSelectedTournamentId(tournament.id)}
                     aria-pressed={selected}
-                    className={`overflow-hidden rounded-xl border bg-zinc-950 text-left transition-none active:transform-none ${
-                      selected ? "border-primary/60" : "border-white/10"
+                    className={`overflow-hidden rounded-md border bg-card text-left transition-none active:transform-none ${
+                      selected ? "border-primary/60" : "border-border"
                     }`}
                   >
                     <div className="relative h-32 overflow-hidden sm:h-36">
@@ -438,7 +438,7 @@ export default function Bracket() {
                     </div>
                     <div className="p-4">
                       <p className="mb-1 text-xs font-semibold text-primary">{tournament.game || "เกมแข่งขัน"}</p>
-                      <h3 className="line-clamp-2 font-bold leading-snug text-white">{tournament.title}</h3>
+                      <h3 className="line-clamp-2 font-bold leading-snug text-card-foreground">{tournament.title}</h3>
                       <p className="mt-2 truncate text-sm text-slate-300">
                         ทีมแชมป์: <span className="font-bold text-amber-100">{championTeam?.teamName || "กำลังโหลดข้อมูลทีม"}</span>
                       </p>
@@ -452,24 +452,24 @@ export default function Bracket() {
         )}
 
         {filteredTournaments.length === 0 ? (
-          <section className="rounded-xl border border-white/10 bg-zinc-950/70 px-5 py-12 text-center">
-            <CategoryIcon className="mx-auto mb-3 h-9 w-9 text-slate-500" />
-            <h2 className="text-lg font-semibold text-white">ไม่มีรายการในหมวด{activeCategoryLabel}ในขณะนี้</h2>
-            <p className="mt-2 text-sm text-slate-400">เลือกหมวดหมู่อื่นเพื่อดูรายการและสายการแข่งขัน</p>
+              <section className="rounded-md border border-border bg-card px-5 py-12 text-center">
+                <CategoryIcon className="mx-auto mb-3 h-9 w-9 text-slate-500" />
+                <h2 className="text-lg font-semibold text-card-foreground">ไม่มีรายการในหมวด{activeCategoryLabel}ในขณะนี้</h2>
+                <p className="mt-2 text-sm text-muted-foreground">เลือกหมวดหมู่อื่นเพื่อดูรายการและสายการแข่งขัน</p>
           </section>
         ) : selectedTournament ? (
           <>
             {activeCategory !== "champions" && (
-              <section className="mb-5 rounded-xl border border-white/10 bg-zinc-950/80 p-3 sm:p-4">
+              <section className="mb-5 rounded-md border border-border bg-card p-3 sm:p-4">
                 <div className="mb-2 flex items-center justify-between gap-3">
-                  <label htmlFor="bracket-tournament" className="text-sm font-semibold text-white">เลือกรายการแข่งขัน</label>
-                  <span className="text-xs text-slate-400">{filteredTournaments.length} รายการในหมวดนี้</span>
+                  <label htmlFor="bracket-tournament" className="text-sm font-semibold text-card-foreground">เลือกรายการแข่งขัน</label>
+                  <span className="text-xs text-muted-foreground">{filteredTournaments.length} รายการในหมวดนี้</span>
                 </div>
                 <select
                   id="bracket-tournament"
                   value={selectedTournament.id}
                   onChange={(event) => setSelectedTournamentId(event.target.value)}
-                  className="w-full rounded-lg border border-white/15 bg-zinc-900 px-3 py-3 text-sm text-white outline-none focus:border-primary"
+                  className="w-full rounded-sm border border-border bg-secondary px-3 py-3 text-sm text-secondary-foreground outline-none focus:border-primary"
                 >
                   {filteredTournaments.map((tournament) => (
                     <option key={tournament.id} value={tournament.id}>
@@ -528,7 +528,7 @@ export default function Bracket() {
             </section>
 
             {selectedTournament.championTeamId && (
-              <section className="mb-5 flex items-center gap-3 rounded-xl border border-amber-300/20 bg-zinc-950/80 p-4" aria-label="แชมป์เปี้ยนรายการ">
+              <section className="mb-5 flex items-center gap-3 rounded-md border border-amber-300/35 bg-card p-4" aria-label="แชมป์เปี้ยนรายการ">
                 <span className="flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-lg border border-amber-300/25 bg-amber-300/10">
                   {champion?.logoUrl ? (
                     <img src={champion.logoUrl} alt="" className="h-full w-full object-cover" />
@@ -538,14 +538,14 @@ export default function Bracket() {
                 </span>
                 <div className="min-w-0">
                   <p className="text-xs font-semibold text-amber-200">แชมเปี้ยนประจำรายการ</p>
-                  <p className="truncate font-bold text-white">{champion?.teamName || "ประกาศผู้ชนะแล้ว"}</p>
+                  <p className="truncate font-bold text-card-foreground">{champion?.teamName || "ประกาศผู้ชนะแล้ว"}</p>
                 </div>
               </section>
             )}
 
             {matchGroups.length > 1 && (
-              <section className="mb-4 rounded-xl border border-white/10 bg-zinc-950/65 p-3" aria-label="เลือกกลุ่มการแข่งขัน">
-                <p className="mb-2 text-xs font-semibold text-slate-400">กลุ่มการแข่งขัน</p>
+              <section className="mb-4 rounded-md border border-border bg-card p-3" aria-label="เลือกกลุ่มการแข่งขัน">
+                <p className="mb-2 text-xs font-semibold text-muted-foreground">กลุ่มการแข่งขัน</p>
                 <div className="flex flex-wrap gap-2">
                   {matchGroups.map((group) => (
                     <button
@@ -556,7 +556,7 @@ export default function Bracket() {
                       className={`rounded-md border px-3 py-2 text-xs font-semibold ${
                         selectedGroup === group
                           ? "border-primary/45 bg-primary/10 text-primary"
-                          : "border-white/10 bg-zinc-900 text-slate-300"
+                          : "border-border bg-secondary text-secondary-foreground hover:border-primary/35"
                       } transition-none active:transform-none`}
                     >
                       {getGroupLabel(group)}
@@ -569,19 +569,19 @@ export default function Bracket() {
             <section aria-label="ผังสายการแข่งขัน">
               <div className="mb-3 flex flex-wrap items-end justify-between gap-2">
                 <div>
-                  <h2 className="text-xl font-bold text-white sm:text-2xl">ผังสายการแข่งขัน</h2>
-                  <p className="mt-1 text-xs text-slate-400">
+                  <h2 className="text-xl font-bold text-foreground sm:text-2xl">ผังสายการแข่งขัน</h2>
+                  <p className="mt-1 text-xs text-muted-foreground">
                     {matchGroups.length > 1 ? `${getGroupLabel(selectedGroup)} · ` : ""}
                     เส้นแสดงการผ่านรอบ และเน้นทีมที่ชนะในแต่ละแมตช์
                   </p>
                 </div>
-                <span className="rounded-md border border-white/10 bg-zinc-950/70 px-2.5 py-1.5 text-xs text-slate-300">
+                <span className="rounded-sm border border-border bg-card px-2.5 py-1.5 text-xs text-muted-foreground">
                   {rounds.length} รอบ · {visibleMatches.length} แมตช์
                 </span>
               </div>
 
               {matchesLoading ? (
-                <div className="flex min-h-40 items-center justify-center gap-3 rounded-xl border border-white/10 bg-zinc-950/70 text-sm text-slate-400">
+                <div className="flex min-h-40 items-center justify-center gap-3 rounded-md border border-border bg-card text-sm text-muted-foreground">
                   <Loader2 className="h-5 w-5 text-primary" /> กำลังโหลดสายการแข่งขัน...
                 </div>
               ) : rounds.length > 0 ? (

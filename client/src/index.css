@@ -72,48 +72,48 @@
 :root[data-theme="light"] {
   color-scheme: light;
 
-  --background: 210 25% 97%;
-  --foreground: 220 24% 15%;
-  --card: 0 0% 100%;
-  --card-foreground: 220 24% 15%;
-  --card-border: hsl(215 20% 86% / 0.95);
-  --popover: 0 0% 100%;
-  --popover-foreground: 220 24% 15%;
-  --popover-border: hsl(215 20% 84% / 0.95);
-  --primary: 202 62% 42%;
+  --background: 42 14% 92%;
+  --foreground: 220 20% 17%;
+  --card: 42 14% 96%;
+  --card-foreground: 220 20% 17%;
+  --card-border: hsl(220 11% 84% / 0.92);
+  --popover: 42 14% 96%;
+  --popover-foreground: 220 20% 17%;
+  --popover-border: hsl(220 11% 82% / 0.95);
+  --primary: 202 51% 38%;
   --primary-foreground: 0 0% 100%;
-  --primary-border: hsl(202 62% 36% / 0.55);
-  --secondary: 210 24% 93%;
-  --secondary-foreground: 220 24% 18%;
-  --secondary-border: hsl(215 18% 83% / 0.95);
-  --muted: 210 20% 92%;
-  --muted-foreground: 215 14% 40%;
-  --muted-border: hsl(215 18% 83% / 0.95);
-  --accent: 32 58% 48%;
+  --primary-border: hsl(202 51% 35% / 0.6);
+  --secondary: 42 12% 88%;
+  --secondary-foreground: 220 20% 20%;
+  --secondary-border: hsl(220 11% 80% / 0.95);
+  --muted: 42 10% 89%;
+  --muted-foreground: 220 10% 40%;
+  --muted-border: hsl(220 11% 81% / 0.95);
+  --accent: 32 43% 43%;
   --accent-foreground: 30 25% 10%;
-  --accent-border: hsl(32 58% 40% / 0.55);
+  --accent-border: hsl(32 43% 37% / 0.58);
   --destructive: 0 62% 48%;
   --destructive-foreground: 0 0% 100%;
   --destructive-border: hsl(0 62% 42% / 0.58);
-  --border: 215 20% 85%;
-  --input: 0 0% 100%;
-  --ring: 202 62% 42%;
-  --button-outline: hsl(215 18% 70% / 0.9);
-  --chart-1: 202 62% 42%;
-  --chart-2: 32 58% 48%;
-  --chart-3: 157 43% 38%;
-  --chart-4: 42 70% 45%;
+  --border: 220 11% 82%;
+  --input: 42 14% 96%;
+  --ring: 202 51% 38%;
+  --button-outline: hsl(220 11% 68% / 0.9);
+  --chart-1: 202 51% 38%;
+  --chart-2: 32 43% 43%;
+  --chart-3: 157 34% 36%;
+  --chart-4: 42 55% 40%;
   --chart-5: 0 62% 48%;
-  --sidebar: 0 0% 100%;
-  --sidebar-foreground: 220 24% 15%;
-  --sidebar-border: hsl(215 20% 86% / 0.95);
-  --sidebar-primary: 202 62% 42%;
+  --sidebar: 42 14% 94%;
+  --sidebar-foreground: 220 20% 17%;
+  --sidebar-border: hsl(220 11% 84% / 0.92);
+  --sidebar-primary: 202 51% 38%;
   --sidebar-primary-foreground: 0 0% 100%;
-  --sidebar-primary-border: hsl(202 62% 36% / 0.55);
-  --sidebar-accent: 210 24% 93%;
-  --sidebar-accent-foreground: 220 24% 18%;
-  --sidebar-accent-border: hsl(215 18% 83% / 0.95);
-  --sidebar-ring: 202 62% 42%;
+  --sidebar-primary-border: hsl(202 51% 35% / 0.6);
+  --sidebar-accent: 42 12% 88%;
+  --sidebar-accent-foreground: 220 20% 20%;
+  --sidebar-accent-border: hsl(220 11% 80% / 0.95);
+  --sidebar-ring: 202 51% 38%;
 }
 
 @layer base {
@@ -153,8 +153,8 @@
 @layer components {
 
   .esports-panel {
-    @apply relative overflow-hidden rounded-xl border border-white/[0.08] bg-card;
-    box-shadow: 0 12px 30px -24px rgb(0 0 0 / 0.9);
+    @apply relative overflow-hidden rounded-md border border-border bg-card;
+    box-shadow: 0 8px 22px -22px rgb(0 0 0 / 0.5);
   }
 
   .esports-panel-interactive {
@@ -163,7 +163,7 @@
 
   .esports-panel-interactive:hover {
     @apply border-primary/35;
-    box-shadow: 0 18px 36px -26px rgb(0 0 0 / 0.95);
+    box-shadow: 0 10px 24px -22px rgb(0 0 0 / 0.65);
   }
 
   .esports-kicker {
@@ -171,7 +171,7 @@
   }
 
   .section-heading {
-    @apply text-3xl font-bold leading-tight text-white sm:text-4xl md:text-5xl;
+    @apply text-3xl font-bold leading-tight text-foreground sm:text-4xl md:text-5xl;
   }
 
   .admin-shell {
@@ -179,12 +179,12 @@
   }
 
   .admin-surface {
-    @apply rounded-xl border border-white/[0.08] bg-card;
-    box-shadow: 0 12px 30px -24px rgb(0 0 0 / 0.9);
+    @apply rounded-md border border-border bg-card;
+    box-shadow: 0 8px 22px -22px rgb(0 0 0 / 0.5);
   }
 
   .admin-stat {
-    @apply rounded-lg border border-white/[0.07] bg-black/15 px-4 py-3;
+    @apply rounded-md border border-border bg-secondary px-4 py-3;
   }
 
   .admin-nav-label {
@@ -302,6 +302,18 @@
   }
 }
 
+:root[data-theme="light"] :is(.text-slate-100, .text-slate-200, .text-slate-300, .text-slate-400) {
+  color: #545b64 !important;
+}
+
+:root[data-theme="light"] :is(.text-emerald-200, .text-emerald-300) {
+  color: #17653f !important;
+}
+
+:root[data-theme="light"] .text-red-200 {
+  color: #a32929 !important;
+}
+
 :root[data-theme="light"] [class*="bg-card"] .text-white,
 :root[data-theme="light"] [class*="bg-secondary"] .text-white,
 :root[data-theme="light"] [class*="bg-background"] .text-white,
@@ -309,131 +321,54 @@
   color: hsl(var(--foreground)) !important;
 }
 
-:root[data-theme="light"] [class*="bg-card"].text-white,
-:root[data-theme="light"] [class*="bg-secondary"].text-white,
-:root[data-theme="light"] [class*="bg-background"].text-white,
-:root[data-theme="light"] [class*="bg-muted"].text-white {
-  color: hsl(var(--foreground)) !important;
-}
-
-:root[data-theme="light"] [class*="bg-card"] :is(.text-slate-100, .text-slate-200, .text-slate-300, .text-slate-400, .text-slate-500),
-:root[data-theme="light"] [class*="bg-secondary"] :is(.text-slate-100, .text-slate-200, .text-slate-300, .text-slate-400, .text-slate-500),
-:root[data-theme="light"] [class*="bg-background"] :is(.text-slate-100, .text-slate-200, .text-slate-300, .text-slate-400, .text-slate-500) {
-  color: #475569 !important;
-}
-
-:root[data-theme="light"] [class*="bg-card"] .text-amber-100,
-:root[data-theme="light"] [class*="bg-card"] .text-amber-200,
-:root[data-theme="light"] [class*="bg-card"] .text-orange-100 {
-  color: #7c4a08 !important;
-}
-
-:root[data-theme="light"] [class*="bg-card"] [class*="bg-zinc-"] .text-amber-100,
-:root[data-theme="light"] [class*="bg-card"] [class*="bg-zinc-"].text-amber-100 {
-  color: #fde68a !important;
-}
-
-:root[data-theme="light"] [class*="bg-zinc-"] .text-white,
-:root[data-theme="light"] [class*="bg-zinc-"].text-white,
-:root[data-theme="light"] [class*="bg-slate-950"] .text-white,
-:root[data-theme="light"] [class*="bg-slate-950"].text-white,
-:root[data-theme="light"] [class*="bg-slate-900"] .text-white,
-:root[data-theme="light"] [class*="bg-slate-900"].text-white,
-:root[data-theme="light"] [class*="bg-black"] .text-white,
-:root[data-theme="light"] [class*="bg-black"].text-white {
+:root[data-theme="light"] :is([class*="bg-zinc-"], [class*="bg-slate-950"], [class*="bg-slate-900"], [class*="bg-black"]) .text-white,
+:root[data-theme="light"] :is([class*="bg-zinc-"], [class*="bg-slate-950"], [class*="bg-slate-900"], [class*="bg-black"]).text-white {
   color: #ffffff !important;
 }
 
-:root[data-theme="light"] [class*="bg-zinc-"] .text-muted-foreground,
-:root[data-theme="light"] [class*="bg-slate-950"] .text-muted-foreground,
-:root[data-theme="light"] [class*="bg-slate-900"] .text-muted-foreground,
-:root[data-theme="light"] [class*="bg-black"] .text-muted-foreground {
-  color: #dbe5ef !important;
+:root[data-theme="light"] [class*="bg-card"] :is(.text-slate-100, .text-slate-200, .text-slate-300, .text-slate-400, .text-slate-500),
+:root[data-theme="light"] [class*="bg-secondary"] :is(.text-slate-100, .text-slate-200, .text-slate-300, .text-slate-400, .text-slate-500) {
+  color: #545b64 !important;
 }
 
-:root[data-theme="light"] [class*="bg-zinc-"] .text-primary,
-:root[data-theme="light"] [class*="bg-slate-950"] .text-primary,
-:root[data-theme="light"] [class*="bg-slate-900"] .text-primary,
-:root[data-theme="light"] [class*="bg-black"] .text-primary {
+:root[data-theme="light"] [class*="bg-card"] :is(.text-amber-100, .text-amber-200, .text-orange-100),
+:root[data-theme="light"] :is(.text-amber-100, .text-amber-200, .text-orange-100) {
+  color: #76551b !important;
+}
+
+:root[data-theme="light"] :is([class*="bg-zinc-"], [class*="bg-slate-950"], [class*="bg-slate-900"], [class*="bg-black"]) :is(.text-slate-100, .text-slate-200, .text-slate-300, .text-slate-400, .text-slate-500, .text-amber-100, .text-amber-200, .text-orange-100, .text-emerald-200, .text-emerald-300, .text-red-200) {
+  color: #dbe4ed !important;
+}
+
+:root[data-theme="light"] :is([class*="bg-zinc-"], [class*="bg-slate-950"], [class*="bg-slate-900"], [class*="bg-black"]) :is(.text-amber-100, .text-amber-200) {
+  color: #fde68a !important;
+}
+
+:root[data-theme="light"] :is([class*="bg-zinc-"], [class*="bg-slate-950"], [class*="bg-slate-900"], [class*="bg-black"]) .text-orange-100 {
+  color: #fed7aa !important;
+}
+
+:root[data-theme="light"] :is([class*="bg-zinc-"], [class*="bg-slate-950"], [class*="bg-slate-900"], [class*="bg-black"]) :is(.text-emerald-200, .text-emerald-300) {
+  color: #a7f3d0 !important;
+}
+
+:root[data-theme="light"] :is([class*="bg-zinc-"], [class*="bg-slate-950"], [class*="bg-slate-900"], [class*="bg-black"]) .text-red-200 {
+  color: #fecaca !important;
+}
+
+:root[data-theme="light"] :is([class*="bg-zinc-"], [class*="bg-slate-950"], [class*="bg-slate-900"], [class*="bg-black"]) .text-muted-foreground {
+  color: #dbe4ed !important;
+}
+
+:root[data-theme="light"] :is([class*="bg-zinc-"], [class*="bg-slate-950"], [class*="bg-slate-900"], [class*="bg-black"]) .text-primary {
   color: #9bdcf0 !important;
 }
 
-:root[data-theme="light"] [class*="bg-zinc-"] :is(.text-slate-100, .text-slate-200, .text-slate-300, .text-slate-400, .text-slate-500),
-:root[data-theme="light"] [class*="bg-slate-950"] :is(.text-slate-100, .text-slate-200, .text-slate-300, .text-slate-400, .text-slate-500),
-:root[data-theme="light"] [class*="bg-slate-900"] :is(.text-slate-100, .text-slate-200, .text-slate-300, .text-slate-400, .text-slate-500),
-:root[data-theme="light"] [class*="bg-black"] :is(.text-slate-100, .text-slate-200, .text-slate-300, .text-slate-400, .text-slate-500) {
-  color: #dbe5ef !important;
+:root[data-theme="light"] :is([class*="bg-card"], [class*="bg-secondary"], [class*="bg-background"]) [class*="border-white/"],
+:root[data-theme="light"] :is([class*="bg-card"], [class*="bg-secondary"], [class*="bg-background"])[class*="border-white/"] {
+  border-color: hsl(var(--border)) !important;
 }
 
-:root[data-theme="light"] .home-hero .text-primary {
-  color: #9bdcf0 !important;
-}
-
-:root[data-theme="light"] .home-hero .text-slate-300 {
-  color: #e2e8f0 !important;
-}
-
-:root[data-theme="light"] [class*="bg-card"] [class*="border-white/"],
-:root[data-theme="light"] [class*="bg-secondary"] [class*="border-white/"] {
-  border-color: hsl(var(--border) / 0.85) !important;
-}
-
-:root[data-theme="light"] [class~="bg-zinc-950"],
-:root[data-theme="light"] [class~="bg-zinc-950/25"],
-:root[data-theme="light"] [class~="bg-zinc-950/50"],
-:root[data-theme="light"] [class~="bg-zinc-950/55"],
-:root[data-theme="light"] [class~="bg-zinc-950/65"],
-:root[data-theme="light"] [class~="bg-zinc-950/70"],
-:root[data-theme="light"] [class~="bg-zinc-950/75"],
-:root[data-theme="light"] [class~="bg-zinc-950/80"],
-:root[data-theme="light"] [class~="bg-zinc-950/82"],
-:root[data-theme="light"] [class~="bg-zinc-950/85"],
-:root[data-theme="light"] [class~="bg-zinc-950/90"],
-:root[data-theme="light"] [class~="bg-zinc-950/95"] {
-  background-color: rgb(52 68 88 / var(--tw-bg-opacity, 1)) !important;
-}
-
-:root[data-theme="light"] [class~="bg-zinc-900"],
-:root[data-theme="light"] [class~="bg-zinc-900/35"],
-:root[data-theme="light"] [class~="bg-zinc-900/50"],
-:root[data-theme="light"] [class~="bg-zinc-900/70"],
-:root[data-theme="light"] [class~="bg-zinc-900/75"],
-:root[data-theme="light"] [class~="bg-zinc-900/90"],
-:root[data-theme="light"] [class~="bg-zinc-900/95"] {
-  background-color: rgb(64 86 110 / var(--tw-bg-opacity, 1)) !important;
-}
-
-:root[data-theme="light"] [class~="bg-zinc-800"],
-:root[data-theme="light"] [class~="bg-zinc-800/50"],
-:root[data-theme="light"] [class~="bg-zinc-800/90"] {
-  background-color: rgb(80 105 130 / var(--tw-bg-opacity, 1)) !important;
-}
-
-:root[data-theme="light"] [class~="bg-zinc-700"] {
-  background-color: rgb(88 109 130 / var(--tw-bg-opacity, 1)) !important;
-}
-
-:root[data-theme="light"] [class~="hover:bg-zinc-800"]:hover {
-  background-color: rgb(80 105 130 / 1) !important;
-}
-
-:root[data-theme="light"] [class~="hover:bg-zinc-900"]:hover {
-  background-color: rgb(64 86 110 / 1) !important;
-}
-
-:root[data-theme="light"] [class~="focus-visible:bg-zinc-950/80"]:focus-visible,
-:root[data-theme="light"] [class~="data-[state=open]:bg-zinc-950/80"][data-state="open"] {
-  background-color: rgb(52 68 88 / 0.8) !important;
-}
-
-:root[data-theme="light"] [class*="text-slate-300"] {
-  color: #e7edf4 !important;
-}
-
-:root[data-theme="light"] [class*="text-slate-400"] {
-  color: #d0dbe7 !important;
-}
-
-:root[data-theme="light"] [class*="text-slate-500"] {
-  color: #bdcbd9 !important;
+:root[data-theme="light"] [class*="bg-card"][class*="border-white/"] {
+  border-color: hsl(var(--card-border)) !important;
 }

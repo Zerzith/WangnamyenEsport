@@ -54,13 +54,13 @@ export function Navigation() {
   }, [menuOpen]);
 
   return (
-    <nav aria-label="เมนูหลัก" className="sticky top-0 z-50 w-full border-b border-border/80 bg-background/95 backdrop-blur-xl">
+    <nav aria-label="เมนูหลัก" className="sticky top-0 z-50 w-full border-b border-border bg-background">
       <div className="flex min-h-[4rem] items-center gap-2 px-3 sm:min-h-[4.5rem] sm:px-4 lg:px-6">
         <Link href="/" aria-label="ระบบบริหารการจัดการแข่งขันอีสปอร์ต" className="flex shrink-0 items-center gap-2">
           <img
             src="/assets/wangnamyen-esport-crown-emblem.webp"
-            alt="โลโก้ Wangnamyen Esport"
-            className="h-9 w-9 rounded-lg object-contain sm:h-10 sm:w-10"
+            alt="ตราสัญลักษณ์ระบบบริหารการจัดการแข่งขันอีสปอร์ต"
+            className="h-9 w-9 object-contain sm:h-10 sm:w-10"
           />
           <span className="hidden whitespace-nowrap font-display text-xs font-bold tracking-tight text-foreground sm:block lg:text-sm">
             ระบบบริหารการจัดการแข่งขันอีสปอร์ต
@@ -71,27 +71,28 @@ export function Navigation() {
           {navItems.map((item) => {
             const isActive = location === item.href;
             return (
-              <Link key={item.href} href={item.href}>
-                <span
-                  className={`cursor-pointer whitespace-nowrap rounded-md px-3 py-2 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary ${
-                    isActive ? "bg-primary/15 text-primary" : "text-muted-foreground hover:bg-foreground/5 hover:text-foreground"
-                  }`}
-                >
-                  {item.label}
-                </span>
+              <Link
+                key={item.href}
+                href={item.href}
+                aria-current={isActive ? "page" : undefined}
+                className={`flex shrink-0 items-center border-b-2 px-3 py-5 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary ${
+                  isActive ? "border-primary text-foreground" : "border-transparent text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                {item.label}
               </Link>
             );
           })}
 
           {user?.role === "admin" && (
-            <Link href={adminItem.href}>
-              <span
-                className={`cursor-pointer whitespace-nowrap rounded-md px-2.5 py-2 text-sm font-medium transition-colors ${
-                  location === adminItem.href ? "bg-accent/15 text-accent" : "text-accent/90 hover:bg-accent/10 hover:text-accent"
-                }`}
-              >
-                {adminItem.label}
-              </span>
+            <Link
+              href={adminItem.href}
+              aria-current={location === adminItem.href ? "page" : undefined}
+              className={`flex shrink-0 items-center border-b-2 px-3 py-5 text-sm font-medium transition-colors ${
+                location === adminItem.href ? "border-accent text-accent" : "border-transparent text-accent/90 hover:text-accent"
+              }`}
+            >
+              {adminItem.label}
             </Link>
           )}
         </div>
@@ -169,28 +170,29 @@ export function Navigation() {
             {navItems.map((item) => {
               const isActive = location === item.href;
               return (
-                <Link key={item.href} href={item.href}>
-                  <span
-                    onClick={() => setMenuOpen(false)}
-                    className={`block cursor-pointer rounded-md px-3 py-3 text-sm font-medium ${
-                      isActive ? "bg-primary/15 text-primary" : "text-foreground hover:bg-foreground/5"
-                    }`}
-                  >
-                    {item.label}
-                  </span>
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  aria-current={isActive ? "page" : undefined}
+                  onClick={() => setMenuOpen(false)}
+                  className={`block border-b border-border px-3 py-3 text-sm font-medium last:border-0 ${
+                    isActive ? "text-primary" : "text-foreground hover:text-primary"
+                  }`}
+                >
+                  {item.label}
                 </Link>
               );
             })}
             {user?.role === "admin" && (
-              <Link href={adminItem.href}>
-                <span
-                  onClick={() => setMenuOpen(false)}
-                  className={`block cursor-pointer rounded-md px-3 py-3 text-sm font-medium ${
-                    location === adminItem.href ? "bg-accent/15 text-accent" : "text-accent/90 hover:bg-accent/10"
-                  }`}
-                >
-                  {adminItem.label}
-                </span>
+              <Link
+                href={adminItem.href}
+                aria-current={location === adminItem.href ? "page" : undefined}
+                onClick={() => setMenuOpen(false)}
+                className={`block border-b border-border px-3 py-3 text-sm font-medium last:border-0 ${
+                  location === adminItem.href ? "text-accent" : "text-accent/90 hover:text-accent"
+                }`}
+              >
+                {adminItem.label}
               </Link>
             )}
           </div>

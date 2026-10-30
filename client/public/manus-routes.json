@@ -1,0 +1,22 @@
+{
+  "routes": [
+    { "path": "/", "title": "หน้าแรก" },
+    { "path": "/login", "title": "เข้าสู่ระบบ" },
+    { "path": "/register-team", "title": "สมัครทีมแข่งขัน" },
+    { "path": "/my-teams", "title": "ทีมของฉัน" },
+    { "path": "/bracket", "title": "สายการแข่งขัน" },
+    { "path": "/hall-of-fame", "title": "ทำเนียบแชมเปี้ยน" },
+    { "path": "/chat", "title": "แชทสด" },
+    { "path": "/profile", "title": "โปรไฟล์" },
+    { "path": "/event/:id", "title": "รายละเอียดการแข่งขัน" },
+    { "path": "/events", "title": "รายการแข่งขัน" },
+    { "path": "/admin", "title": "จัดการระบบ" },
+    { "path": "/about", "title": "เกี่ยวกับระบบ" },
+    { "path": "/contact", "title": "ติดต่อ" },
+    { "path": "/privacy", "title": "นโยบายความเป็นส่วนตัว" },
+    { "path": "/rules", "title": "กฎการแข่งขัน" },
+    { "path": "/edit-registration/:registrationId", "title": "แก้ไขข้อมูลสมัครแข่งขัน" },
+    { "path": "/match-management", "title": "จัดการแมตช์" },
+    { "path": "/news/:id", "title": "รายละเอียดข่าวสาร" }
+  ]
+}
