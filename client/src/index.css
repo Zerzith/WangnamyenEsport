@@ -364,6 +364,10 @@
   color: #9bdcf0 !important;
 }
 
+:root[data-theme="light"] :is([class*="bg-zinc-"], [class*="bg-slate-950"], [class*="bg-slate-900"], [class*="bg-black"]) label {
+  color: #dbe4ed !important;
+}
+
 :root[data-theme="light"] :is([class*="bg-card"], [class*="bg-secondary"], [class*="bg-background"]) [class*="border-white/"],
 :root[data-theme="light"] :is([class*="bg-card"], [class*="bg-secondary"], [class*="bg-background"])[class*="border-white/"] {
   border-color: hsl(var(--border)) !important;
@@ -371,4 +375,26 @@
 
 :root[data-theme="light"] [class*="bg-card"][class*="border-white/"] {
   border-color: hsl(var(--card-border)) !important;
+}
+
+:root[data-theme="light"] :is(input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="hidden"]), textarea, select, [role="combobox"]) {
+  color: hsl(var(--foreground)) !important;
+  background-color: hsl(var(--input)) !important;
+  border-color: hsl(var(--border)) !important;
+  color-scheme: light !important;
+}
+
+:root[data-theme="light"] :is(input, textarea)::placeholder {
+  color: hsl(var(--muted-foreground)) !important;
+  opacity: 1 !important;
+}
+
+:root[data-theme="light"] [data-placeholder] {
+  color: hsl(var(--muted-foreground)) !important;
+  opacity: 1 !important;
+}
+
+:root[data-theme="light"] select option {
+  color: hsl(var(--popover-foreground));
+  background-color: hsl(var(--popover));
 }

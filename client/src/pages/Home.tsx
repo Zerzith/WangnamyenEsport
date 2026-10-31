@@ -412,9 +412,9 @@ export default function Home() {
               <span className="h-px w-8 bg-primary/60" />
               ระบบบริหารการจัดการแข่งขันอีสปอร์ต
             </p>
-            <h1 className="max-w-[15ch] font-display text-4xl font-bold leading-[1.16] tracking-tight text-foreground sm:text-5xl lg:text-[3.4rem]">
-              จัดการแข่งขันอีสปอร์ต
-              <span className="mt-1 block text-primary">ให้เป็นระบบในที่เดียว</span>
+            <h1 className="font-display text-[clamp(1.75rem,8.5vw,2.25rem)] font-bold leading-[1.16] tracking-tight text-foreground sm:text-5xl lg:text-[clamp(2.4rem,4.2vw,3.4rem)]">
+              <span className="block whitespace-nowrap">จัดการแข่งขันอีสปอร์ต</span>
+              <span className="mt-1 block whitespace-nowrap text-primary">ให้เป็นระบบในที่เดียว</span>
             </h1>
             <p className="mt-5 max-w-xl text-sm leading-7 text-muted-foreground sm:text-base">
               เปิดรายการ รับสมัครทีม จัดสาย และติดตามผลการแข่งขันได้ในพื้นที่เดียว ออกแบบให้ทั้งผู้จัด ทีมแข่งขัน และผู้ชมเข้าใจตรงกัน

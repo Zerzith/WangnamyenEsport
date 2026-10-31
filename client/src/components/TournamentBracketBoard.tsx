@@ -254,7 +254,7 @@ function BracketMatchCard({ match, registrations, onTeamClick, compact = false }
     return (
       <div
         key={side}
-        className={`flex min-w-0 items-center justify-between gap-2 rounded-md border-l-2 px-2 py-1.5 ${
+        className={`flex min-w-0 items-center justify-between gap-2 overflow-hidden rounded-md border-l-2 px-2 py-1.5 ${
           isWinner
             ? "border-primary bg-primary/10"
             : isEliminated
@@ -266,7 +266,7 @@ function BracketMatchCard({ match, registrations, onTeamClick, compact = false }
           type="button"
           onClick={() => team && onTeamClick(team)}
           disabled={!team}
-          className="flex min-w-0 items-center gap-2 text-left transition-none active:transform-none disabled:cursor-default"
+          className="flex min-w-0 flex-1 items-center gap-2 overflow-hidden text-left transition-none active:transform-none disabled:cursor-default"
           aria-label={team ? `ดูสมาชิกทีม ${name}` : name}
         >
           <span className={`flex h-7 w-7 shrink-0 items-center justify-center overflow-hidden rounded-md border text-[10px] font-bold ${isWinner ? "border-primary/40 bg-primary/15 text-primary" : "border-white/10 bg-white/[0.04] text-slate-400"}`}>
@@ -276,7 +276,7 @@ function BracketMatchCard({ match, registrations, onTeamClick, compact = false }
               censorText(name).trim().charAt(0) || "?"
             )}
           </span>
-          <span className={`truncate text-xs ${isWinner ? "font-bold text-white" : "text-slate-300"}`} title={name}>
+          <span className={`min-w-0 flex-1 truncate text-xs ${isWinner ? "font-bold text-white" : "text-slate-300"}`} title={name}>
             {name}
           </span>
         </button>
@@ -289,10 +289,10 @@ function BracketMatchCard({ match, registrations, onTeamClick, compact = false }
   };
 
   return (
-    <article className={`flex h-full min-w-0 flex-col justify-between rounded-lg border border-white/10 bg-zinc-900 p-2 ${compact ? "gap-1" : "gap-1.5"}`}>
+    <article className={`flex h-full min-w-0 flex-col justify-between overflow-hidden rounded-md border border-white/10 bg-zinc-900 p-2 ${compact ? "gap-1" : "gap-1.5"}`}>
       <div className="flex items-center justify-between gap-2">
-        <span className="truncate text-[10px] font-semibold text-slate-400">แมตช์ {match.id.slice(0, 6)}</span>
-        <span className={`shrink-0 rounded border px-1.5 py-0.5 text-[9px] font-semibold ${statusClasses}`}>
+        <span className="min-w-0 flex-1 truncate text-[10px] font-semibold text-slate-400">แมตช์ {match.id.slice(0, 6)}</span>
+        <span className={`shrink-0 rounded border py-0.5 font-semibold ${compact ? "px-1 text-[8px]" : "px-1.5 text-[9px]"} ${statusClasses}`}>
           {getStatusLabel(match.status)}
         </span>
       </div>
